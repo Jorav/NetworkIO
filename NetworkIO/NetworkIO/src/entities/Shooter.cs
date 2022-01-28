@@ -12,19 +12,20 @@ namespace NetworkIO.src.entities
         float lastTimeFired;
         float firingStrength;
         //TODO: add accuracy
-        Queue<Projectile> projectiles;
-        public Shooter(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float fireRatePerSecond, float firingStrength, Projectile projectile, bool isVisible = true, float friction = 0.1f) : base(sprite, position, rotation, mass, thrust, isVisible, friction)
+        public Queue<Projectile> Projectiles { get; set; }
+        //Controller
+        public Shooter(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, float fireRatePerSecond, float firingStrength, Projectile projectile, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float attractionForce = 1f, float repulsionForce = 1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction, attractionForce, repulsionForce)
         {
             this.fireRatePerSecond = fireRatePerSecond;
             this.firingStrength = firingStrength;
-            projectiles = new Queue<Projectile>();
-            projectiles.Enqueue(projectile);
+            Projectiles = new Queue<Projectile>();
+            Projectiles.Enqueue(projectile);
         }
 
         public override void Move(GameTime gameTime)
         {
             base.Move(gameTime);
-            foreach (Projectile p in projectiles)
+            foreach (Projectile p in Projectiles)
                 p.Move(gameTime);
         }
 
@@ -34,16 +35,18 @@ namespace NetworkIO.src.entities
             if (currentTime-lastTimeFired > (1 / fireRatePerSecond))
             {
                 Projectile p;
-                if (projectiles.Peek().IsVisible)
+                if (Projectiles.Peek().IsVisible)
                 {
-                    p = ((Projectile)projectiles.Peek().Clone());
-                    projectiles.Enqueue(p);
+                    p = ((Projectile)Projectiles.Peek().Clone());
+                    p.IsCollidable = true;
+                    Projectiles.Enqueue(p);
                 }
                 else
                 {
-                    p = projectiles.Dequeue();
+                    p = Projectiles.Dequeue();
                     p.IsVisible = true;
-                    projectiles.Enqueue(p);
+                    p.IsCollidable = true;
+                    Projectiles.Enqueue(p);
                 }
                 p.Position = new Vector2(this.Position.X, this.Position.Y);
                 p.Rotation = this.Rotation;
@@ -54,7 +57,7 @@ namespace NetworkIO.src.entities
 
         public override void Draw(SpriteBatch sb)
         {
-            foreach (Projectile p in projectiles)
+            foreach (Projectile p in Projectiles)
                 p.Draw(sb);
             base.Draw(sb);
         }
@@ -62,8 +65,8 @@ namespace NetworkIO.src.entities
         public override object Clone()
         {
             Shooter sNew = (Shooter)base.Clone();
-            sNew.projectiles = new Queue<Projectile>();
-            sNew.projectiles.Enqueue((Projectile)projectiles.Peek().Clone());
+            sNew.Projectiles = new Queue<Projectile>();
+            sNew.Projectiles.Enqueue((Projectile)Projectiles.Peek().Clone());
             return sNew;
         }
     }

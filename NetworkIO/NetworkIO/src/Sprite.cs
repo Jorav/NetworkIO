@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace NetworkIO.src
 {
@@ -10,8 +11,8 @@ namespace NetworkIO.src
         public float Rotation;
         public Vector2 Position;
         public Vector2 Origin;
-        public int Height { get; set; }
-        public int Width { get; set; }
+        public int Height { get { return (int)Math.Round(texture.Height * Scale); } }
+        public int Width { get { return (int)Math.Round(texture.Width * Scale); } }
 
         public Sprite(Texture2D texture, float scale = 1)
         {

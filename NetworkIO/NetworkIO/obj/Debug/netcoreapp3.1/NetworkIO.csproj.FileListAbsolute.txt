@@ -26,3 +26,4 @@ C:\Users\Skuta\OneDrive\Dokument\free-time\Programmering\monogame-repos\NetworkI
 C:\Users\Skuta\OneDrive\Dokument\free-time\Programmering\monogame-repos\NetworkIO\NetworkIO\bin\Debug\netcoreapp3.1\Content\parts\Hull_12.xnb
 C:\Users\Skuta\OneDrive\Dokument\free-time\Programmering\monogame-repos\NetworkIO\NetworkIO\bin\Debug\netcoreapp3.1\Content\projectiles\SprayBullet.xnb
 C:\Users\Skuta\OneDrive\Dokument\free-time\Programmering\monogame-repos\NetworkIO\NetworkIO\bin\Debug\netcoreapp3.1\Content\parts\SprayGun.xnb
+C:\Users\Skuta\OneDrive\Dokument\free-time\Programmering\monogame-repos\NetworkIO\NetworkIO\bin\Debug\netcoreapp3.1\Content\parts\Hull_rotating.xnb

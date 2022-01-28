@@ -7,28 +7,38 @@ namespace NetworkIO.src.entities
 {
     class Projectile : Entity
     {
-        private float timer;
+        private float timer = 0;
         private float lifeSpan;
 
-        public Projectile(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float timer, float lifeSpan, bool isVisible = false, float friction = 0f) : base(sprite, position, rotation, mass, thrust, isVisible, friction)
+        public Projectile(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, float lifeSpan, bool isVisible = false, bool isCollidable = false, float friction = 0f, float attractionForce = 1f, float repulsionForce = 1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction, attractionForce, repulsionForce)
         {
-            this.timer = timer;
             this.lifeSpan = lifeSpan;
         }
-        public override void Move(GameTime gameTime)
+        public override void Collide(Entity e)
+        {
+            if (IsCollidable)
+            {
+                e.Collide(this);
+                base.Collide(e);
+                e.Health--;
+                IsCollidable = false;
+            }
+        }
+
+        public override void Move(GameTime gameTime) //OBSOIBSOBSOBSSOBSBOSBOS This needs to happen when dying as well
         {
             if (IsVisible)
             {
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if (timer > lifeSpan)
-                {
-                    IsVisible = false;
-                    timer = 0;
-                    TotalExteriorForce = Vector2.Zero;
-                    velocity = Vector2.Zero;
-                }
+                    Die();
             }
             base.Move(gameTime);
+        }
+        public override void Die()
+        {
+            timer = 0;
+            base.Die();
         }
         public override object Clone()
         {

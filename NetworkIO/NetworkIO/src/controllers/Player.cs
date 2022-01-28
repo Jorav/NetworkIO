@@ -21,12 +21,15 @@ namespace NetworkIO.src
             };
         }
 
-        public override void Update(GameTime gameTime) //TODO: Fix how orders are given to entities (order class?) + make thrust the same no matter if e.g. W or WA are pressed; remove vector 2 instanciation from angle calculation (inefficient, high computational req)
+        public override void Update(GameTime gameTime)
         {
             Rotate();
             Shoot(gameTime);
             Move();
             base.Update(gameTime);
+            /*
+             * Rotate, calculate course, check collisions, update course, move, base.update
+             */
         }
 
         private void Shoot(GameTime gameTime)
@@ -43,7 +46,7 @@ namespace NetworkIO.src
                 e.RotateTo(Mouse.GetState().Position.ToVector2());
         }
 
-        private void Move()
+        private void Move() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
             if (Input == null)
                 return;

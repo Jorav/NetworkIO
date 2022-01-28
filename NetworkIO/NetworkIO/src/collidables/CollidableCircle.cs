@@ -25,7 +25,7 @@ namespace NetworkIO.src.collidables
         }
         
         //TODO: dubbelkolla att detta stämmer
-        public bool collidesWithCircle(CollidableCircle c)
+        private bool collidesWithCircle(CollidableCircle c)
         {
             return Math.Sqrt(Math.Pow((double)(Position.X) - (double)(c.Position.X), 2) + Math.Pow((double)(Position.Y) - (double)(c.Position.Y), 2)) <= (Radius + c.Radius);
         }
