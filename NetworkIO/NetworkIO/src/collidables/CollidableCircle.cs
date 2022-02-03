@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.collidables
 {
-    class CollidableCircle : ICollidable
+    public class CollidableCircle : ICollidable
     {
         public Vector2 Position { set; get; }
         public float Radius { set; get; }
@@ -16,16 +16,16 @@ namespace NetworkIO.src.collidables
             Radius = radius;
         }
 
-        public bool collidesWith(ICollidable c)
+        public bool CollidesWith(ICollidable c)
         {
-            if (c is CollidableCircle)
-                return collidesWithCircle((CollidableCircle) c);
+            if (c is CollidableCircle cc)
+                return CollidesWithCircle(cc);
             //TODO: implementera för rektabgel
             throw new NotImplementedException();
         }
         
         //TODO: dubbelkolla att detta stämmer
-        private bool collidesWithCircle(CollidableCircle c)
+        private bool CollidesWithCircle(CollidableCircle c)
         {
             return Math.Sqrt(Math.Pow((double)(Position.X) - (double)(c.Position.X), 2) + Math.Pow((double)(Position.Y) - (double)(c.Position.Y), 2)) <= (Radius + c.Radius);
         }

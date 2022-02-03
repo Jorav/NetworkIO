@@ -16,8 +16,8 @@ namespace NetworkIO.src.collidables
         public int Width { get; set; }
         public int Height { get; set; }
         public Vector2 AbsolutePosition { get { return (UL + DR) / 2; } }
-        private Vector2 origin { get; set; }
-        private Vector2 Origin
+        private Vector2 origin;
+        public Vector2 Origin
         {
             set
             {
@@ -68,10 +68,10 @@ namespace NetworkIO.src.collidables
             origin = new Vector2(Width / 2, Height / 2);
             Rotation = rotation;
         }
-        public bool collidesWith(ICollidable c)
+        public bool CollidesWith(ICollidable c)
         {
-            if (c is CollidableRectangle)
-                return collidesWithRectangle((CollidableRectangle) c);
+            if (c is CollidableRectangle cR)
+                return CollidesWithRectangle((CollidableRectangle) cR);
             //TODO: Implement collisioncheck for circle
             throw new NotImplementedException();
         }
@@ -82,7 +82,7 @@ namespace NetworkIO.src.collidables
             Vector2 height = new Vector2(0, Height);
             Vector2 width = new Vector2(Width, 0);
             UL = Position + Vector2.Transform(-Origin, rotationMatrix);
-            DL = Position + Microsoft.Xna.Framework.Vector2.Transform(-Origin + height, rotationMatrix);
+            DL = Position + Vector2.Transform(-Origin + height, rotationMatrix);
             DR = Position + Vector2.Transform(-Origin + height + width, rotationMatrix);
             UR = Position + Vector2.Transform(-Origin + width, rotationMatrix);
         }
@@ -95,7 +95,7 @@ namespace NetworkIO.src.collidables
         }
 
 
-        public bool collidesWithRectangle(CollidableRectangle r)
+        public bool CollidesWithRectangle(CollidableRectangle r)
         {
             Vector2[] axes = GenerateAxes(r);
             float[] scalarA = new float[4];

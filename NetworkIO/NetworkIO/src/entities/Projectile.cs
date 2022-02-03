@@ -9,14 +9,16 @@ namespace NetworkIO.src.entities
     {
         private float timer = 0;
         private float lifeSpan;
+        private float lowerVelocityLimit;
 
-        public Projectile(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, float lifeSpan, bool isVisible = false, bool isCollidable = false, float friction = 0f, float attractionForce = 1f, float repulsionForce = 1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction, attractionForce, repulsionForce)
+        public Projectile(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, float lifeSpan, float lowerVelocityLimit, bool isVisible = false, bool isCollidable = false, float friction = 0f, float attractionForce = 1f, float repulsionForce = 1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction, attractionForce, repulsionForce)
         {
             this.lifeSpan = lifeSpan;
+            this.lowerVelocityLimit = lowerVelocityLimit;
         }
         public override void Collide(Entity e)
         {
-            if (IsCollidable)
+            if (CollidesWith(e))
             {
                 e.Collide(this);
                 base.Collide(e);
@@ -29,11 +31,13 @@ namespace NetworkIO.src.entities
         {
             if (IsVisible)
             {
+                base.Move(gameTime);
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (timer > lifeSpan)
+                if (timer > lifeSpan || Velocity.Length()<= lowerVelocityLimit)
                     Die();
+                RotateTo(Position + Velocity);
             }
-            base.Move(gameTime);
+            
         }
         public override void Die()
         {

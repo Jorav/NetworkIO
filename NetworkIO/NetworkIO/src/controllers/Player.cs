@@ -9,8 +9,8 @@ namespace NetworkIO.src
     class Player : Controller
     {
         public Input Input { get; set; }
-
-        public Player(List<Entity> entities) : base(entities)
+        private Camera camera;
+        public Player(List<Entity> entities, Camera camera) : base(entities)
         {
             Input = new Input()
             {
@@ -19,19 +19,20 @@ namespace NetworkIO.src
                 Left = Keys.A,
                 Right = Keys.D
             };
+            this.camera = camera;
         }
-
         public override void Update(GameTime gameTime)
         {
             Rotate();
             Shoot(gameTime);
             Move();
             base.Update(gameTime);
+
+            camera.Follow(this);
             /*
              * Rotate, calculate course, check collisions, update course, move, base.update
              */
         }
-
         private void Shoot(GameTime gameTime)
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
@@ -39,13 +40,11 @@ namespace NetworkIO.src
                     if(e is Shooter gun)
                         gun.Shoot(gameTime);
         }
-
         private void Rotate()
         {
             foreach (Entity e in entities)
-                e.RotateTo(Mouse.GetState().Position.ToVector2());
+                e.RotateTo(Mouse.GetState().Position.ToVector2()+camera.Position);;
         }
-
         private void Move() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
             if (Input == null)

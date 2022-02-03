@@ -4,26 +4,39 @@ using System;
 
 namespace NetworkIO.src
 {
-    class Sprite
+    public class Sprite
     {
         private Texture2D texture;
-        public float Scale { set; get; }
-        public float Rotation;
-        public Vector2 Position;
-        public Vector2 Origin;
+        public float Scale { get; set; }
+        public float Rotation { get; set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Origin { get; set; }
         public int Height { get { return (int)Math.Round(texture.Height * Scale); } }
         public int Width { get { return (int)Math.Round(texture.Width * Scale); } }
+        public Matrix LocalTransform
+        {
+            get
+            {
+                // Transform = -Origin * Scale * Rotation * Translation
+                return Matrix.CreateTranslation(-Width / 2f, -Height / 2f, 0f) *
+                       Matrix.CreateScale(Scale, Scale, 1f) *
+                       Matrix.CreateRotationZ(Rotation + MathHelper.ToRadians(90)) *
+                       Matrix.CreateTranslation(Position.X, Position.Y, 0f);
+            }
+        }
 
-        public Sprite(Texture2D texture, float scale = 1)
+        public Sprite(Texture2D texture, float scale = 1f)
         {
             this.texture = texture;
             Scale = scale;
             Origin = new Vector2(texture.Width / 2, texture.Height / 2);
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Matrix parentTransform)
         {
-            sb.Draw(texture, Position, null, Color.White, Rotation + MathHelper.ToRadians(90), Origin, Scale, SpriteEffects.None,0f);
+            Matrix globalTransform = LocalTransform * parentTransform;
+            sb.Draw(texture, Position, null, Color.White, Rotation, Origin, Scale, SpriteEffects.None,0f);
+            //sb.Draw(texture, Position., null, Color.White, -(Rotation) + MathHelper.ToRadians(90), Origin, Scale, SpriteEffects.None, 0f);
         }
 
         public object Clone()

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/parts/Hull_12.png</SourceFile>
-  <SourceTime>2022-01-21T15:38:35.8942825+01:00</SourceTime>
+  <SourceTime>2022-02-02T19:10:30.5081342+01:00</SourceTime>
   <DestFile>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/bin/DesktopGL/Content/parts/Hull_12.xnb</DestFile>
-  <DestTime>2022-01-21T15:39:05.3554198+01:00</DestTime>
+  <DestTime>2022-02-02T19:11:37.4800983+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

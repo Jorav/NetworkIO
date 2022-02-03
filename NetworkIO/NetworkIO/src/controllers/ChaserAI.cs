@@ -21,15 +21,19 @@ namespace NetworkIO.src.controllers
         protected void Rotate()
         {
             foreach (Entity e in entities)
-                e.RotateTo(enemy.entities[0].Position);
+                if(e.IsVisible)
+                    e.RotateTo(enemy.entities[0].Position);
         }
         private void Move()
         {
             foreach (Entity e in entities)
             {
-                Vector2 accelerationVector = enemy.entities[0].Position + enemy.entities[0].Velocity-(entities[0].Position+ entities[0].Velocity);
-                accelerationVector.Normalize();
-                e.Accelerate(accelerationVector, e.Thrust);
+                if (e.IsVisible)
+                {
+                    Vector2 accelerationVector = enemy.entities[0].Position + enemy.entities[0].Velocity - (e.Position + e.Velocity);
+                    accelerationVector.Normalize();
+                    e.Accelerate(accelerationVector, e.Thrust);
+                }
             }
         }
     }

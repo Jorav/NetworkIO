@@ -48,18 +48,20 @@ namespace NetworkIO.src.entities
                     p.IsCollidable = true;
                     Projectiles.Enqueue(p);
                 }
-                p.Position = new Vector2(this.Position.X, this.Position.Y);
+                p.Position = Position + Velocity;
                 p.Rotation = this.Rotation;
+                Vector2 directionalVector = new Vector2((float)Math.Cos(p.Rotation), (float)Math.Sin(p.Rotation));
+                p.Velocity = MomentumAlongVector(directionalVector); //give velocity to projectile corresponding to shooter movement
                 p.Accelerate(p.Rotation, firingStrength);
                 lastTimeFired = currentTime;
             }
         }
 
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, Matrix parentTransform)
         {
             foreach (Projectile p in Projectiles)
-                p.Draw(sb);
-            base.Draw(sb);
+                p.Draw(sb, parentTransform);
+            base.Draw(sb, parentTransform);
         }
 
         public override object Clone()

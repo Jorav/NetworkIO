@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    class Controller
+    public class Controller
     {
         public List<Entity> entities;
         protected CollidableCircle collisionDetector;
@@ -62,12 +62,12 @@ namespace NetworkIO.src
 
         private void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
-            float largestDistance = 100;
+            float largestDistance = 0;
             foreach (Entity e in entities)
             {
                 if (e.IsVisible)
                 {
-                    float distance = Vector2.Distance(e.Position, Position);
+                    float distance = Vector2.Distance(e.Position+new Vector2(e.Width,e.Height), Position);
                     if (distance > largestDistance)
                         largestDistance = distance;
                 }
@@ -85,29 +85,27 @@ namespace NetworkIO.src
                     sum += e.Position;
                     nrOfLiving++;
                 }
-                    
-            sum = sum / nrOfLiving;
+            if(nrOfLiving > 0)  
+                sum /= nrOfLiving;
             Position = sum;
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Matrix parentMatrix)
         {
             foreach (Entity e in entities)
-                e.Draw(sb);
+                e.Draw(sb, parentMatrix);
         }
 
         public void Collide(Controller c) //Todo: handle subentities collision in e.g. shooter (+projectile)
         {
-            if(collisionDetector.collidesWith(c.collisionDetector))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
+            if(collisionDetector.CollidesWith(c.collisionDetector))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
                 foreach (Entity e in entities)
                     foreach (Entity eC in c.entities)
-                        if (e.collidesWith(eC))
-                            e.Collide(eC);
+                        e.Collide(eC);
             foreach(Queue<Projectile> pList in projectiles)
                 foreach(Projectile p in pList)
                     foreach (Entity eC in c.entities)
-                        if (p.collidesWith(eC))
-                            p.Collide(eC);
+                        p.Collide(eC);
         }
     }
 }

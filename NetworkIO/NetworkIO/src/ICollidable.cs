@@ -4,8 +4,8 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    interface ICollidable
+    public interface ICollidable
     {
-        public bool collidesWith(ICollidable c);
+        public bool CollidesWith(ICollidable c);
     }
 }
