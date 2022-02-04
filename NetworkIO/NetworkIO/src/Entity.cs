@@ -9,9 +9,9 @@ namespace NetworkIO.src
 {
     public class Entity
     {
-        private static float bounceConstant = 0.4f;
         public float Thrust;
         public float Mass;
+        public float Elasticity;
         public bool IsVisible { get; set; }
         public bool IsCollidable { get; set; }
         public float AttractionForce { get; set; }
@@ -37,13 +37,14 @@ namespace NetworkIO.src
         public float Friction { get; set; } // percent, where 0.1f = 10% friction
         public Vector2 TotalExteriorForce;
 
-        public Entity(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float attractionForce = 1f, float repulsionForce = 1f)
+        public Entity(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float attractionForce = 1f, float repulsionForce = 1f, float elasticity = 1)
         {
             this.sprite = sprite;
             collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
             Position = position;
             Rotation = rotation;
-            this.Mass = mass;
+            Mass = mass;
+            Elasticity = elasticity;
             Thrust = thrust;
             Health = health;
             Friction = friction;
@@ -80,10 +81,12 @@ namespace NetworkIO.src
         }
 
         /**
-         * Recieved a normalized directional vector and accelerates with a certain thrust
+         * Recieved a directional vector and accelerates with a certain thrust
          */
         public void Accelerate(Vector2 directionalVector, float thrust)
         {
+            directionalVector = new Vector2(directionalVector.X, directionalVector.Y);//unnecessary?
+            directionalVector.Normalize();
             TotalExteriorForce += directionalVector * thrust;
         }
         public virtual void Move(GameTime gameTime) //OBS Ska vara en funktion i thruster
@@ -100,27 +103,10 @@ namespace NetworkIO.src
         {
             if (CollidesWith(e))
             {
-                //TotalExteriorForce += Physics.CalculateCollisionBounce(this, e);
-                
                 float r = Vector2.Distance(Position, e.Position);
-                Vector2 directionalVector = Position - e.Position;/*
+                Vector2 directionalVector = Position - e.Position;
                 directionalVector.Normalize();
-                Vector2 momentum = MomentumAlongVector(directionalVector);
-                Vector2 momentumE = e.MomentumAlongVector(directionalVector);
-                Vector2 momentumTotal = momentum + momentumE;
-                float partOfMomentum = momentumE.Length() / (-momentum + momentumE).Length(); //(momentum.Length() + momentumE.Length());
-                Accelerate(directionalVector, momentumTotal.Length()*partOfMomentum/(float)Math.Pow(Math.Max(Vector2.Distance(Position, e.Position), 10)/ (Width+Height)/2, 2)*0.1f);
-                */
-                Vector2 momentum = MomentumAlongVector(directionalVector);
-                Vector2 momentumE = e.MomentumAlongVector(directionalVector);
-                Vector2 momentumTotal = momentum + momentumE;
-                directionalVector.Normalize();
-                //float partOfMomentum = momentumE.Length() / (-momentum + momentumE).Length(); //(momentum.Length() + momentumE.Length());
-                float partOfMomentum = momentumE.Length() / (momentum.Length() + momentumE.Length());
-                if (partOfMomentum!=0)
-                    Accelerate(Vector2.Normalize(Position - e.Position), Physics.CalculateRepulsion(Thrust, r, Math.Max(Width, Height)) * partOfMomentum + e.VelocityAlongVector(directionalVector).Length()*0.05f);
-                if (!(e is Projectile))
-                    Velocity = (bounceConstant) * Vector2.Normalize(Position - e.Position) * Velocity.Length(); //*/
+                TotalExteriorForce += Physics.CalculateCollisionRepulsion(Position, Velocity, Mass, e.Position, e.Velocity, e.Mass, Math.Min(Math.Max(e.Width, e.Height), Math.Max(Width, Height)), e.Elasticity, e.RepulsionForce);
             }
         }
         public Vector2 MomentumAlongVector(Vector2 directionalVector)
@@ -145,14 +131,6 @@ namespace NetworkIO.src
             else
                 Rotation = (float)Math.Atan(p.Y / p.X) - MathHelper.ToRadians(180);
         }
-        /*public void RotateTo(Vector2 position)
-        {
-            Vector2 p = position - Position;
-            if (p.X >= 0)
-                Rotation = -(float)Math.Atan(p.Y / p.X);
-            //else
-                //Rotation = -(float)Math.Atan(p.Y / p.X) ;
-        }*/
         public virtual object Clone()
         {
             Entity eNew = (Entity)this.MemberwiseClone();

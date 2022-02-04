@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    class Input
+    public class Input
     {
         public Keys Up { get; set; }
         public Keys Down { get; set; }

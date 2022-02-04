@@ -18,9 +18,9 @@ namespace NetworkIO.src
             get
             {
                 // Transform = -Origin * Scale * Rotation * Translation
-                return Matrix.CreateTranslation(-Width / 2f, -Height / 2f, 0f) *
+                return Matrix.CreateTranslation(-Origin.X, -Origin.Y, 0f) *
                        Matrix.CreateScale(Scale, Scale, 1f) *
-                       Matrix.CreateRotationZ(Rotation + MathHelper.ToRadians(90)) *
+                       Matrix.CreateRotationZ(Rotation) *
                        Matrix.CreateTranslation(Position.X, Position.Y, 0f);
             }
         }

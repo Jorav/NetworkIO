@@ -39,7 +39,7 @@ namespace NetworkIO.src
             UpdateRadius();
         }
 
-        private void ApplyInternalGravity()
+        protected void ApplyInternalGravity()
         {
             foreach (Entity e1 in entities)
             {
@@ -47,12 +47,12 @@ namespace NetworkIO.src
                 {
                     if (e1.IsVisible && e2.IsVisible)
                     {
-                        double r = Vector2.Distance(e1.Position, e2.Position);
+                        float r = Vector2.Distance(e1.Position, e2.Position);
                         if (e1 != e2)
                         {
                             if (r < 10)
                                 r = 10;
-                            float res = (float)(e1.AttractionForce * e2.AttractionForce * Math.Pow(r, 1) - e1.RepulsionForce * e2.RepulsionForce / Math.Pow(r, 2));
+                            float res = Physics.CalculateGravity(e1.AttractionForce, e2.AttractionForce, e1.RepulsionForce, e2.RepulsionForce, r);
                             e1.Accelerate(Vector2.Normalize(e2.Position - e1.Position), res);
                         }
                     }
@@ -60,7 +60,7 @@ namespace NetworkIO.src
             }
         }
 
-        private void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
+        protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
             float largestDistance = 0;
             foreach (Entity e in entities)
@@ -75,7 +75,7 @@ namespace NetworkIO.src
             Radius = largestDistance;
         }
 
-        private void UpdatePosition()
+        protected void UpdatePosition()
         {
             Vector2 sum = Vector2.Zero;
             int nrOfLiving = 0;

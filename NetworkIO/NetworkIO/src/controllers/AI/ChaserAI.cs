@@ -28,12 +28,9 @@ namespace NetworkIO.src.controllers
         {
             foreach (Entity e in entities)
             {
-                if (e.IsVisible)
-                {
                     Vector2 accelerationVector = enemy.entities[0].Position + enemy.entities[0].Velocity - (e.Position + e.Velocity);
                     accelerationVector.Normalize();
                     e.Accelerate(accelerationVector, e.Thrust);
-                }
             }
         }
     }

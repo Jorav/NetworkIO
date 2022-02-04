@@ -87,11 +87,11 @@ namespace NetworkIO.src.collidables
             UR = Position + Vector2.Transform(-Origin + width, rotationMatrix);
         }
 
-        public bool Contains(Point point)
+        public bool Contains(Vector2 position)
         {
             List<float> xVals = new List<float>(new float[] { UL.X, DL.X, DR.X, UR.X });
             List<float> yVals = new List<float>(new float[] { UL.Y, DL.Y, DR.Y, UR.Y });
-            return xVals.Max() > point.X && xVals.Min() < point.X && yVals.Max() > point.Y && yVals.Min() < point.Y;
+            return xVals.Max() > position.X && xVals.Min() < position.X && yVals.Max() > position.Y && yVals.Min() < position.Y;
         }
 
 

@@ -4,14 +4,20 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/background.jpg</File>
+    <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/background/cloud_creepy.png</File>
+    <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/background/cloud_creepy_blurry.png</File>
+    <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/background/solar.png</File>
     <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/parts/Hull_1.png</File>
     <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/parts/Hull_12.png</File>
     <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/parts/Hull_rotating.png</File>
     <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/parts/SprayGun.png</File>
+    <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/projectiles/Bullet.png</File>
     <File>C:/Users/Skuta/OneDrive/Dokument/free-time/Programmering/monogame-repos/NetworkIO/NetworkIO/Content/projectiles/SprayBullet.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

@@ -6,11 +6,11 @@ using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
-    class Player : Controller
+    public class Player : Controller
     {
         public Input Input { get; set; }
-        private Camera camera;
-        public Player(List<Entity> entities, Camera camera) : base(entities)
+        public Camera Camera { get; private set; }
+        public Player(List<Entity> entities) : base(entities)
         {
             Input = new Input()
             {
@@ -19,7 +19,7 @@ namespace NetworkIO.src
                 Left = Keys.A,
                 Right = Keys.D
             };
-            this.camera = camera;
+            Camera = new Camera(this);
         }
         public override void Update(GameTime gameTime)
         {
@@ -27,8 +27,7 @@ namespace NetworkIO.src
             Shoot(gameTime);
             Move();
             base.Update(gameTime);
-
-            camera.Follow(this);
+            Camera.Update();
             /*
              * Rotate, calculate course, check collisions, update course, move, base.update
              */
@@ -43,36 +42,41 @@ namespace NetworkIO.src
         private void Rotate()
         {
             foreach (Entity e in entities)
-                e.RotateTo(Mouse.GetState().Position.ToVector2()+camera.Position);;
+                e.RotateTo(Mouse.GetState().Position.ToVector2()+Camera.Position);;
         }
         private void Move() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
             if (Input == null)
                 return;
-            
-            if ((Keyboard.GetState().IsKeyDown(Input.Up) ^ Keyboard.GetState().IsKeyDown(Input.Down)) || (Keyboard.GetState().IsKeyDown(Input.Left) ^ Keyboard.GetState().IsKeyDown(Input.Right)))
+            Vector2 accelerationVector = Vector2.Zero;
+            if (Keyboard.GetState().IsKeyDown(Input.Up) ^ Keyboard.GetState().IsKeyDown(Input.Down))
             {
-                Vector2 accelerationVector = Vector2.Zero;
                 if (Keyboard.GetState().IsKeyDown(Input.Up))
                 {
-                    accelerationVector.X += (float)Math.Cos((double)MathHelper.ToRadians(90));
+                    //accelerationVector.X += (float)Math.Cos((double)MathHelper.ToRadians(90));
                     accelerationVector.Y += (float)Math.Sin((double)MathHelper.ToRadians(-90));
                 }
                 else if (Keyboard.GetState().IsKeyDown(Input.Down))
                 {
-                    accelerationVector.X += (float)Math.Cos((double)MathHelper.ToRadians(270));
+                    //accelerationVector.X += (float)Math.Cos((double)MathHelper.ToRadians(270));
                     accelerationVector.Y += (float)Math.Sin((double)MathHelper.ToRadians(-270));
                 }
+            }
+            if (Keyboard.GetState().IsKeyDown(Input.Left) ^ Keyboard.GetState().IsKeyDown(Input.Right))
+            {
                 if (Keyboard.GetState().IsKeyDown(Input.Left))
                 {
                     accelerationVector.X += (float)Math.Cos((double)MathHelper.ToRadians(180));
-                    accelerationVector.Y += (float)Math.Sin((double)MathHelper.ToRadians(-180));
+                    //accelerationVector.Y += (float)Math.Sin((double)MathHelper.ToRadians(-180));
                 }
                 else if (Keyboard.GetState().IsKeyDown(Input.Right))
                 {
                     accelerationVector.X += (float)Math.Cos(0);
-                    accelerationVector.Y += (float)Math.Sin(0);
+                    //accelerationVector.Y += (float)Math.Sin(0);
                 }
+            }
+            if (!accelerationVector.Equals(Vector2.Zero))
+            {
                 accelerationVector.Normalize();
                 foreach (Entity e in entities)
                     e.Accelerate(accelerationVector, e.Thrust);
