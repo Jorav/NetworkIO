@@ -18,12 +18,10 @@ namespace NetworkIO
         {
             foreach (Entity e in entities)
             {
-                if (e.Velocity.Length()<0.1f) {
-                    Vector2 cameraChange = camera.Position - camera.PreviousPosition;
-                    Vector2 positionChange = (1 - relativeSpeed) * cameraChange;
-                    e.Position += positionChange;
-                }
-                e.Velocity *= relativeSpeed;
+                Vector2 cameraChange = camera.Position - camera.PreviousPosition;
+                Vector2 positionChange = (1 - relativeSpeed) * cameraChange;
+                e.Position += positionChange;
+                e.TotalExteriorForce *= relativeSpeed;
                 e.Move(gameTime);
                 UpdatePosition();
                 UpdateRadius();

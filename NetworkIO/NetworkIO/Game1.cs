@@ -60,9 +60,7 @@ namespace NetworkIO
             //TODO: add factories to replace this bloated code
             Composite e = new Composite(new Sprite(textureHullRotating), new Vector2(50, 50), 0, 1, 1.3f, 100f,
                         true, true, 0.1f, 0.05f, 30f);
-            controllers = new List<Controller>()
-            {
-                new Player(
+            Player p = new Player(
                     new List<Entity>()
                     {
                         new Shooter(new Sprite(textureSprayGun), new Vector2(0,0), 0, 1, 1.3f, 100f, 50f, 1f,
@@ -72,9 +70,29 @@ namespace NetworkIO
                             new Projectile(new Sprite(textureProjectile), new Vector2(0,100), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
                         true, true, 0.1f, 0.05f, 30f)
                         //e
-                    })
-            };
-            Camera = ((Player)controllers[0]).Camera;
+                    });
+            Camera = p.Camera;
+            controllers = new List<Controller>();
+            Random r = new Random();
+
+            controllers.Add(
+                new WrappingBackground(
+                    new List<Entity>()
+                    {
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
+                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f)
+                    }, 0.6f, Camera)
+            );
+            
+            controllers.Add(p);
 
             //projectile.mass 0.05, friction 0.05 great for a "liquid spray"
             e.AddEntity(new Shooter(new Sprite(textureSprayGun), new Vector2(70, 70), 0, 1, 1.3f, 100f, 10f, 1.5f,
@@ -94,7 +112,7 @@ namespace NetworkIO
                         new Shooter(new Sprite(textureHullRotating), new Vector2(-300,-300), 0, 1, 1.0f, 100f, 10f, 1.5f,
                             new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
                         true, true, 0.1f, 0.05f, 30f)
-                     }, controllers[0])
+                     }, p)
              );
             controllers.Add(new IndecisiveAI(
                     new List<Entity>()
@@ -147,34 +165,19 @@ namespace NetworkIO
                         new Shooter(new Sprite(textureHullRotating), new Vector2(325,325), 0, 1, 1f, 1000f, 50f, 10,
                             new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 1, 0, 100f, 3, 1),
                         true, true, 0.1f, 0.05f, 30f)
-                    }/*, controllers[0]*/)
+                    }/*, p*/)
             );
             backgrounds = new List<Background>(){
                 new Background(
                     new List<Entity>()
                     {
-                        new Entity(new Sprite(textureSolar), new Vector2(0, 0), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f)
+                        new Entity(new Sprite(textureSolar), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f),
+                        new Entity(new Sprite(textureSolar), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f),
+                        new Entity(new Sprite(textureSolar), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f)
                     },
                     0.3f, Camera)
                 
             };
-            Random r = new Random();
-            controllers.Add(
-                new WrappingBackground(
-                    new List<Entity>()
-                    {
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 2f, 1f, 1000f, true, false, 0.05f, 1, 0, elasticity: 0.0f)
-                    }, 0.7f, Camera)
-            );
         }
         
 
@@ -190,7 +193,6 @@ namespace NetworkIO
                         c1.Collide(c2);
             foreach(Background b in backgrounds)
                 b.Update(gameTime);
-            Camera.Update();
             base.Update(gameTime);
         }
 
@@ -202,7 +204,7 @@ namespace NetworkIO
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Camera.Transform);
-            //Vector2 CameraPosition = controllers[0].Position - new Vector2(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.5f, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.5f);
+            //Vector2 CameraPosition = p.Position - new Vector2(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.5f, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.5f);
             // Matrix m = Matrix.CreateTranslation(new Vector3(-CameraPosition, 0));
             //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, null, null, null, m);
             //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, null, null, null, Matrix.CreateScale(0.5f));
