@@ -35,21 +35,23 @@ namespace NetworkIO.src.entities
             if (currentTime-lastTimeFired > (1 / fireRatePerSecond))
             {
                 Projectile p;
-                if (Projectiles.Peek().IsVisible)
-                {
-                    p = ((Projectile)Projectiles.Peek().Clone());
-                    p.IsCollidable = true;
-                    Projectiles.Enqueue(p);
-                }
-                else
+                
+                if(!Projectiles.Peek().IsVisible)
                 {
                     p = Projectiles.Dequeue();
-                    p.IsVisible = true;
-                    p.IsCollidable = true;
+                    
                     Projectiles.Enqueue(p);
                 }
-                p.Position = Position + Velocity;
-                p.Rotation = this.Rotation;
+
+                else
+                {
+                    p = ((Projectile)Projectiles.Peek().Clone());
+                    Projectiles.Enqueue(p);
+                }
+                p.IsVisible = true; //TODO: Change to collisiondamage - advanced momentum+shell system
+                p.IsCollidable = true;
+                p.Position = Position;
+                p.Rotation = Rotation;
                 Vector2 directionalVector = new Vector2((float)Math.Cos(p.Rotation), (float)Math.Sin(p.Rotation));
                 p.Velocity = MomentumAlongVector(directionalVector); //give velocity to projectile corresponding to shooter movement
                 p.Accelerate(p.Rotation, firingStrength);

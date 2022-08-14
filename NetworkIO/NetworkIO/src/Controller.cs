@@ -90,7 +90,7 @@ namespace NetworkIO.src
             Position = sum;
         }
 
-        public void Draw(SpriteBatch sb, Matrix parentMatrix)
+        public virtual void Draw(SpriteBatch sb, Matrix parentMatrix)
         {
             foreach (Entity e in entities)
                 e.Draw(sb, parentMatrix);
