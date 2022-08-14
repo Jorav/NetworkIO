@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using NetworkIO.src;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
+using NetworkIO.src.factories;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 
@@ -18,9 +20,8 @@ namespace NetworkIO
         private List<Background> backgrounds;
         public Camera Camera { get; private set; }
 
-        public static int ScreenHeight;
         public static int ScreenWidth;
-
+        public static int ScreenHeight;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -48,27 +49,28 @@ namespace NetworkIO
             ScreenHeight = _graphics.PreferredBackBufferHeight;
             _graphics.ApplyChanges();
 
-            Texture2D textureHull = Content.Load<Texture2D>("parts/Hull_12");
             Texture2D textureHullRotating = Content.Load<Texture2D>("parts/Hull_rotating");
             Texture2D textureSprayGun = Content.Load<Texture2D>("parts/SprayGun");
-            Texture2D textureProjectileSpray = Content.Load<Texture2D>("projectiles/SprayBullet");
             Texture2D textureProjectile = Content.Load<Texture2D>("projectiles/Bullet");
-            Texture2D textureSolar = Content.Load<Texture2D>("background/solar");
-            Texture2D texturecloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
+            Texture2D textureSun = Content.Load<Texture2D>("background/solar");
+            Texture2D textureCloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
             Texture2D textureCloudCreepyBlurry = Content.Load<Texture2D>("background/cloud_creepy_blurry");
+            EntityFactory.hull = textureHullRotating;
+            EntityFactory.gun = textureHullRotating;
+            EntityFactory.projectile = textureProjectile;
+            EntityFactory.cloud = textureCloudCreepy;
+            EntityFactory.sun = textureSun;
 
             //TODO: add factories to replace this bloated code
             Composite e = new Composite(new Sprite(textureHullRotating), new Vector2(50, 50), 0, 1, 1.3f, 100f,
-                        true, true, 0.1f, 0.05f, 30f);
+                        true, true, 30f);
             Player p = new Player(
                     new List<Entity>()
                     {
-                        new Shooter(new Sprite(textureSprayGun), new Vector2(0,0), 0, 1, 1.3f, 100f, 50f, 1f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(0,0), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(0,100), 0, 1, 1.3f, 100f, 50f, 1f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f)
+                        new Shooter(new Sprite(textureSprayGun), new Vector2(0,0),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(0,0))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(0,100),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))
                         //e
                     });
             Camera = p.Camera;
@@ -79,105 +81,91 @@ namespace NetworkIO
                 new WrappingBackground(
                     new List<Entity>()
                     {
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f),
-                        new Entity(new Sprite(textureCloudCreepyBlurry), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 5, 1f, 1000f, true, true, 0.05f, 1, 0, collisionRepulsion:0, elasticity: 0.0f)
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.CLOUD)
                     }, 0.6f, Camera)
             );
             
             controllers.Add(p);
 
             //projectile.mass 0.05, friction 0.05 great for a "liquid spray"
-            e.AddEntity(new Shooter(new Sprite(textureSprayGun), new Vector2(70, 70), 0, 1, 1.3f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50, 50), 0, 0.1f, 0, 100f, 3, 1, false, false, 0.01f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f), 0);
+            e.AddEntity(new Shooter(new Sprite(textureSprayGun), new Vector2(70, 70),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50, 50))), 0);
 
 
             controllers.Add(new ChaserAI(
                      new List<Entity>()
                      {
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(-100,-100), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(-200,-200), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(-300,-300), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f)
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(-100,-100),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(-200,-200),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(-300,-300),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50)))
                      }, p)
              );
             controllers.Add(new IndecisiveAI(
                     new List<Entity>()
                     {
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(467,213), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(212,512), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(512,413), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f)
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(467,213),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(212,512),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(512,413),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50)))
                     })
             );
             controllers.Add(new RandomAI(
                     new List<Entity>()
                     {
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(886,1243), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(241,253), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(354,-3), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f)
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(886,1243),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(241,253),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(354,-3),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50)))
                     })
             );
             controllers.Add(new CircularAI(
                     new List<Entity>()
                     {
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(200,500), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(600,600), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(300,300), 0, 1, 1.0f, 100f, 10f, 1.5f,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 0.04f, 0, 100f, 300, 1, false, false, 0.03f, 1, 1),
-                        true, true, 0.1f, 0.05f, 30f)
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(200,500),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(600,600),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(300,300),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50)))
                     })
             );
             controllers.Add(new Controller( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
                     new List<Entity>()
                     {
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(123,325), 0, 1, 1f, 1000f, 50f, 10,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 1, 0, 100f, 3, 1),
-                        true, true, 0.1f, 0.05f, 30f),
-                        new Shooter(new Sprite(textureHullRotating), new Vector2(325,325), 0, 1, 1f, 1000f, 50f, 10,
-                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50), 0, 1, 0, 100f, 3, 1),
-                        true, true, 0.1f, 0.05f, 30f)
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(123,325),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50))),
+                        new Shooter(new Sprite(textureHullRotating), new Vector2(325,325),
+                            new Projectile(new Sprite(textureProjectile), new Vector2(50,50)))
                     }/*, p*/)
             );
             backgrounds = new List<Background>(){
-                new Background(
+                new WrappingBackground(
                     new List<Entity>()
                     {
-                        new Entity(new Sprite(textureSolar), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f),
-                        new Entity(new Sprite(textureSolar), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f),
-                        new Entity(new Sprite(textureSolar), new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), 0, 1, 1f, 1000f, true, false, 0.1f, 0.05f, 30f)
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.SUN),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.SUN),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*ScreenWidth, (float)(r.NextDouble()-0.5)*ScreenHeight), (int)IDs.SUN),
                     },
                     0.3f, Camera)
-                
             };
+
         }
         
 

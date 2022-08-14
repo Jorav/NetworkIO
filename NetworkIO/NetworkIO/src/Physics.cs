@@ -8,7 +8,7 @@ namespace NetworkIO.src
     static class Physics
     {
         public static float gravityConstant = 1f;
-        public static float elasticCollisionLoss = 0.001f;
+        public static float elasticCollisionLoss = 0.0008f;
         private static Vector2 FrictionForce(Vector2 velocity, Vector2 totalExteriorForce, float mass, float frictionPercent)
         {
             return (velocity*mass + totalExteriorForce) * frictionPercent;
@@ -27,7 +27,7 @@ namespace NetworkIO.src
         }
         private static Vector2 CalculateBounceForce(Vector2 position, Vector2 velocity, float mass, Vector2 positionOther, Vector2 velocityOther, float massOther)
         {
-            if (!(Vector2.Dot(velocity, Vector2.Normalize(position - positionOther)) >= 0 && Vector2.Dot(velocityOther, Vector2.Normalize(positionOther - position)) >= 0))
+            if (!(Vector2.Dot(velocity, Vector2.Normalize(position - positionOther)) > 0 && Vector2.Dot(velocityOther, Vector2.Normalize(positionOther - position)) > 0))
                 return mass * elasticCollisionLoss * velocity.Length() * (velocity - 2 * massOther / (mass + massOther)
                 * Vector2.Dot(velocity - velocityOther, position/32 - positionOther/32)
                 / (position/32 - positionOther/32).LengthSquared() * (position - positionOther));//OBSOBSOBS IDK why this works but it works

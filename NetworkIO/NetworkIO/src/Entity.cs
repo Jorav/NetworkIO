@@ -14,9 +14,6 @@ namespace NetworkIO.src
         public float Elasticity;
         public bool IsVisible { get; set; }
         public bool IsCollidable { get; set; }
-        public float AttractionForce { get; set; }
-        public float RepulsionForce { get; set; }
-        public float CollisionRepulsion { get; set; }
 
         protected float turnSpeed; //TODO: Implement this?
 
@@ -38,7 +35,7 @@ namespace NetworkIO.src
         public float Friction { get; set; } // percent, where 0.1f = 10% friction
         public Vector2 TotalExteriorForce;
 
-        public Entity(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float attractionForce = 1f, float repulsionForce = 1f, float collisionRepulsion = 1, float elasticity = 1)
+        public Entity(Sprite sprite, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float health = 100, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float elasticity = 1)
         {
             this.sprite = sprite;
             collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
@@ -46,15 +43,12 @@ namespace NetworkIO.src
             Rotation = rotation;
             Mass = mass;
             Elasticity = elasticity;
-            CollisionRepulsion = collisionRepulsion;
             Thrust = thrust;
             Health = health;
             Friction = friction;
             IsVisible = isVisible;
             IsCollidable = isCollidable;
             Velocity = Vector2.Zero;
-            AttractionForce = attractionForce;
-            RepulsionForce = repulsionForce;
             Origin = new Vector2(Width / 2, Height / 2);
         }
 
@@ -108,7 +102,7 @@ namespace NetworkIO.src
                 float r = Vector2.Distance(Position, e.Position);
                 Vector2 directionalVector = Position - e.Position;
                 directionalVector.Normalize();
-                TotalExteriorForce += Physics.CalculateCollisionRepulsion(Position, Velocity, Mass, e.Position, e.Velocity, e.Mass, Math.Min(Math.Max(e.Width, e.Height), Math.Max(Width, Height)), e.Elasticity, e.CollisionRepulsion);
+                TotalExteriorForce += Physics.CalculateCollisionRepulsion(Position, Velocity, Mass, e.Position, e.Velocity, e.Mass, Math.Min(Math.Max(e.Width, e.Height), Math.Max(Width, Height)), Elasticity, e.Elasticity); //OBS: might break after changes
             }
         }
         public Vector2 MomentumAlongVector(Vector2 directionalVector)

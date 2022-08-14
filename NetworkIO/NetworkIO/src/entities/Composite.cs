@@ -11,7 +11,7 @@ namespace NetworkIO.src.entities
         //private List<Entity> entities;
         Link[] parts;
 
-        public Composite(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float attractionForce = 1f, float repulsionForce = 1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction, attractionForce, repulsionForce)
+        public Composite(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, bool isVisible = true, bool isCollidable = true, float friction = 0.1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction)
         {
             AddLinkPositions();
         }

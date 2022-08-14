@@ -42,7 +42,7 @@ namespace NetworkIO.src
         private void Rotate()
         {
             foreach (Entity e in entities)
-                e.RotateTo(Mouse.GetState().Position.ToVector2()+Camera.Position);;
+                e.RotateTo(Mouse.GetState().Position.ToVector2()-new Vector2(Game1.ScreenWidth/2, Game1.ScreenHeight/2) +Camera.Position);
         }
         private void Move() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {

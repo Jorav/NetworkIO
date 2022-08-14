@@ -52,7 +52,7 @@ namespace NetworkIO.src
                         {
                             if (r < 10)
                                 r = 10;
-                            float res = Physics.CalculateGravity(e1.AttractionForce, e2.AttractionForce, e1.RepulsionForce, e2.RepulsionForce, r);
+                            float res = Physics.CalculateGravity(0.05f, 0.05f, 30f, 30f, r);
                             e1.Accelerate(Vector2.Normalize(e2.Position - e1.Position), res);
                         }
                     }

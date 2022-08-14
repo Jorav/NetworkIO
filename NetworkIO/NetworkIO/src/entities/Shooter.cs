@@ -14,7 +14,7 @@ namespace NetworkIO.src.entities
         //TODO: add accuracy
         public Queue<Projectile> Projectiles { get; set; }
         //Controller
-        public Shooter(Sprite sprite, Vector2 position, float rotation, float mass, float thrust, float health, float fireRatePerSecond, float firingStrength, Projectile projectile, bool isVisible = true, bool isCollidable = true, float friction = 0.1f, float attractionForce = 1f, float repulsionForce = 1f, float elasticity = 1f) : base(sprite, position, rotation, mass, thrust, health, isVisible, isCollidable, friction, attractionForce, repulsionForce, elasticity)
+        public Shooter(Sprite sprite, Vector2 position, Projectile projectile, float fireRatePerSecond = 50f, float firingStrength = 10f) : base(sprite, position)
         {
             this.fireRatePerSecond = fireRatePerSecond;
             this.firingStrength = firingStrength;
