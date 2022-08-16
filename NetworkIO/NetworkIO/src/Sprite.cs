@@ -17,8 +17,7 @@ namespace NetworkIO.src
         {
             get
             {
-                // Transform = -Origin * Scale * Rotation * Translation
-                return Matrix.CreateTranslation(-Origin.X, -Origin.Y, 0f) *
+                return Matrix.CreateTranslation(-Origin.X, -Origin.Y, 0f) * //origin first or last?
                        Matrix.CreateScale(Scale, Scale, 1f) *
                        Matrix.CreateRotationZ(Rotation) *
                        Matrix.CreateTranslation(Position.X, Position.Y, 0f);
@@ -36,7 +35,6 @@ namespace NetworkIO.src
         {
             Matrix globalTransform = LocalTransform * parentTransform;
             sb.Draw(texture, Position, null, Color.White, Rotation, Origin, Scale, SpriteEffects.None,0f);
-            //sb.Draw(texture, Position., null, Color.White, -(Rotation) + MathHelper.ToRadians(90), Origin, Scale, SpriteEffects.None, 0f);
         }
 
         public object Clone()

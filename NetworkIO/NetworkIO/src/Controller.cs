@@ -27,16 +27,25 @@ namespace NetworkIO.src
             foreach (Entity e in entities)
                 if(e is Shooter s)
                 projectiles.Add(s.Projectiles);
-
         }
         public virtual void Update(GameTime gameTime)
         {
-            foreach (Entity e in entities)
-                if (e.IsVisible)
-                    e.Move(gameTime);
+            UpdateEntities(gameTime);
             ApplyInternalGravity();
             UpdatePosition();
             UpdateRadius();
+        }
+
+        protected virtual void GiveOrders()
+        {
+
+        }
+
+        private void UpdateEntities(GameTime gameTime)
+        {
+            foreach (Entity e in entities)
+                if (e.IsVisible)
+                    e.Update(gameTime);
         }
 
         protected void ApplyInternalGravity()

@@ -71,7 +71,7 @@ namespace NetworkIO.src
         /**
          * Accelerates a certain angle in radians
          */
-        public void Accelerate(float angle, float thrust)
+        public void Accelerate(float angle, float thrust) //TODO: Long term make "thruster" into its own entity type
         {
             TotalExteriorForce += new Vector2((float)Math.Cos((double)angle),(float)Math.Sin((double)angle))*thrust;
         }
@@ -85,7 +85,7 @@ namespace NetworkIO.src
             directionalVector.Normalize();
             TotalExteriorForce += directionalVector * thrust;
         }
-        public virtual void Move(GameTime gameTime) //OBS Ska vara en funktion i thruster
+        public virtual void Update(GameTime gameTime) //OBS Ska vara en funktion i thruster
         {
             Velocity = Physics.CalculateVelocity(Position, Velocity, TotalExteriorForce, Mass, Friction);
             Position += Velocity;

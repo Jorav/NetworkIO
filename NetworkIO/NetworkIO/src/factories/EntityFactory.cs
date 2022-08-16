@@ -22,6 +22,7 @@ namespace NetworkIO.src.factories
             switch (id)
             {
                 case IDs.ENTITY_DEFAULT: return new Entity(new Sprite(hull), position);
+                case IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
                 case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE));
                 case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position);
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);

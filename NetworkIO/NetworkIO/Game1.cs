@@ -56,7 +56,7 @@ namespace NetworkIO
             Texture2D textureCloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
             Texture2D textureCloudCreepyBlurry = Content.Load<Texture2D>("background/cloud_creepy_blurry");
             EntityFactory.hull = textureHullRotating;
-            EntityFactory.gun = textureHullRotating;
+            EntityFactory.gun = textureSprayGun;
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
             EntityFactory.sun = textureSun;
@@ -65,12 +65,19 @@ namespace NetworkIO
             Player p = new Player(
                     new List<Entity>()
                     {
+                        /**
                         new Shooter(new Sprite(textureSprayGun), new Vector2(0,0),
                             new Projectile(new Sprite(textureProjectile), new Vector2(0,0))),
                         new Shooter(new Sprite(textureHullRotating), new Vector2(0,100),
-                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))
-                        //e
+                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))*/
+
+                        EntityFactory.Create(new Vector2(0,0), IDs.COMPOSITE),
+
                     });
+            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
+            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
+            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
+            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
             Camera = p.Camera;
             controllers = new List<Controller>();
             Random r = new Random();
@@ -166,19 +173,22 @@ namespace NetworkIO
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkGray);
             _spriteBatch.Begin(transformMatrix: Camera.Transform);
+            GraphicsDevice.Clear(Color.DarkGray);
             //Vector2 CameraPosition = p.Position - new Vector2(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.5f, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.5f);
             // Matrix m = Matrix.CreateTranslation(new Vector3(-CameraPosition, 0));
             //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, null, null, null, m);
             //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, null, null, null, Matrix.CreateScale(0.5f));
             foreach(Background b in backgrounds)
+            {
                 b.Draw(_spriteBatch, Matrix.Identity);
-            foreach (Controller c in controllers)
+            }
+
+            foreach (Controller c in controllers) {
                 c.Draw(_spriteBatch, Matrix.Identity);
+            }
+
             _spriteBatch.End();
-
-
             base.Draw(gameTime);
         }
     }

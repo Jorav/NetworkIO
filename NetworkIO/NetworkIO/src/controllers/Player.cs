@@ -24,10 +24,10 @@ namespace NetworkIO.src
         public override void Update(GameTime gameTime)
         {
             Rotate();
+            Accelerate();
             Shoot(gameTime);
-            Move();
-            base.Update(gameTime);
             Camera.Update();
+            base.Update(gameTime);
             /*
              * Rotate, calculate course, check collisions, update course, move, base.update
              */
@@ -39,12 +39,12 @@ namespace NetworkIO.src
                     if(e is Shooter gun)
                         gun.Shoot(gameTime);
         }
-        private void Rotate()
+        protected void Rotate()
         {
             foreach (Entity e in entities)
                 e.RotateTo(Mouse.GetState().Position.ToVector2()-new Vector2(Game1.ScreenWidth/2, Game1.ScreenHeight/2) +Camera.Position);
         }
-        private void Move() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
+        protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
             if (Input == null)
                 return;

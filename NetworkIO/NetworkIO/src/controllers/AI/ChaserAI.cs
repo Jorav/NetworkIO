@@ -15,7 +15,7 @@ namespace NetworkIO.src.controllers
         public override void Update(GameTime gameTime)
         {
             Rotate();
-            Move();
+            Accelerate();
             base.Update(gameTime);
         }
         protected void Rotate()
@@ -24,7 +24,7 @@ namespace NetworkIO.src.controllers
                 if(e.IsVisible)
                     e.RotateTo(enemy.entities[0].Position);
         }
-        private void Move()
+        protected void Accelerate()
         {
             foreach (Entity e in entities)
             {

@@ -40,13 +40,13 @@ namespace NetworkIO.src
                 -controller.Position.X,
                 -controller.Position.Y,
                 0);
-            Matrix offset = Matrix.CreateTranslation(
+            Matrix rotation = Matrix.CreateRotationZ(Rotation);
+            Matrix origin = Matrix.CreateTranslation(
                 Game1.ScreenWidth / 2,
                 Game1.ScreenHeight / 2,
                 0);
-            Matrix rotation = Matrix.CreateRotationZ(Rotation);
             Matrix zoom = Matrix.CreateScale(Zoom, Zoom, 0);
-            Transform = position * rotation * zoom * offset;
+            Transform = position * rotation * zoom * origin;
         }
 
         public bool InFrame(Vector2 position)

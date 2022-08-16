@@ -22,11 +22,11 @@ namespace NetworkIO.src.entities
             Projectiles.Enqueue(projectile);
         }
 
-        public override void Move(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            base.Move(gameTime);
+            base.Update(gameTime);
             foreach (Projectile p in Projectiles)
-                p.Move(gameTime);
+                p.Update(gameTime);
         }
 
         public void Shoot(GameTime gameTime)

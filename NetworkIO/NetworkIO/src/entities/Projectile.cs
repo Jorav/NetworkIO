@@ -28,11 +28,11 @@ namespace NetworkIO.src.entities
             }
         }
 
-        public override void Move(GameTime gameTime) //OBSOIBSOBSOBSSOBSBOSBOS This needs to happen when dying as well
+        public override void Update(GameTime gameTime) //OBSOIBSOBSOBSSOBSBOSBOS This needs to happen when dying as well
         {
             if (IsVisible)
             {
-                base.Move(gameTime);
+                base.Update(gameTime);
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 if(timer > minLifeSpan)
                     if (timer > maxLifeSpan || Velocity.Length()<= lowerVelocityLimit)

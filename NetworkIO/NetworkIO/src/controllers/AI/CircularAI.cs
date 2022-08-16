@@ -13,11 +13,11 @@ namespace NetworkIO.src.controllers
 
         public override void Update(GameTime gameTime)
         {
-            Move();
+            Accelerate();
             base.Update(gameTime);
         }
 
-        private void Move()
+        protected void Accelerate()
         {
             foreach (Entity e in entities)
             {

@@ -16,11 +16,11 @@ namespace NetworkIO.src.controllers
 
         public override void Update(GameTime gameTime)
         {
-            Move();
+            Accelerate();
             base.Update(gameTime);
         }
 
-        private void Move()
+        protected void Accelerate()
         {
             double angle = r.NextDouble() * Math.PI * 2;
             foreach (Entity e in entities)

@@ -9,7 +9,7 @@ namespace NetworkIO
         public WrappingBackground(List<Entity> entities, float relativeSpeed, Camera camera) : base(entities, relativeSpeed, camera)
         {
         }
-
+        
         public override void Update(GameTime gameTime) //OBS: assumes background sprites not rotated
         {
             base.Update(gameTime);
