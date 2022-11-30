@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using NetworkIO.src;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
+using NetworkIO.src.entities.hulls;
 using NetworkIO.src.factories;
 using NetworkIO.src.utility;
 using System;
@@ -56,7 +57,7 @@ namespace NetworkIO
             Texture2D textureCloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
             Texture2D textureCloudCreepyBlurry = Content.Load<Texture2D>("background/cloud_creepy_blurry");
             EntityFactory.hull = textureHullRotating;
-            EntityFactory.gun = textureSprayGun;
+            EntityFactory.gun = textureHullRotating;
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
             EntityFactory.sun = textureSun;
@@ -70,14 +71,17 @@ namespace NetworkIO
                             new Projectile(new Sprite(textureProjectile), new Vector2(0,0))),
                         new Shooter(new Sprite(textureHullRotating), new Vector2(0,100),
                             new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))*/
+                        EntityFactory.Create(new Vector2(0,0), IDs.COMPOSITE)
 
-                        EntityFactory.Create(new Vector2(0,0), IDs.COMPOSITE),
+                        //EntityFactory.Create(new Vector2(0,0), IDs.SHOOTER),
+                        //EntityFactory.Create(new Vector2(10,10), IDs.SHOOTER),
+                        //EntityFactory.Create(new Vector2(20,20), IDs.SHOOTER),
 
                     });
-            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
-            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
-            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
-            ((Composite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
+            ((RectangularComposite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
+            ((RectangularComposite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
+            ((RectangularComposite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
+            ((RectangularComposite)p.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
             Camera = p.Camera;
             controllers = new List<Controller>();
             Random r = new Random();

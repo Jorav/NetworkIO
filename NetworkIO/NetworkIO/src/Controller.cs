@@ -69,6 +69,7 @@ namespace NetworkIO.src
             }
         }
 
+        //TODO: make this work 
         protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
             float largestDistance = 0;
@@ -83,7 +84,7 @@ namespace NetworkIO.src
             }
             Radius = largestDistance;
         }
-
+        
         protected void UpdatePosition()
         {
             Vector2 sum = Vector2.Zero;
