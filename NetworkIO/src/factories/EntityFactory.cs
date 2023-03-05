@@ -4,12 +4,10 @@ using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
 using NetworkIO.src.utility;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetworkIO.src.factories
 {
-    public static class EntityFactory
+    public class EntityFactory
     {
         public static Texture2D hull;
         public static Texture2D gun;
@@ -32,7 +30,6 @@ namespace NetworkIO.src.factories
                 case IDs.CLOUD: return new Entity(new Sprite(cloud), position);
                 case IDs.SUN: return new Entity(new Sprite(sun), position, isCollidable:false);
                 #endregion
-
 
                 default:
                     throw new NotImplementedException();
