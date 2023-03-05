@@ -6,6 +6,7 @@ using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
 using NetworkIO.src.factories;
+using NetworkIO.src.menu.states;
 using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
@@ -23,26 +24,30 @@ namespace NetworkIO
 
         public static int ScreenWidth;
         public static int ScreenHeight;
+
+        private State currentState;
+        private State nextState;
+
+        public void ChangeState(State state)
+        {
+
+        }
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-            //_graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //_graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //_graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            //_graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Width;
-            //_graphics.IsFullScreen = true; //TODO: Add support for full screen without stretching
-            _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
         {
+            IsMouseVisible = true;
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            currentState = new MenuState(this, GraphicsDevice, Content);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
@@ -162,8 +167,15 @@ namespace NetworkIO
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            if (nextState != null)
+            {
+                currentState = nextState;
+                nextState = null;
+            }
+
+            currentState.Update(gameTime);
+            currentState.PostUpdate();
+
             foreach(Controller c in controllers)
                 c.Update(gameTime);
             foreach (Controller c1 in controllers)
@@ -177,6 +189,10 @@ namespace NetworkIO
 
         protected override void Draw(GameTime gameTime)
         {
+            currentState.Draw(gameTime, _spriteBatch);
+
+            
+            /*
             _spriteBatch.Begin(transformMatrix: Camera.Transform);
             GraphicsDevice.Clear(Color.DarkGray);
             //Vector2 CameraPosition = p.Position - new Vector2(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.5f, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.5f);
@@ -192,7 +208,7 @@ namespace NetworkIO
                 c.Draw(_spriteBatch, Matrix.Identity);
             }
 
-            _spriteBatch.End();
+            _spriteBatch.End();*/
             base.Draw(gameTime);
         }
     }
