@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src;
+using NetworkIO.src.menu;
 using System.Collections.Generic;
 
 namespace NetworkIO
 {
-    public class Background : Controller
+    public class Background : Controller, Component
     {
         protected float relativeSpeed; //1->0
         protected Camera camera;

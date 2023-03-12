@@ -7,6 +7,7 @@ using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
 using NetworkIO.src.factories;
 using NetworkIO.src.menu.states;
+using NetworkIO.src.menu.states.menu_states;
 using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace NetworkIO
 
         protected override void LoadContent()
         {
-            currentState = new MenuState(this, GraphicsDevice, Content);
+            currentState = new MainMenu(this, GraphicsDevice, Content);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;

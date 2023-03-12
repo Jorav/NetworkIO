@@ -37,12 +37,12 @@ namespace NetworkIO.src.entities.hulls
             
         }
 
-        public override void Draw(SpriteBatch sb, Matrix parentMatrix)
+        public override void Draw(SpriteBatch sb)
         {
             foreach (Entity e in components)
                 if(e!=null)
-                    e.Draw(sb, parentMatrix);
-            base.Draw(sb, parentMatrix);
+                    e.Draw(sb);
+            base.Draw(sb);
         }
     }
 }

@@ -11,6 +11,8 @@ namespace NetworkIO.src
         public Keys Down { get; set; }
         public Keys Left { get; set; }
         public Keys Right { get; set; }
+        public Keys Pause { get; set; }
+        public Keys Build { get; set; }
         //public MouseState Shoot { get { Mouse.GetState()} }
 
     }

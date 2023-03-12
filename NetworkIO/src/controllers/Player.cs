@@ -10,6 +10,36 @@ namespace NetworkIO.src
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
+        private bool pauseDown;
+        public bool PauseClicked
+        {
+            get
+            {
+                bool pauseClicked = false;
+                bool newPauseDown = Keyboard.GetState().IsKeyDown(Input.Pause);
+                if (!pauseDown && newPauseDown)
+                {
+                    pauseClicked = true;
+                }
+                pauseDown = newPauseDown;
+                return pauseClicked;
+            }
+        }
+        private bool buildDown;
+        public bool BuildClicked
+        {
+            get
+            {
+                bool buildClicked = false;
+                bool newBuildDown = Keyboard.GetState().IsKeyDown(Input.Build);
+                if (!buildDown && newBuildDown)
+                {
+                    buildClicked = true;
+                }
+                buildDown = newBuildDown;
+                return buildClicked;
+            }
+        }
         public Player(List<Entity> entities) : base(entities)
         {
             Input = new Input()
@@ -17,10 +47,13 @@ namespace NetworkIO.src
                 Up = Keys.W,
                 Down = Keys.S,
                 Left = Keys.A,
-                Right = Keys.D
+                Right = Keys.D,
+                Pause = Keys.Escape,
+                Build = Keys.Enter,
             };
             Camera = new Camera(this);
         }
+
         public override void Update(GameTime gameTime)
         {
             Rotate();

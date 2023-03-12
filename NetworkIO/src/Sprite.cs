@@ -31,9 +31,9 @@ namespace NetworkIO.src
             Origin = new Vector2(texture.Width / 2, texture.Height / 2);
         }
 
-        public void Draw(SpriteBatch sb, Matrix parentTransform)
+        public void Draw(SpriteBatch sb)
         {
-            Matrix globalTransform = LocalTransform * parentTransform;
+            //Matrix globalTransform = LocalTransform * parentTransform;
             sb.Draw(texture, Position, null, Color.White, Rotation, Origin, Scale, SpriteEffects.None,0f);
         }
 

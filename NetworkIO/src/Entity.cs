@@ -36,11 +36,11 @@ namespace NetworkIO.src
             Origin = new Vector2(Width / 2, Height / 2);
         }
 
-        public virtual void Draw(SpriteBatch sb, Matrix parentMatrix)
+        public virtual void Draw(SpriteBatch sb)
         {
             if (IsVisible)
             {
-                sprite.Draw(sb, parentMatrix);
+                sprite.Draw(sb);
             }
             
         }

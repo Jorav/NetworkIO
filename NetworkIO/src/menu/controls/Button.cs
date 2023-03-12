@@ -40,7 +40,7 @@ namespace NetworkIO.src.menu.controls
             PenColour = Color.Black;
         }
         
-        public override void Draw(GameTime gameTime, SpriteBatch spritebatch)
+        public void Draw(GameTime gameTime, SpriteBatch spritebatch)
         {
             Color color = Color.White;
             if (isHovering)
@@ -56,7 +56,7 @@ namespace NetworkIO.src.menu.controls
 
         }
         
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();

@@ -59,11 +59,11 @@ namespace NetworkIO.src.entities
             }
         }
 
-        public override void Draw(SpriteBatch sb, Matrix parentTransform)
+        public override void Draw(SpriteBatch sb)
         {
             foreach (Projectile p in Projectiles)
-                p.Draw(sb, parentTransform);
-            base.Draw(sb, parentTransform);
+                p.Draw(sb);
+            base.Draw(sb);
         }
 
         public override object Clone()
