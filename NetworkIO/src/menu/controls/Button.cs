@@ -40,7 +40,7 @@ namespace NetworkIO.src.menu.controls
             PenColour = Color.Black;
         }
         
-        public void Draw(GameTime gameTime, SpriteBatch spritebatch)
+        public void Draw(SpriteBatch spritebatch)
         {
             Color color = Color.White;
             if (isHovering)

@@ -19,7 +19,9 @@ namespace NetworkIO.src.menu.states
             this.gameState = gameState;
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
-            //Texture2D background = content.Load<Texture2D>("");
+            Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundGray"));
+            background.Scale = background.Height/ Game1.ScreenHeight;
+            background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
 
             Button continueButton = new Button(buttonTexture, buttonFont)
             {
@@ -58,6 +60,7 @@ namespace NetworkIO.src.menu.states
 
             components = new List<Component>()
             {
+                background,
                 continueButton,
                 newGameButton,
                 loadGameButton,
@@ -65,6 +68,13 @@ namespace NetworkIO.src.menu.states
                 quitGameButton,
             };
         }
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            gameState.Draw(gameTime, spriteBatch);
+            base.Draw(gameTime, spriteBatch);
+            
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

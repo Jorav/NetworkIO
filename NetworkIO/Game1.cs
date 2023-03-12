@@ -39,6 +39,10 @@ namespace NetworkIO
         protected override void Initialize()
         {
             IsMouseVisible = true;
+            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            ScreenWidth = _graphics.PreferredBackBufferWidth;
+            ScreenHeight = _graphics.PreferredBackBufferHeight;
             base.Initialize();
         }
 
@@ -46,10 +50,6 @@ namespace NetworkIO
         {
             currentState = new MainMenu(this, GraphicsDevice, Content);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            ScreenWidth = _graphics.PreferredBackBufferWidth;
-            ScreenHeight = _graphics.PreferredBackBufferHeight;
             _graphics.ApplyChanges();
 
             Texture2D textureHullRotating = Content.Load<Texture2D>("parts/Hull_rotating");

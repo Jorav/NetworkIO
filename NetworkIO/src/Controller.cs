@@ -100,7 +100,7 @@ namespace NetworkIO.src
             Position = sum;
         }
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb)
         {
             foreach (Entity e in entities)
                 e.Draw(sb);

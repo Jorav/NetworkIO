@@ -14,8 +14,10 @@ namespace NetworkIO.src.menu.states.menu_states
         public MainMenu(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
-            Texture2D background = content.Load<Texture2D>("background/backgroundGray");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
+            Sprite background = new Sprite(content.Load<Texture2D>("background/background"));
+            background.Scale = background.Height / Game1.ScreenHeight;
+            background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
 
             Button newGameButton = new Button(buttonTexture, buttonFont)
             {
@@ -40,7 +42,7 @@ namespace NetworkIO.src.menu.states.menu_states
 
             components = new List<Component>()
             {
-                //background,
+                background,
                 newGameButton,
                 loadGameButton,
                 quitGameButton,

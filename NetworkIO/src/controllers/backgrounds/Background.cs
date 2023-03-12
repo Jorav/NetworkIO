@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace NetworkIO
 {
-    public class Background : Controller, Component
+    public class Background : Controller
     {
         protected float relativeSpeed; //1->0
         protected Camera camera;

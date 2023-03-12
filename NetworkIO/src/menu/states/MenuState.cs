@@ -20,7 +20,7 @@ namespace NetworkIO.src.menu.states
         {
             spriteBatch.Begin();
             foreach (Component component in components)
-                component.Draw(gameTime, spriteBatch);
+                component.Draw(spriteBatch);
             spriteBatch.End();
         }
         

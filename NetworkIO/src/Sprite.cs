@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetworkIO.src.menu;
 using System;
 
 namespace NetworkIO.src
 {
-    public class Sprite
+    public class Sprite : Component
     {
         private Texture2D texture;
         public float Scale { get; set; }
@@ -13,7 +14,7 @@ namespace NetworkIO.src
         public Vector2 Origin { get; set; }
         public int Height { get { return (int)Math.Round(texture.Height * Scale); } }
         public int Width { get { return (int)Math.Round(texture.Width * Scale); } }
-        public Matrix LocalTransform
+        /*public Matrix LocalTransform
         {
             get
             {
@@ -22,7 +23,7 @@ namespace NetworkIO.src
                        Matrix.CreateRotationZ(Rotation) *
                        Matrix.CreateTranslation(Position.X, Position.Y, 0f);
             }
-        }
+        }*/
 
         public Sprite(Texture2D texture, float scale = 1f)
         {
@@ -30,6 +31,8 @@ namespace NetworkIO.src
             Scale = scale;
             Origin = new Vector2(texture.Width / 2, texture.Height / 2);
         }
+
+        public void Update(GameTime gameTime) { }
 
         public void Draw(SpriteBatch sb)
         {

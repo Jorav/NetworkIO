@@ -36,12 +36,12 @@ namespace NetworkIO.src.menu.states
             //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, null, null, null, Matrix.CreateScale(0.5f));
             foreach (Background b in backgrounds)
             {
-                b.Draw(gameTime, spriteBatch);
+                b.Draw(spriteBatch);
             }
 
             foreach (Controller c in controllers)
             {
-                c.Draw(gameTime, spriteBatch);
+                c.Draw(spriteBatch);
             }
 
             spriteBatch.End();
@@ -57,7 +57,7 @@ namespace NetworkIO.src.menu.states
             if (Player.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this));
             else if (Player.BuildClicked)
-                game.ChangeState(new BuilderState(game, graphicsDevice, content, this));
+                game.ChangeState(new BuildState(game, graphicsDevice, content, this));
             else
             {
                 foreach (Controller c in controllers)
