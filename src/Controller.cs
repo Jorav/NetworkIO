@@ -2,21 +2,22 @@
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.collidables;
 using NetworkIO.src.entities;
+using NetworkIO.src.menu;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace NetworkIO.src
 {
-    public class Controller
+    public class Controller : Component
     {
         public List<Entity> entities;
         protected CollidableCircle collisionDetector;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
-        public float Radius { get { return radius; } set { radius = value; collisionDetector.Radius = value; } }
-        protected float radius;
-        public Vector2 Position { get { return position; } set { position = value; collisionDetector.Position = value; } }
-        protected Vector2 position;
+        public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
+        private float radius;
+        public Vector2 Position { get { return position; } protected set { position = value; collisionDetector.Position = value; } }
+        private Vector2 position;
         private List<Queue<Projectile>> projectiles;
 
         public Controller(List<Entity> entities)
@@ -28,6 +29,16 @@ namespace NetworkIO.src
                 if(e is Shooter s)
                 projectiles.Add(s.Projectiles);
         }
+
+        public void MoveTo(Vector2 newPosition)
+        {
+            UpdatePosition();
+            Vector2 posChange = newPosition - Position;
+            foreach (Entity e in entities)
+                e.Position += posChange;
+            Position = position + posChange;
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             UpdateEntities(gameTime);
@@ -116,6 +127,20 @@ namespace NetworkIO.src
                 foreach(Projectile p in pList)
                     foreach (Entity eC in c.entities)
                         p.Collide(eC);
+        }
+
+        public virtual object Clone()
+        {
+            Controller cNew = (Controller)this.MemberwiseClone();
+            cNew.entities = new List<Entity>();
+            foreach (Entity e in entities)
+                cNew.entities.Add((Entity)e.Clone());
+            cNew.collisionDetector = new CollidableCircle(Position, radius);
+            cNew.projectiles = new List<Queue<Projectile>>();
+            foreach (Entity e in entities)
+                if (e is Shooter s)
+                    projectiles.Add(s.Projectiles);
+            return cNew;
         }
     }
 }

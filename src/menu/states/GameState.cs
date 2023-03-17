@@ -18,8 +18,6 @@ namespace NetworkIO.src.menu.states
         public Player Player { get; protected set; }
         protected List<Controller> controllers;
         protected List<Background> backgrounds;
-        private bool pausePressed;
-        private bool buildPressed;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {

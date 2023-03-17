@@ -3,11 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.collidables;
 using NetworkIO.src.entities;
 using NetworkIO.src.factories;
+using NetworkIO.src.menu;
 using System;
 
 namespace NetworkIO.src
 {
-    public class Entity : Movable
+    public class Entity : Movable, Component
     {
         public float Elasticity;
         public bool IsVisible { get; set; }

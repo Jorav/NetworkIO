@@ -10,6 +10,7 @@ namespace NetworkIO.src
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
+        public bool inputLocked;
         private bool pauseDown;
         public bool PauseClicked
         {
@@ -56,9 +57,13 @@ namespace NetworkIO.src
 
         public override void Update(GameTime gameTime)
         {
-            Rotate();
-            Accelerate();
-            Shoot(gameTime);
+            if (!inputLocked)
+            {
+                Rotate();
+                Accelerate();
+                Shoot(gameTime);
+            }
+            
             Camera.Update();
             base.Update(gameTime);
             /*
@@ -114,6 +119,13 @@ namespace NetworkIO.src
                 foreach (Entity e in entities)
                     e.Accelerate(accelerationVector, e.Thrust);
             }
+        }
+
+        public override object Clone()
+        {
+            Player pNew = (Player)base.Clone();
+            pNew.Camera = new Camera(this);
+            return pNew;
         }
     }
 }
