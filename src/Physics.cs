@@ -39,7 +39,7 @@ namespace NetworkIO.src
         {
             if (distance < 10)
                 distance = 10;
-            return (float)(attractionForce1 * attractionForce2 * Math.Pow(distance/scale, 1) );
+            return (float)(attractionForce1 * attractionForce2 * Math.Pow(distance/scale, 1)/10 );
         }
         public static float CalculateRepulsion(float repulsionForce1, float repulsionForce2, float distance, float scale = 1)
         {
@@ -47,10 +47,36 @@ namespace NetworkIO.src
                 distance = 10;
             return repulsionForce1 * repulsionForce2 / (float)Math.Pow(distance/scale, 2);
         }
-
         public static float CalculateGravity(float attractionForce1, float attractionForce2, float repulsionForce1, float repulsionForce2, float distance)
         {
             return gravityConstant*(CalculateAttraction(attractionForce1, attractionForce2, distance) - CalculateRepulsion(repulsionForce1, repulsionForce2, distance));
         }
+
+        public static float CalculateAttractionNew(float attractionForce1, float attractionForce2, float distance, float scale = 1)
+        {
+            if (distance < 10)
+                distance = 10;
+            return (float)(attractionForce1 * attractionForce2 * Math.Pow(distance / scale, 1));
+        }
+        public static float CalculateRepulsionNew(float repulsionForce1, float repulsionForce2, float distance, float scale = 1)
+        {
+            if (distance < 10)
+                distance = 10;
+            return repulsionForce1 * repulsionForce2 / (float)Math.Pow(distance / scale, 2);
+        }
+
+        /*
+        public static float CalculateAttraction(float attractionForce1, float attractionForce2, float distance, float scale = 1)
+        {
+            if (distance < 10)
+                distance = 10;
+            return (float)(attractionForce1 * attractionForce2 * Math.Pow(distance/scale, 1) );
+        }
+        public static float CalculateRepulsion(float repulsionForce1, float repulsionForce2, float distance, float scale = 1)
+        {
+            if (distance < 10)
+                distance = 10;
+            return repulsionForce1 * repulsionForce2 / (float)Math.Pow(distance/scale, 2);
+        }*/
     }
 }

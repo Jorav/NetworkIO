@@ -42,9 +42,9 @@ namespace NetworkIO.src
         public virtual void Update(GameTime gameTime)
         {
             UpdateEntities(gameTime);
-            ApplyInternalGravity();
             UpdatePosition();
             UpdateRadius();
+            ApplyInternalGravity();
         }
 
         protected virtual void GiveOrders()
@@ -61,6 +61,7 @@ namespace NetworkIO.src
 
         protected void ApplyInternalGravity()
         {
+            Vector2 distanceFromController;
             foreach (Entity e1 in entities)
             {
                 foreach (Entity e2 in entities)
@@ -68,15 +69,19 @@ namespace NetworkIO.src
                     if (e1.IsVisible && e2.IsVisible)
                     {
                         float r = Vector2.Distance(e1.Position, e2.Position);
-                        if (e1 != e2)
+                        if (e1 != e2 && r<100)
                         {
                             if (r < 10)
                                 r = 10;
-                            float res = Physics.CalculateGravity(0.05f, 0.05f, 30f, 30f, r);
+                            float res = Physics.CalculateGravity(0.1f, 0.1f, 30f, 30f, r);
                             e1.Accelerate(Vector2.Normalize(e2.Position - e1.Position), res);
+                            
                         }
                     }
                 }
+                distanceFromController = Position - e1.Position;
+                if (distanceFromController.Length() != 0)
+                    e1.Accelerate(Vector2.Normalize(Position - e1.Position), distanceFromController.Length()/1000);
             }
         }
 

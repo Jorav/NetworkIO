@@ -48,9 +48,9 @@ namespace NetworkIO.src
          */
         public void Accelerate(Vector2 directionalVector, float thrust)
         {
-            directionalVector = new Vector2(directionalVector.X, directionalVector.Y);//unnecessary?
-            directionalVector.Normalize();
-            TotalExteriorForce += directionalVector * thrust;
+            Vector2 direction = new Vector2(directionalVector.X, directionalVector.Y);
+            direction.Normalize();
+            TotalExteriorForce += direction * thrust;
         }
 
         public Vector2 MomentumAlongVector(Vector2 directionalVector)

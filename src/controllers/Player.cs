@@ -43,8 +43,10 @@ namespace NetworkIO.src
         }
         public Player(List<Entity> entities) : base(entities)
         {
+            Camera = new Camera(this);
             Input = new Input()
             {
+                Camera = Camera,
                 Up = Keys.W,
                 Down = Keys.S,
                 Left = Keys.A,
@@ -52,7 +54,7 @@ namespace NetworkIO.src
                 Pause = Keys.Escape,
                 Build = Keys.Enter,
             };
-            Camera = new Camera(this);
+            
         }
 
         public override void Update(GameTime gameTime)
@@ -80,7 +82,7 @@ namespace NetworkIO.src
         protected void Rotate()
         {
             foreach (Entity e in entities)
-                e.RotateTo(Mouse.GetState().Position.ToVector2()-new Vector2(Game1.ScreenWidth/2, Game1.ScreenHeight/2) +Camera.Position);
+                e.RotateTo(Input.MousePositionGameCoords);
         }
         protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
@@ -121,6 +123,7 @@ namespace NetworkIO.src
             }
         }
 
+        //***NOT GUARANTEED TO WORK***
         public override object Clone()
         {
             Player pNew = (Player)base.Clone();
