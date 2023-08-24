@@ -16,6 +16,7 @@ namespace NetworkIO.src
         public float Zoom { get; set; }
         public float Width { get { return Game1.ScreenWidth / Zoom; } }
         public float Height { get { return Game1.ScreenHeight / Zoom; } }
+        public bool InBuildScreen { get; set; }
 
         private CollidableRectangle frame;
         private Controller controller;
@@ -34,7 +35,10 @@ namespace NetworkIO.src
         {
             PreviousPosition = Position;
             Position = controller.Position;
-            Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
+            if (InBuildScreen)
+                Zoom = (Game1.ScreenHeight + 2 * controller.Radius) / Game1.ScreenHeight;
+            else
+                Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
             Rotation = 0;
             Matrix position = Matrix.CreateTranslation(
                 -controller.Position.X,

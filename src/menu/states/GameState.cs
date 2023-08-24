@@ -58,15 +58,20 @@ namespace NetworkIO.src.menu.states
                 game.ChangeState(new BuildState(game, graphicsDevice, content, this));
             else
             {
-                foreach (Controller c in controllers)
-                    c.Update(gameTime);
-                foreach (Controller c1 in controllers)
-                    foreach (Controller c2 in controllers)
-                        if (c1 != c2)
-                            c1.Collide(c2);
-                foreach (Background b in backgrounds)
-                    b.Update(gameTime);
+                RunGame(gameTime);
             }
+        }
+
+        public void RunGame(GameTime gameTime)
+        {
+            foreach (Controller c in controllers)
+                c.Update(gameTime);
+            foreach (Controller c1 in controllers)
+                foreach (Controller c2 in controllers)
+                    if (c1 != c2)
+                        c1.Collide(c2);
+            foreach (Background b in backgrounds)
+                b.Update(gameTime);
         }
     }
 }

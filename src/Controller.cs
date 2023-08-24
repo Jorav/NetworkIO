@@ -11,7 +11,7 @@ namespace NetworkIO.src
 {
     public class Controller : Component
     {
-        public List<Entity> entities;
+        public List<Entity> entities { get; private set; }
         protected CollidableCircle collisionDetector;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
@@ -27,7 +27,30 @@ namespace NetworkIO.src
             projectiles = new List<Queue<Projectile>>();
             foreach (Entity e in entities)
                 if(e is Shooter s)
-                projectiles.Add(s.Projectiles);
+                    projectiles.Add(s.Projectiles);
+        }
+
+        public void SetEntities(List<Entity> newEntities)
+        {
+            if(newEntities!=null)
+            {
+                List<Entity> oldEntities = entities;
+                entities = new List<Entity>();
+                foreach (Entity e in newEntities)
+                    AddEntity(e);
+                if (entities.Count == 0)
+                    entities = oldEntities;
+            }
+            
+        }
+
+        public void AddEntity(Entity e)
+        {
+            if (e != null) {
+                entities.Add(e);
+                if (e is Shooter s)
+                    projectiles.Add(s.Projectiles);
+            }
         }
 
         public void MoveTo(Vector2 newPosition)

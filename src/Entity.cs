@@ -60,6 +60,11 @@ namespace NetworkIO.src
             TotalExteriorForce = Vector2.Zero;
         }
 
+        public bool Contains(Vector2 point)
+        {
+            return IsCollidable && collisionDetector.Contains(point);
+        }
+
         public bool CollidesWith(Entity e)
         {
             return IsCollidable && e.IsCollidable && collisionDetector.CollidesWith(e.collisionDetector);
