@@ -27,7 +27,7 @@ namespace NetworkIO.src.factories
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
 
                 #region background
-                case IDs.CLOUD: return new Entity(new Sprite(cloud), position);
+                case IDs.CLOUD: return new Entity(new Sprite(cloud), position, isCollidable: false);
                 case IDs.SUN: return new Entity(new Sprite(sun), position, isCollidable:false);
                 #endregion
 

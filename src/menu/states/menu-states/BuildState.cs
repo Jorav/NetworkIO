@@ -51,7 +51,7 @@ namespace NetworkIO.src.menu.states
             components = new List<Component>()
             {                
                 background,
-                controller,
+                //controller,
                 addEntityButton,
             };
         }
@@ -64,6 +64,7 @@ namespace NetworkIO.src.menu.states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            controller.Update(gameTime);
             gameState.RunGame(gameTime);
             //playerCopy.Update(gameTime);
             //if(gameState.Player.)
@@ -74,14 +75,16 @@ namespace NetworkIO.src.menu.states
                 game.ChangeState(gameState);
                 gameState.Player.Camera.InBuildScreen = false;
                 gameState.Player.inputLocked = false;
-            }
-                
+            }  
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             gameState.Draw(gameTime, spriteBatch);
             base.Draw(gameTime, spriteBatch);
+            spriteBatch.Begin(transformMatrix: controller.Camera.Transform);
+            controller.Draw(spriteBatch);
+            spriteBatch.End();
             //playerCopy.Draw(spriteBatch);
 
         }
