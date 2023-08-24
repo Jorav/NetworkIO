@@ -26,8 +26,11 @@ namespace NetworkIO.src
             this.controller = controller;
             Position = controller.Position;
             PreviousPosition = Position;
-            Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
-            
+            if (InBuildScreen)
+                Zoom = (Game1.ScreenHeight + 2 * controller.Radius) / Game1.ScreenHeight;
+            else
+                Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
+
             Rotation = 0;
         }
 
@@ -36,7 +39,7 @@ namespace NetworkIO.src
             PreviousPosition = Position;
             Position = controller.Position;
             if (InBuildScreen)
-                Zoom = (Game1.ScreenHeight + 2 * controller.Radius) / Game1.ScreenHeight;
+                Zoom = (Game1.ScreenHeight) / (2 * controller.Radius + Game1.ScreenHeight/8);
             else
                 Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
             Rotation = 0;

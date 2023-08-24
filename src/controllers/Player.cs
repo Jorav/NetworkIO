@@ -10,56 +10,19 @@ namespace NetworkIO.src
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
-        public bool inputLocked;
-        private bool pauseDown;
-        public bool PauseClicked
+        public bool actionsLocked;
+        
+        
+        public Player(List<Entity> entities, Input input) : base(entities)
         {
-            get
-            {
-                bool pauseClicked = false;
-                bool newPauseDown = Keyboard.GetState().IsKeyDown(Input.Pause);
-                if (!pauseDown && newPauseDown)
-                {
-                    pauseClicked = true;
-                }
-                pauseDown = newPauseDown;
-                return pauseClicked;
-            }
-        }
-        private bool buildDown;
-        public bool BuildClicked
-        {
-            get
-            {
-                bool buildClicked = false;
-                bool newBuildDown = Keyboard.GetState().IsKeyDown(Input.Build);
-                if (!buildDown && newBuildDown)
-                {
-                    buildClicked = true;
-                }
-                buildDown = newBuildDown;
-                return buildClicked;
-            }
-        }
-        public Player(List<Entity> entities) : base(entities)
-        {
+            this.Input = input;
             Camera = new Camera(this);
-            Input = new Input()
-            {
-                Camera = Camera,
-                Up = Keys.W,
-                Down = Keys.S,
-                Left = Keys.A,
-                Right = Keys.D,
-                Pause = Keys.Escape,
-                Build = Keys.Enter,
-            };
-            
+            Input.Camera = Camera;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (!inputLocked)
+            if (!actionsLocked)
             {
                 Rotate();
                 Accelerate();

@@ -13,10 +13,10 @@ namespace NetworkIO.src.menu.states
 {
     class PauseState : MenuState
     {
-        GameState gameState;
-        public PauseState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState) : base(game, graphicsDevice, content)
+        State previousState;
+        public PauseState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input) : base(game, graphicsDevice, content, input)
         {
-            this.gameState = gameState;
+            this.previousState = previousState;
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
             Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundGray"));
@@ -70,7 +70,7 @@ namespace NetworkIO.src.menu.states
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            gameState.Draw(gameTime, spriteBatch);
+            previousState.Draw(gameTime, spriteBatch);
             base.Draw(gameTime, spriteBatch);
             
         }
@@ -78,17 +78,17 @@ namespace NetworkIO.src.menu.states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (gameState.Player.PauseClicked)
-                game.ChangeState(gameState);
+            if (input.PauseClicked)
+                game.ChangeState(previousState);
         }
         private void ContinueButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(gameState);
+            game.ChangeState(previousState);
         }
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(new TestState(game, graphicsDevice, content));
+            game.ChangeState(new TestState(game, graphicsDevice, content, input));
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)
@@ -99,7 +99,7 @@ namespace NetworkIO.src.menu.states
 
         private void MainMenuButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(new MainMenu(game, graphicsDevice, content));
+            game.ChangeState(new MainMenu(game, graphicsDevice, content, input));
         }
 
         private void QuitGameButton_Click(object sender, EventArgs e)

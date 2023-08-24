@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,7 @@ namespace NetworkIO.src.controllers
     public class MenuController : Controller
     {
         public Camera Camera { get; private set; }
+        bool leftMBDown;
         public MenuController(List<Entity> entities) : base(entities)
         {
             Camera = new Camera(this);
@@ -26,9 +28,15 @@ namespace NetworkIO.src.controllers
          */
         public Entity EntityClicked()
         {
-            //foreach (Entity e in entities)
-                //if (e.Contains())
-                    //return e;
+            bool leftMBDown = Mouse.GetState().LeftButton == ButtonState.Pressed;
+            if (!this.leftMBDown && leftMBDown)
+            {
+                this.leftMBDown = leftMBDown;
+                foreach (Entity e in entities)
+                    if (e.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
+                        return e;
+            }
+            this.leftMBDown = leftMBDown;
             return null;
         }
     }

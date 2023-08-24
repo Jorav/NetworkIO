@@ -13,6 +13,7 @@ namespace NetworkIO.src.menu.states
         protected ContentManager content;
         protected GraphicsDevice graphicsDevice;
         protected Game1 game;
+        protected Input input;
         #endregion
 
         #region Methods
@@ -20,11 +21,12 @@ namespace NetworkIO.src.menu.states
 
         public abstract void PostUpdate();
 
-        public State(Game1 game, GraphicsDevice graphicsDevice, ContentManager content)
+        public State(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input)
         {
             this.game = game;
             this.graphicsDevice = graphicsDevice;
             this.content = content;
+            this.input = input;
         }
 
         public abstract void Update(GameTime gameTime);

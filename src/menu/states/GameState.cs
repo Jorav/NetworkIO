@@ -19,9 +19,9 @@ namespace NetworkIO.src.menu.states
         protected List<Controller> controllers;
         protected List<Background> backgrounds;
 
-        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
-            Player = new Player(new List<Entity>());
+            Player = new Player(new List<Entity>(), input);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -52,10 +52,10 @@ namespace NetworkIO.src.menu.states
 
         public override void Update(GameTime gameTime)
         {
-            if (Player.PauseClicked)
-                game.ChangeState(new PauseState(game, graphicsDevice, content, this));
-            else if (Player.BuildClicked)
-                game.ChangeState(new BuildState(game, graphicsDevice, content, this));
+            if (Player.Input.PauseClicked)
+                game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
+            else if (Player.Input.BuildClicked)
+                game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
             else
             {
                 RunGame(gameTime);

@@ -13,7 +13,7 @@ namespace NetworkIO.src.menu.states.game_states
 {
     class TestState : GameState
     {
-        public TestState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public TestState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
 
             /*Player = new Player(
@@ -43,7 +43,7 @@ namespace NetworkIO.src.menu.states.game_states
                 EntityFactory.Create(new Vector2(10,10), IDs.SHOOTER),
                 EntityFactory.Create(new Vector2(20,20), IDs.SHOOTER),
 
-            });
+            }, input);
 
             controllers = new List<Controller>();
             Random r = new Random();

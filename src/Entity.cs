@@ -65,6 +65,11 @@ namespace NetworkIO.src
             return IsCollidable && collisionDetector.Contains(point);
         }
 
+        public bool ContainsInSpace(Vector2 position, Matrix transform)
+        {
+            return IsCollidable && collisionDetector.ContainsInSpace(position, transform);
+        }
+
         public bool CollidesWith(Entity e)
         {
             return IsCollidable && e.IsCollidable && collisionDetector.CollidesWith(e.collisionDetector);

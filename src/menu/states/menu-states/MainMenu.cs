@@ -11,7 +11,7 @@ namespace NetworkIO.src.menu.states.menu_states
 {
     public class MainMenu : MenuState
     {
-        public MainMenu(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public MainMenu(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
@@ -50,7 +50,7 @@ namespace NetworkIO.src.menu.states.menu_states
         }
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            game.ChangeState(new TestState(game, graphicsDevice, content));
+            game.ChangeState(new TestState(game, graphicsDevice, content, input));
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)

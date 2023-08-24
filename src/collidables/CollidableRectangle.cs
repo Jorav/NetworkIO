@@ -94,6 +94,16 @@ namespace NetworkIO.src.collidables
             return xVals.Max() > position.X && xVals.Min() < position.X && yVals.Max() > position.Y && yVals.Min() < position.Y;
         }
 
+        public bool ContainsInSpace(Vector2 positionInM, Matrix m)
+        {
+            Vector2 UL = Vector2.Transform(this.UL, m);
+            Vector2 DL = Vector2.Transform(this.DL, m);
+            Vector2 DR = Vector2.Transform(this.DR, m);
+            Vector2 UR = Vector2.Transform(this.UR, m);
+            List<float> xVals = new List<float>(new float[] { UL.X, DL.X, DR.X, UR.X });
+            List<float> yVals = new List<float>(new float[] { UL.Y, DL.Y, DR.Y, UR.Y });
+            return xVals.Max() > positionInM.X && xVals.Min() < positionInM.X && yVals.Max() > positionInM.Y && yVals.Min() < positionInM.Y;
+        }
 
         public bool CollidesWithRectangle(CollidableRectangle r)
         {

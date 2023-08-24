@@ -12,7 +12,7 @@ namespace NetworkIO.src.menu.states
     {
         protected List<Component> components;
 
-        public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
+        public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
         }
 

@@ -111,17 +111,25 @@ namespace NetworkIO.src
         //TODO: make this work 
         protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
-            float largestDistance = 0;
-            foreach (Entity e in entities)
+            if (entities.Count == 1)
             {
-                if (e.IsVisible)
-                {
-                    float distance = Vector2.Distance(e.Position+new Vector2(e.Width,e.Height), Position);
-                    if (distance > largestDistance)
-                        largestDistance = distance;
-                }
+                if (entities[0] != null)
+                    Radius = Math.Max(entities[0].Width / 2,entities[0].Height / 2); //OBS, lite godtycklig
             }
-            Radius = largestDistance;
+            else if (entities.Count > 1)
+            {
+                float largestDistance = 0;
+                foreach (Entity e in entities)
+                {
+                    if (e.IsVisible)
+                    {
+                        float distance = Vector2.Distance(e.Position + new Vector2(e.Width, e.Height), Position);
+                        if (distance > largestDistance)
+                            largestDistance = distance;
+                    }
+                }
+                Radius = largestDistance;
+            }
         }
         
         protected void UpdatePosition()

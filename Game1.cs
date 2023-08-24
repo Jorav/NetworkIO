@@ -24,6 +24,7 @@ namespace NetworkIO
 
         private State currentState;
         private State nextState;
+        public Input Input { get; set; }
 
         public void ChangeState(State state)
         {
@@ -48,7 +49,16 @@ namespace NetworkIO
 
         protected override void LoadContent()
         {
-            currentState = new MainMenu(this, GraphicsDevice, Content);
+            Input = new Input()
+            {
+                Up = Keys.W,
+                Down = Keys.S,
+                Left = Keys.A,
+                Right = Keys.D,
+                Pause = Keys.Escape,
+                Build = Keys.Enter,
+            };
+            currentState = new MainMenu(this, GraphicsDevice, Content, Input);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _graphics.ApplyChanges();
 
@@ -63,6 +73,7 @@ namespace NetworkIO
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
             EntityFactory.sun = textureSun;
+            
         }
         
 
