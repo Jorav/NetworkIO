@@ -16,34 +16,34 @@ namespace NetworkIO.src.menu.states.game_states
         public TestState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
 
-            /*Player = new Player(
+            Player = new Player(
             new List<Entity>()
             {
                         /**
                         new Shooter(new Sprite(textureSprayGun), new Vector2(0,0),
                             new Projectile(new Sprite(textureProjectile), new Vector2(0,0))),
                         new Shooter(new Sprite(textureHullRotating), new Vector2(0,100),
-                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))
+                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))*/
                         EntityFactory.Create(new Vector2(0,0), IDs.COMPOSITE)
 
                 //EntityFactory.Create(new Vector2(0,0), IDs.SHOOTER),
                 //EntityFactory.Create(new Vector2(10,10), IDs.SHOOTER),
                 //EntityFactory.Create(new Vector2(20,20), IDs.SHOOTER),
 
-            });
+            }, input);
             ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
             ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
             ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
             ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
-            */
-            Player = new Player(
+            
+            /*Player = new Player(
             new List<Entity>()
             {
                 EntityFactory.Create(new Vector2(0,0), IDs.SHOOTER),
                 EntityFactory.Create(new Vector2(10,10), IDs.SHOOTER),
                 EntityFactory.Create(new Vector2(20,20), IDs.SHOOTER),
 
-            }, input);
+            }, input);*/
 
             controllers = new List<Controller>();
             Random r = new Random();

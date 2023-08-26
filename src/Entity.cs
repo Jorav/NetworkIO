@@ -95,5 +95,17 @@ namespace NetworkIO.src
             eNew.TotalExteriorForce = Vector2.Zero;
             return eNew;
         }
+
+        protected class Link
+        {
+            Link connection;
+            float relativeRotation;
+
+            public Link(Link connection = null, float relativeRotation = (float)Math.PI)
+            {
+                this.connection = connection;
+                this.relativeRotation = relativeRotation;
+            }
+        }
     }
 }

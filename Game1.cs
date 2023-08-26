@@ -76,7 +76,7 @@ namespace NetworkIO
             Texture2D textureCloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
             Texture2D textureCloudCreepyBlurry = Content.Load<Texture2D>("background/cloud_creepy_blurry");
             EntityFactory.hull = textureHullRotating;
-            EntityFactory.gun = textureHullRotating;
+            EntityFactory.gun = textureSprayGun;
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
             EntityFactory.sun = textureSun;
