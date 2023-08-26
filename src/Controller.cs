@@ -28,6 +28,9 @@ namespace NetworkIO.src
             foreach (Entity e in entities)
                 if(e is Shooter s)
                     projectiles.Add(s.Projectiles);
+            UpdatePosition();
+            UpdateRadius();
+            ApplyInternalGravity();
         }
 
         public void SetEntities(List<Entity> newEntities)

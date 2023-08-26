@@ -21,8 +21,9 @@ namespace NetworkIO.src
         private CollidableRectangle frame;
         private Controller controller;
 
-        public Camera(Controller controller)
+        public Camera(Controller controller, bool inBuildScreen = false)
         {
+            
             this.controller = controller;
             Position = controller.Position;
             PreviousPosition = Position;
@@ -30,8 +31,9 @@ namespace NetworkIO.src
                 Zoom = (Game1.ScreenHeight + 2 * controller.Radius) / Game1.ScreenHeight;
             else
                 Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
-
             Rotation = 0;
+            InBuildScreen = inBuildScreen;
+            UpdateTransformMatrix();
         }
 
         public void Update()
@@ -43,6 +45,11 @@ namespace NetworkIO.src
             else
                 Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
             Rotation = 0;
+            UpdateTransformMatrix();
+        }
+
+        public void UpdateTransformMatrix()
+        {
             Matrix position = Matrix.CreateTranslation(
                 -controller.Position.X,
                 -controller.Position.Y,

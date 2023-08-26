@@ -56,10 +56,7 @@ namespace NetworkIO.src.menu.states
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
             else if (Player.Input.BuildClicked)
                 game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
-            else
-            {
-                RunGame(gameTime);
-            }
+            RunGame(gameTime);
         }
 
         public void RunGame(GameTime gameTime)

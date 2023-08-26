@@ -30,13 +30,13 @@ namespace NetworkIO.src.menu.states.menu_states
             base.Update(gameTime);
             if (input.leftMBClicked)
             {
-                Entity clickedE = controller.MouseOnEntity();
+                Entity clickedE = menuController.MouseOnEntity();
                 if(clickedE == null)
                     game.ChangeState(previousState);
             }
             if (input.BuildClicked)
             {
-                gameState.Player.SetEntities(previousState.controller.entities);
+                gameState.Player.SetEntities(previousState.menuController.entities);
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
                 gameState.Player.actionsLocked = false;

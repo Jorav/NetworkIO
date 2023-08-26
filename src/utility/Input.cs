@@ -53,7 +53,7 @@ namespace NetworkIO.src
             {
                 bool leftMBClicked = false;
                 bool newLeftMBDown = Mouse.GetState().LeftButton == ButtonState.Pressed;
-                if (leftMBDown && !newLeftMBDown)
+                if (!leftMBDown && newLeftMBDown)
                 {
                     leftMBClicked = true;
                 }

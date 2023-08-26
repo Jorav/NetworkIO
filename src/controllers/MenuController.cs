@@ -12,8 +12,7 @@ namespace NetworkIO.src.controllers
         public Camera Camera { get; private set; }
         public MenuController(List<Entity> entities) : base(entities)
         {
-            Camera = new Camera(this);
-            Camera.InBuildScreen = true;
+            Camera = new Camera(this, true);
         }
 
         public override void Update(GameTime gameTime)
