@@ -32,7 +32,7 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            //gameState.RunGame(gameTime);
+            gameState.RunGame(gameTime);
             menuController.Update(gameTime);
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));

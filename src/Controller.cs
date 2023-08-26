@@ -22,15 +22,9 @@ namespace NetworkIO.src
 
         public Controller(List<Entity> entities)
         {
-            this.entities = entities;
             this.collisionDetector = new CollidableCircle(Position, Radius);
             projectiles = new List<Queue<Projectile>>();
-            foreach (Entity e in entities)
-                if(e is Shooter s)
-                    projectiles.Add(s.Projectiles);
-            UpdatePosition();
-            UpdateRadius();
-            ApplyInternalGravity();
+            SetEntities(entities);
         }
 
         public void SetEntities(List<Entity> newEntities)
@@ -53,7 +47,10 @@ namespace NetworkIO.src
                 entities.Add(e);
                 if (e is Shooter s)
                     projectiles.Add(s.Projectiles);
+                UpdatePosition();
+                UpdateRadius();
             }
+            
         }
 
         public void MoveTo(Vector2 newPosition)
