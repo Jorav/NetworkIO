@@ -28,9 +28,18 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            if (input.leftMBClicked)
+            {
+                Entity clickedE = controller.MouseOnEntity();
+                if(clickedE == null)
+                    game.ChangeState(previousState);
+            }
             if (input.BuildClicked)
             {
-                game.ChangeState(previousState);
+                gameState.Player.SetEntities(previousState.controller.entities);
+                gameState.Player.MoveTo(gameState.Player.Position);
+                game.ChangeState(gameState);
+                gameState.Player.actionsLocked = false;
             }
         }
     }

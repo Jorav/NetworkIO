@@ -17,7 +17,7 @@ namespace NetworkIO.src
         public Keys Build { get; set; }
         public Vector2 MousePositionGameCoords { get { return (Mouse.GetState().Position.ToVector2() / Camera.Zoom - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2) / Camera.Zoom + Camera.Position); } }
         private bool pauseDown;
-        public bool PauseClicked
+        public bool PauseClicked //OBS, new state of button needs to change each update
         {
             get
             {
@@ -32,7 +32,7 @@ namespace NetworkIO.src
             }
         }
         private bool buildDown;
-        public bool BuildClicked
+        public bool BuildClicked //OBS, new state of button needs to change each update
         {
             get
             {
@@ -44,6 +44,21 @@ namespace NetworkIO.src
                 }
                 buildDown = newBuildDown;
                 return buildClicked;
+            }
+        }
+        private bool leftMBDown;
+        public bool leftMBClicked //OBS, new state of button needs to change each update
+        {
+            get
+            {
+                bool leftMBClicked = false;
+                bool newLeftMBDown = Mouse.GetState().LeftButton == ButtonState.Pressed;
+                if (leftMBDown && !newLeftMBDown)
+                {
+                    leftMBClicked = true;
+                }
+                leftMBDown = newLeftMBDown;
+                return leftMBClicked;
             }
         }
     }

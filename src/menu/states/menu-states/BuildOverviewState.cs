@@ -43,10 +43,12 @@ namespace NetworkIO.src.menu.states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Entity clickedE = controller.EntityClicked();
-            if (clickedE != null)
-            {
-                game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<Entity>() { clickedE }))); //obs, save build states?
+            if (input.leftMBClicked) { 
+                Entity clickedE = controller.MouseOnEntity();
+                if (clickedE != null)
+                {
+                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<Entity>() { clickedE }))); //obs, save build states?
+                }
             }
             //playerCopy.Update(gameTime);
             //if(gameState.Player.)
@@ -55,7 +57,6 @@ namespace NetworkIO.src.menu.states
                 gameState.Player.SetEntities(controller.entities);
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
-                gameState.Player.Camera.InBuildScreen = false;
                 gameState.Player.actionsLocked = false;
             }
         }

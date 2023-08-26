@@ -19,9 +19,6 @@ namespace NetworkIO.src.menu.states.menu_states
             foreach (Entity e in controller.entities)
                 entities.Add((Entity)e.Clone());
             this.controller = new MenuController(entities);
-            this.controller.MoveTo(new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2));//or preferably center
-
-            //gameState.Player.Camera.InBuildScreen = true;
             gameState.Player.actionsLocked = true;
         }
 

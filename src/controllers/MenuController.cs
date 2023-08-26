@@ -10,7 +10,6 @@ namespace NetworkIO.src.controllers
     public class MenuController : Controller
     {
         public Camera Camera { get; private set; }
-        bool leftMBDown;
         public MenuController(List<Entity> entities) : base(entities)
         {
             Camera = new Camera(this);
@@ -26,17 +25,11 @@ namespace NetworkIO.src.controllers
         /**
          * returns the entity clicked by player, null if no entity was clicked
          */
-        public Entity EntityClicked()
+        public Entity MouseOnEntity()
         {
-            bool leftMBDown = Mouse.GetState().LeftButton == ButtonState.Pressed;
-            if (!this.leftMBDown && leftMBDown)
-            {
-                this.leftMBDown = leftMBDown;
-                foreach (Entity e in entities)
-                    if (e.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
-                        return e;
-            }
-            this.leftMBDown = leftMBDown;
+            foreach (Entity e in entities)
+                if (e.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
+                    return e;
             return null;
         }
     }

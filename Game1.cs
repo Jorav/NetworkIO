@@ -31,6 +31,13 @@ namespace NetworkIO
             nextState = state;
         }
 
+        public State GetNextState()
+        {
+            if (nextState == null)
+                return currentState;
+            return nextState;
+        }
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);

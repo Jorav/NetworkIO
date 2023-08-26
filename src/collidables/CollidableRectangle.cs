@@ -89,20 +89,21 @@ namespace NetworkIO.src.collidables
 
         public bool Contains(Vector2 position)
         {
-            List<float> xVals = new List<float>(new float[] { UL.X, DL.X, DR.X, UR.X });
-            List<float> yVals = new List<float>(new float[] { UL.Y, DL.Y, DR.Y, UR.Y });
-            return xVals.Max() > position.X && xVals.Min() < position.X && yVals.Max() > position.Y && yVals.Min() < position.Y;
+            Vector2 AM = position - UL;
+            Vector2 AD = DL - UL;
+            Vector2 AB = UR - UL;
+            return 0 <= Vector2.Dot(AM, AB) && Vector2.Dot(AM, AB) <= Vector2.Dot(AB, AB) && 0 <= Vector2.Dot(AM, AD) && Vector2.Dot(AM, AD) <= Vector2.Dot(AD, AD);
         }
 
         public bool ContainsInSpace(Vector2 positionInM, Matrix m)
         {
             Vector2 UL = Vector2.Transform(this.UL, m);
             Vector2 DL = Vector2.Transform(this.DL, m);
-            Vector2 DR = Vector2.Transform(this.DR, m);
             Vector2 UR = Vector2.Transform(this.UR, m);
-            List<float> xVals = new List<float>(new float[] { UL.X, DL.X, DR.X, UR.X });
-            List<float> yVals = new List<float>(new float[] { UL.Y, DL.Y, DR.Y, UR.Y });
-            return xVals.Max() > positionInM.X && xVals.Min() < positionInM.X && yVals.Max() > positionInM.Y && yVals.Min() < positionInM.Y;
+            Vector2 AM = positionInM - UL;
+            Vector2 AD = DL - UL;
+            Vector2 AB = UR - UL;
+            return 0 <= Vector2.Dot(AM, AB) && Vector2.Dot(AM,AB) <= Vector2.Dot(AB,AB) && 0 <= Vector2.Dot(AM,AD) && Vector2.Dot(AM,AD) <= Vector2.Dot(AD,AD);
         }
 
         public bool CollidesWithRectangle(CollidableRectangle r)

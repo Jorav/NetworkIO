@@ -92,7 +92,7 @@ namespace NetworkIO.src
                     if (e1.IsVisible && e2.IsVisible)
                     {
                         float r = Vector2.Distance(e1.Position, e2.Position);
-                        if (e1 != e2 && r<100)
+                        if (e1 != e2 && r<100 && r!=0)
                         {
                             if (r < 10)
                                 r = 10;
