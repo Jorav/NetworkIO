@@ -100,7 +100,7 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create( new Vector2(300,300), IDs.SHOOTER),
                     })
             );
-            controllers.Add(new Controller( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
+            controllers.Add(new EntityController( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
                     new List<Entity>()
                     {
                         EntityFactory.Create( new Vector2(123,325), IDs.SHOOTER),

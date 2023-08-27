@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class CircularAI : Controller
+    public class CircularAI : EntityController
     {
         public CircularAI(List<Entity> entities) : base(entities)
         {

@@ -30,7 +30,7 @@ namespace NetworkIO.src
             if (InBuildScreen)
                 Zoom = (Game1.ScreenHeight + 2 * controller.Radius) / Game1.ScreenHeight;
             else
-                Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
+                Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 1 * controller.Radius);
             Rotation = 0;
             InBuildScreen = inBuildScreen;
             UpdateTransformMatrix();

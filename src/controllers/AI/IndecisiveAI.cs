@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class IndecisiveAI : Controller
+    public class IndecisiveAI : EntityController
     {
         Random r;
         public IndecisiveAI(List<Entity> entities) : base(entities)

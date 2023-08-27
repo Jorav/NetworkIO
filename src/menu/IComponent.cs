@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NetworkIO.src.menu
 {
-    public interface Component
+    public interface IComponent
     {
         public abstract void Draw(SpriteBatch spritebatch);
 

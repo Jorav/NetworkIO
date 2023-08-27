@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using System;
 using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
-    public class Player : Controller
+    public class Player : EntityController
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }

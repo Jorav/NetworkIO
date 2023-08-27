@@ -5,7 +5,7 @@ using System;
 
 namespace NetworkIO.src
 {
-    public class Sprite : Component
+    public class Sprite : IComponent
     {
         private Texture2D texture;
         public float Scale { get; set; }

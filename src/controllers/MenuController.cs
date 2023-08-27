@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class MenuController : Controller
+    public class MenuController : EntityController
     {
         public Camera Camera { get; private set; }
         public MenuController(List<Entity> entities) : base(entities)

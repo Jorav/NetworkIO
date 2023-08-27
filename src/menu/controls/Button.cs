@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NetworkIO.src.menu.controls
 {
-    public class Button : Component
+    public class Button : IComponent
     {
         #region Fields
         private MouseState currentMouse;

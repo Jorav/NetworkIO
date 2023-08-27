@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class RandomAI : Controller
+    public class RandomAI : EntityController
     {
         Random r;
         public RandomAI(List<Entity> entities) : base(entities)

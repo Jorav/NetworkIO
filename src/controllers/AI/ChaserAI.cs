@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    class ChaserAI : Controller
+    class ChaserAI : EntityController
     {
         private Controller enemy;
         public ChaserAI(List<Entity> entities, Controller enemy) : base(entities) //TODO: Change enemy targeting to something smarter

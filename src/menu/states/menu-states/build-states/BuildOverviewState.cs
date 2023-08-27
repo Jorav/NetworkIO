@@ -58,7 +58,7 @@ namespace NetworkIO.src.menu.states
                 Entity clickedE = menuController.MouseOnEntity();
                 if (clickedE != null)
                 {
-                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<Entity>() { clickedE }))); //obs, save build states?
+                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new EntityController(new List<Entity>() { clickedE }))); //obs, save build states?
                 }
             }
             //playerCopy.Update(gameTime);

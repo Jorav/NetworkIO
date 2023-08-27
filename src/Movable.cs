@@ -72,11 +72,16 @@ namespace NetworkIO.src
 
         public void RotateTo(Vector2 position)
         {
-            Vector2 p = position - Position;
-            if (p.X >= 0)
-                Rotation = (float)Math.Atan(p.Y / p.X);
+            RotateTo(position, Position);
+        }
+
+        public void RotateTo(Vector2 p, Vector2 p0)
+        {
+            Vector2 position = p - p0;
+            if (position.X >= 0)
+                Rotation = (float)Math.Atan(position.Y / position.X);
             else
-                Rotation = (float)Math.Atan(p.Y / p.X) - MathHelper.ToRadians(180);
+                Rotation = (float)Math.Atan(position.Y / position.X) - MathHelper.ToRadians(180);
         }
 
         public virtual object Clone()

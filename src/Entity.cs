@@ -5,6 +5,7 @@ using NetworkIO.src.entities;
 using NetworkIO.src.factories;
 using NetworkIO.src.menu;
 using System;
+using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
@@ -25,6 +26,7 @@ namespace NetworkIO.src
         public float Height { get { return sprite.Height; } }
         public float Health { get { return health; } set { health = value; if(value<=0) Die(); } }
         protected float health;
+        public List<Link> Links { get; private set; }
 
         public Entity(Sprite sprite, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 100, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
@@ -35,6 +37,15 @@ namespace NetworkIO.src
             IsVisible = isVisible;
             IsCollidable = isCollidable;
             Origin = new Vector2(Width / 2, Height / 2);
+            Links = new List<Link>();
+            AddLinks();
+        }
+
+        protected virtual void AddLinks()
+        {
+            if (Links.Count > 0)
+                Links.Clear();
+            Links.Add(new Link(new Vector2(-Width/2, 0)));
         }
 
         public virtual void Draw(SpriteBatch sb)
@@ -96,15 +107,29 @@ namespace NetworkIO.src
             return eNew;
         }
 
-        protected class Link
+        public class Link
         {
-            Link connection;
-            float relativeRotation;
+            Link connection; //links to other entities
+            Vector2 relativePosition; //position in relation to the entity its on
 
-            public Link(Link connection = null, float relativeRotation = (float)Math.PI)
+            public Link(Vector2 relativePosition, Link connection = null)
             {
+                if (relativePosition.Length() == 0)
+                    throw new ArgumentException();
+
+                this.relativePosition = relativePosition;
                 this.connection = connection;
-                this.relativeRotation = relativeRotation;
+            }
+
+            public void Connect(Link l)
+            {
+                connection = l;
+                l.connection = this;
+            }
+
+            public bool ConnectionAvailable()
+            {
+                return connection.Equals(null);
             }
         }
     }

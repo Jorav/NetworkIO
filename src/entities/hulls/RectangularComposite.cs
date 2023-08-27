@@ -13,6 +13,17 @@ namespace NetworkIO.src.entities.hulls
         {
         }
 
+        protected override void AddLinks()
+        {
+            if (Links.Count > 0)
+                Links.Clear();
+            Links.Add(new Link(new Vector2(-Width / 2, 0)));
+            Links.Add(new Link(new Vector2(0, -Height/2)));
+            Links.Add(new Link(new Vector2(Width / 2, 0)));
+            Links.Add(new Link(new Vector2(0, Height / 2)));
+        }
+
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
