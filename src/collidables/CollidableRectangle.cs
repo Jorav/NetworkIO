@@ -71,7 +71,7 @@ namespace NetworkIO.src.collidables
         public bool CollidesWith(ICollidable c)
         {
             if (c is CollidableRectangle cR)
-                return CollidesWithRectangle((CollidableRectangle) cR);
+                return CollidesWithRectangle(cR);
             if (c is CollidableCircle cc)
                 return CollidesWithCircle(cc);
             throw new NotImplementedException();
@@ -79,8 +79,11 @@ namespace NetworkIO.src.collidables
 
         private bool CollidesWithCircle(CollidableCircle cc) //NOT TESTED
         {
-            float deltaX = cc.Position.X - Math.Max(Position.X - Width / 2, Math.Min(cc.Position.X, Position.X + Width / 2));
-            float deltaY = cc.Position.Y - Math.Max(Position.Y, Math.Min(cc.Position.Y - Height / 2, Position.Y + Height / 2));
+            Vector2 unrotatedCircle = new Vector2(
+                (float)(Math.Cos(rotation) * (cc.Position.X - Position.X) - Math.Sin(rotation) * (cc.Position.Y - Position.Y) + Position.X),
+                (float)(Math.Sin(rotation) * (cc.Position.X - Position.X) + Math.Cos(rotation) * (cc.Position.Y - Position.Y) + Position.Y));
+            float deltaX = unrotatedCircle.X - Math.Max(Position.X - Width / 2, Math.Min(unrotatedCircle.X, Position.X + Width / 2));
+            float deltaY = unrotatedCircle.Y - Math.Max(Position.Y, Math.Min(unrotatedCircle.Y - Height / 2, Position.Y + Height / 2));
             return (deltaX * deltaX + deltaY * deltaY) <= (cc.Radius * cc.Radius);
         }
 
