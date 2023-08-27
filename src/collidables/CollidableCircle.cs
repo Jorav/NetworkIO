@@ -20,10 +20,18 @@ namespace NetworkIO.src.collidables
         {
             if (c is CollidableCircle cc)
                 return CollidesWithCircle(cc);
-            //TODO: implementera för rektabgel
+            if (c is CollidableRectangle cr)
+                return CollidesWithRectangle(cr);
             throw new NotImplementedException();
         }
-        
+
+        public bool CollidesWithRectangle(CollidableRectangle cr) //NOT TESTED
+        {
+            float deltaX = Position.X - Math.Max(cr.Position.X-cr.Width/2, Math.Min(Position.X, cr.Position.X + cr.Width/2));
+            float deltaY = Position.Y - Math.Max(cr.Position.Y, Math.Min(Position.Y - cr.Height/2, cr.Position.Y + cr.Height/2));
+            return (deltaX * deltaX + deltaY * deltaY) <= (Radius * Radius);
+        }
+
         //TODO: dubbelkolla att detta stämmer
         private bool CollidesWithCircle(CollidableCircle c)
         {

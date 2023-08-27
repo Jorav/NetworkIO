@@ -7,7 +7,7 @@ using System.Text;
 namespace NetworkIO.src.collidables
 {
     //OBS: Old heritage, god knows how this works
-    class CollidableRectangle : ICollidable
+    public class CollidableRectangle : ICollidable
     {
         private Vector2 UL { get; set; }
         private Vector2 DL { get; set; }
@@ -72,8 +72,16 @@ namespace NetworkIO.src.collidables
         {
             if (c is CollidableRectangle cR)
                 return CollidesWithRectangle((CollidableRectangle) cR);
-            //TODO: Implement collisioncheck for circle
+            if (c is CollidableCircle cc)
+                return CollidesWithCircle(cc);
             throw new NotImplementedException();
+        }
+
+        private bool CollidesWithCircle(CollidableCircle cc) //NOT TESTED
+        {
+            float deltaX = cc.Position.X - Math.Max(Position.X - Width / 2, Math.Min(cc.Position.X, Position.X + Width / 2));
+            float deltaY = cc.Position.Y - Math.Max(Position.Y, Math.Min(cc.Position.Y - Height / 2, Position.Y + Height / 2));
+            return (deltaX * deltaX + deltaY * deltaY) <= (cc.Radius * cc.Radius);
         }
 
         private void UpdateRotation()
