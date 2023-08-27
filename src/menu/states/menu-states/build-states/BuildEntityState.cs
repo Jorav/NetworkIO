@@ -13,13 +13,13 @@ namespace NetworkIO.src.menu.states.menu_states
         public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, BuildOverviewState previousState, Controller controller) : base(game, graphicsDevice, content, gameState, input, controller)
         {
             this.previousState = previousState;
-            components = new List<Component>();
+            components = new List<IComponent>();
 
             Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
             background.Scale = background.Height / Game1.ScreenHeight;
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
 
-            components = new List<Component>()
+            components = new List<IComponent>()
             {
                 background,
             };

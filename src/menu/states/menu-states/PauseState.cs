@@ -58,7 +58,7 @@ namespace NetworkIO.src.menu.states
             };
             quitGameButton.Click += QuitGameButton_Click;
 
-            components = new List<Component>()
+            components = new List<IComponent>()
             {
                 background,
                 continueButton,

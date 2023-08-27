@@ -9,14 +9,14 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    public abstract class Controller : Component
+    public abstract class Controller : IComponent, ICollidable
     {
         public List<Entity> entities { get; protected set; }
         public CollidableCircle collisionDetector;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
-        public Vector2 Position { get { return position; } protected set { position = value; collisionDetector.Position = value; } }
+        public Vector2 Position { get { return position; } set { position = value; collisionDetector.Position = value; } }
         protected Vector2 position;
 
         public Controller(List<Entity> entities)
@@ -97,7 +97,7 @@ namespace NetworkIO.src
 
         public virtual void Collide(Controller c)
         {
-            if (collisionDetector.CollidesWith(c.collisionDetector))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
+            if (CollidesWith(c))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
                 foreach (Entity e in entities)
                     foreach (Entity eC in c.entities)
                         e.Collide(eC);
@@ -111,6 +111,21 @@ namespace NetworkIO.src
                 cNew.entities.Add((Entity)e.Clone());
             cNew.collisionDetector = new CollidableCircle(Position, radius);
             return cNew;
+        }
+
+        public bool CollidesWith(ICollidable c)
+        {
+            if(c is Controller)
+                return collisionDetector.CollidesWith(((Controller)c).collisionDetector);
+            if (c is Entity && collisionDetector.CollidesWith(((Entity)c).collisionDetector))
+            {
+                bool collides = false;
+                foreach (Entity e in entities)
+                    if (e.CollidesWith((Entity)c))
+                        collides = true;
+                return collides;
+            }
+            return false;
         }
     }
 }

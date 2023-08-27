@@ -33,7 +33,7 @@ namespace NetworkIO.src.menu.states
             addEntityButton.Click += AddEntityButton_Click;
             resetEntityButton.Click += ResetEntityButton_Click;
 
-            components = new List<Component>()
+            components = new List<IComponent>()
             {                
                 background,
                 //controller,

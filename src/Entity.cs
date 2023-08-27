@@ -9,14 +9,14 @@ using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
-    public class Entity : Movable, Component
+    public class Entity : Movable, IComponent, ICollidable
     {
         public float Elasticity;
         public bool IsVisible { get; set; }
         public bool IsCollidable { get; set; }
 
         protected Sprite sprite = null;
-        private CollidableRectangle collisionDetector;
+        public CollidableRectangle collisionDetector;
 
         public override Vector2 Position { get { return position; } set{ position = value; sprite.Position = value; collisionDetector.Position = value; } }
         public override float Rotation { get { return rotation; } set { rotation = value; sprite.Rotation = value; collisionDetector.Rotation = value; } }
@@ -105,6 +105,15 @@ namespace NetworkIO.src
             eNew.Velocity = Vector2.Zero;
             eNew.TotalExteriorForce = Vector2.Zero;
             return eNew;
+        }
+
+        public bool CollidesWith(ICollidable c)
+        {
+            if(c is Entity ce)
+                return IsCollidable && ce.IsCollidable && collisionDetector.CollidesWith(ce.collisionDetector);
+            if (c is Controller cc)
+                return cc.CollidesWith(this);
+            return false;
         }
 
         public class Link
