@@ -17,7 +17,7 @@ namespace NetworkIO.src.menu.states.game_states
         {
 
             Player = new Player(
-            new List<Entity>()
+            new List<ICollidable>()
             {
                         /**
                         new Shooter(new Sprite(textureSprayGun), new Vector2(0,0),
@@ -31,10 +31,10 @@ namespace NetworkIO.src.menu.states.game_states
                 //EntityFactory.Create(new Vector2(20,20), IDs.SHOOTER),
 
             }, input);
-            ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
-            ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
-            ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
-            ((RectangularComposite)Player.entities[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
+            ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
+            ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
+            ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
+            ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
             
             /*Player = new Player(
             new List<Entity>()
@@ -50,7 +50,7 @@ namespace NetworkIO.src.menu.states.game_states
 
             controllers.Add(
                 new WrappingBackground(
-                    new List<Entity>()
+                    new List<ICollidable>()
                     {
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
@@ -69,7 +69,7 @@ namespace NetworkIO.src.menu.states.game_states
             controllers.Add(Player);
 
             controllers.Add(new ChaserAI(
-                     new List<Entity>()
+                     new List<ICollidable>()
                      {
                         EntityFactory.Create(new Vector2(-100,-100),IDs.SHOOTER),
                         EntityFactory.Create(new Vector2(-200,-200),IDs.SHOOTER),
@@ -77,7 +77,7 @@ namespace NetworkIO.src.menu.states.game_states
                      }, Player)
              );
             controllers.Add(new IndecisiveAI(
-                    new List<Entity>()
+                    new List<ICollidable>()
                     {
                         EntityFactory.Create( new Vector2(467,213), IDs.SHOOTER),
                         EntityFactory.Create( new Vector2(212,512), IDs.SHOOTER),
@@ -85,7 +85,7 @@ namespace NetworkIO.src.menu.states.game_states
                     })
             );
             controllers.Add(new RandomAI(
-                    new List<Entity>()
+                    new List<ICollidable>()
                     {
                         EntityFactory.Create( new Vector2(886,1243), IDs.SHOOTER),
                         EntityFactory.Create( new Vector2(241,253), IDs.SHOOTER),
@@ -93,15 +93,15 @@ namespace NetworkIO.src.menu.states.game_states
                     })
             );
             controllers.Add(new CircularAI(
-                    new List<Entity>()
+                    new List<ICollidable>()
                     {
                         EntityFactory.Create( new Vector2(200,500), IDs.SHOOTER),
                         EntityFactory.Create( new Vector2(600,600), IDs.SHOOTER),
                         EntityFactory.Create( new Vector2(300,300), IDs.SHOOTER),
                     })
             );
-            controllers.Add(new EntityController( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
-                    new List<Entity>()
+            controllers.Add(new CollidablesController( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
+                    new List<ICollidable>()
                     {
                         EntityFactory.Create( new Vector2(123,325), IDs.SHOOTER),
                         EntityFactory.Create( new Vector2(325,325), IDs.SHOOTER),
@@ -110,7 +110,7 @@ namespace NetworkIO.src.menu.states.game_states
             );
             backgrounds = new List<Background>(){
                 new WrappingBackground(
-                    new List<Entity>()
+                    new List<ICollidable>()
                     {
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),

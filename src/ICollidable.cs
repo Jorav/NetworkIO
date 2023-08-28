@@ -1,13 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetworkIO.src
 {
-    public interface ICollidable
+    public interface ICollidable : IIntersectable
     {
-        public Vector2 Position { get; set; }
-        public bool CollidesWith(ICollidable c);
+        public void Collide(ICollidable c);
+        public void Update(GameTime gameTime);
     }
 }

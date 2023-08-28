@@ -7,14 +7,14 @@ using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
-    public class Player : EntityController
+    public class Player : CollidablesController
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
         public bool actionsLocked;
         
         
-        public Player(List<Entity> entities, Input input) : base(entities)
+        public Player(List<ICollidable> collidables, Input input) : base(collidables)
         {
             this.Input = input;
             Camera = new Camera(this);
@@ -39,13 +39,13 @@ namespace NetworkIO.src
         private void Shoot(GameTime gameTime)
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                foreach (Entity e in entities)
+                foreach (Entity e in collidables)
                     if(e is Shooter gun)
                         gun.Shoot(gameTime);
         }
         protected void Rotate()
         {
-            foreach (Entity e in entities)
+            foreach (Entity e in collidables)
                 e.RotateTo(Input.MousePositionGameCoords);
         }
         protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
@@ -82,7 +82,7 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (Entity e in entities)
+                foreach (Entity e in collidables)
                     e.Accelerate(accelerationVector, e.Thrust);
             }
         }

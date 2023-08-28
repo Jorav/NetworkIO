@@ -7,7 +7,7 @@ using System.Text;
 namespace NetworkIO.src.collidables
 {
     //OBS: Old heritage, god knows how this works
-    public class CollidableRectangle : ICollidable
+    public class CollidableRectangle : IIntersectable
     {
         private Vector2 UL { get; set; }
         private Vector2 DL { get; set; }
@@ -56,6 +56,8 @@ namespace NetworkIO.src.collidables
             }
             get { return rotation; }
         }
+        public float Radius { get { return (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2)); } }
+
         public CollidableRectangle(Vector2 position, float rotation, int width, int height)
         {
             UL = new Vector2(position.X, position.Y);
@@ -68,7 +70,7 @@ namespace NetworkIO.src.collidables
             origin = new Vector2(Width / 2, Height / 2);
             Rotation = rotation;
         }
-        public bool CollidesWith(ICollidable c)
+        public bool CollidesWith(IIntersectable c)
         {
             if (c is CollidableRectangle cR)
                 return CollidesWithRectangle(cR);
@@ -145,6 +147,11 @@ namespace NetworkIO.src.collidables
             axes[2] = new Vector2(r.UL.X - r.DL.X, r.UL.Y - r.DL.Y);
             axes[3] = new Vector2(r.UL.X - r.UR.X, r.UL.Y - r.UR.Y);
             return axes;
+        }
+
+        public void Collide(IIntersectable c) //TEMPORARY, THESE SHOULD NOT COLLIDE DIRECTLY (or be part of ICollide interface)
+        {
+            throw new NotImplementedException();
         }
     }
 }

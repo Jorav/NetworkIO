@@ -5,10 +5,10 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class RandomAI : EntityController
+    public class RandomAI : CollidablesController
     {
         Random r;
-        public RandomAI(List<Entity> entities) : base(entities)
+        public RandomAI(List<ICollidable> collidables) : base(collidables)
         {
             r = new Random();
 
@@ -23,7 +23,7 @@ namespace NetworkIO.src.controllers
         protected void Accelerate()
         {
             double angle = r.NextDouble() * Math.PI * 2;
-            foreach (Entity e in entities)
+            foreach (Entity e in collidables)
             {
                     Vector2 accelerationVector = new Vector2((float)Math.Cos(angle), (float) Math.Sin(angle));
                     accelerationVector.Normalize();

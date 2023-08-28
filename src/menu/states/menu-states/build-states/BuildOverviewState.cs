@@ -44,11 +44,11 @@ namespace NetworkIO.src.menu.states
 
         private void AddEntityButton_Click(object sender, EventArgs e)
         {
-            menuController.entities.Add(EntityFactory.Create(menuController.Position, IDs.SHOOTER));
+            menuController.AddCollidable(EntityFactory.Create(menuController.Position, IDs.SHOOTER));
         }
         private void ResetEntityButton_Click(object sender, EventArgs e)
         {
-            menuController.SetEntities(CopyEntitiesFromController(controllerEdited));
+            menuController.SetCollidables(CopyEntitiesFromController(controllerEdited));
         }
 
         public override void Update(GameTime gameTime)
@@ -58,14 +58,14 @@ namespace NetworkIO.src.menu.states
                 Entity clickedE = menuController.MouseOnEntity();
                 if (clickedE != null)
                 {
-                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new EntityController(new List<Entity>() { clickedE }))); //obs, save build states?
+                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new CollidablesController(new List<ICollidable>() { clickedE }))); //obs, save build states?
                 }
             }
             //playerCopy.Update(gameTime);
             //if(gameState.Player.)
             if (input.BuildClicked)
             {
-                gameState.Player.SetEntities(menuController.entities);
+                gameState.Player.SetCollidables(menuController.collidables); // OBS this needs edit in the future to handle stacked controllers
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
                 gameState.Player.actionsLocked = false;

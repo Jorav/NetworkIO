@@ -9,7 +9,7 @@ namespace NetworkIO.src.entities.hulls
     public class RectangularComposite : Composite
     {
 
-        public RectangularComposite(Sprite sprite, Vector2 position, CompositeController controller = null) : base(sprite, position)
+        public RectangularComposite(Sprite sprite, Vector2 position, EntityController controller = null) : base(sprite, position)
         {
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.collidables
 {
-    public class CollidableCircle : ICollidable
+    public class CollidableCircle : IIntersectable
     {
         public Vector2 Position { set; get; }
         public float Radius { set; get; }
@@ -16,7 +16,7 @@ namespace NetworkIO.src.collidables
             Radius = radius;
         }
 
-        public bool CollidesWith(ICollidable c)
+        public bool CollidesWith(IIntersectable c)
         {
             if (c is CollidableCircle cc)
                 return CollidesWithCircle(cc);
@@ -39,6 +39,11 @@ namespace NetworkIO.src.collidables
         private bool CollidesWithCircle(CollidableCircle c)
         {
             return Math.Sqrt(Math.Pow((double)(Position.X) - (double)(c.Position.X), 2) + Math.Pow((double)(Position.Y) - (double)(c.Position.Y), 2)) <= (Radius + c.Radius);
+        }
+
+        public void Collide(IIntersectable c) //TEMPORARY, THESE SHOULD NOT COLLIDE DIRECTLY (or be part of ICollide interface)
+        {
+            throw new NotImplementedException();
         }
     }
 }

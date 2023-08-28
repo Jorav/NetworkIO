@@ -6,14 +6,14 @@ namespace NetworkIO
 {
     public class WrappingBackground : Background
     {
-        public WrappingBackground(List<Entity> entities, float relativeSpeed, Camera camera) : base(entities, relativeSpeed, camera)
+        public WrappingBackground(List<ICollidable> collidables, float relativeSpeed, Camera camera) : base(collidables, relativeSpeed, camera)
         {
         }
         
         public override void Update(GameTime gameTime) //OBS: assumes background sprites not rotated
         {
             base.Update(gameTime);
-            foreach (Entity e in entities)
+            foreach (Entity e in collidables)
             {
                 float positionX = e.Position.X;
                 float positionY = e.Position.Y;

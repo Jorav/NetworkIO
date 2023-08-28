@@ -36,7 +36,7 @@ namespace NetworkIO.src.menu.states.menu_states
             }
             if (input.BuildClicked)
             {
-                gameState.Player.SetEntities(previousState.menuController.entities);
+                gameState.Player.SetCollidables(previousState.menuController.collidables); //OBS this needs edit in the future to handle stacked controllers
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
                 gameState.Player.actionsLocked = false;

@@ -21,7 +21,7 @@ namespace NetworkIO.src.menu.states
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
-            Player = new Player(new List<Entity>(), input);
+            Player = new Player(new List<ICollidable>(), input);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

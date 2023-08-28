@@ -26,6 +26,7 @@ namespace NetworkIO.src
         public float Height { get { return sprite.Height; } }
         public float Health { get { return health; } set { health = value; if(value<=0) Die(); } }
         protected float health;
+        public float Radius { get { return collisionDetector.Radius; } }
         public List<Link> Links { get; private set; }
 
         public Entity(Sprite sprite, Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 100, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
@@ -97,6 +98,15 @@ namespace NetworkIO.src
             }
         }
 
+        public void Collide(ICollidable c)
+        {
+            if (c is Entity e)
+                Collide(e);
+            if (c is Controller)
+                foreach (ICollidable cc in ((Controller)c).collidables)
+                    Collide(cc);
+        }
+
         public override object Clone()
         {
             Entity eNew = (Entity)this.MemberwiseClone();
@@ -107,7 +117,7 @@ namespace NetworkIO.src
             return eNew;
         }
 
-        public bool CollidesWith(ICollidable c)
+        public bool CollidesWith(IIntersectable c)
         {
             if(c is Entity ce)
                 return IsCollidable && ce.IsCollidable && collisionDetector.CollidesWith(ce.collisionDetector);

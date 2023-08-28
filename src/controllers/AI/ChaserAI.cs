@@ -5,10 +5,10 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    class ChaserAI : EntityController
+    class ChaserAI : CollidablesController
     {
         private Controller enemy;
-        public ChaserAI(List<Entity> entities, Controller enemy) : base(entities) //TODO: Change enemy targeting to something smarter
+        public ChaserAI(List<ICollidable> collidables, Controller enemy) : base(collidables) //TODO: Change enemy targeting to something smarter
         {
             this.enemy = enemy;
         }
@@ -20,17 +20,22 @@ namespace NetworkIO.src.controllers
         }
         protected void Rotate()
         {
-            foreach (Entity e in entities)
+            foreach (Entity e in collidables)
                 if(e.IsVisible)
-                    e.RotateTo(enemy.entities[0].Position);
+                    e.RotateTo(enemy.collidables[0].Position);
         }
         protected void Accelerate()
         {
-            foreach (Entity e in entities)
+            foreach (Entity e in collidables)
             {
-                    Vector2 accelerationVector = enemy.entities[0].Position + enemy.entities[0].Velocity - (e.Position + e.Velocity);
-                    accelerationVector.Normalize();
-                    e.Accelerate(accelerationVector, e.Thrust);
+                Vector2 accelerationVector;
+                if(enemy.collidables[0] is Entity)
+                    accelerationVector = enemy.collidables[0].Position + ((Entity)(enemy.collidables[0])).Velocity - (e.Position + e.Velocity);
+                else
+                    accelerationVector = enemy.collidables[0].Position - (e.Position + e.Velocity);
+
+                accelerationVector.Normalize();
+                e.Accelerate(accelerationVector, e.Thrust);
             }
         }
     }
