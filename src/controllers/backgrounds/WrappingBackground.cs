@@ -6,7 +6,7 @@ namespace NetworkIO
 {
     public class WrappingBackground : Background
     {
-        public WrappingBackground(List<ICollidable> collidables, float relativeSpeed, Camera camera) : base(collidables, relativeSpeed, camera)
+        public WrappingBackground(List<src.ICollidable> collidables, float relativeSpeed, Camera camera) : base(collidables, relativeSpeed, camera)
         {
         }
         

@@ -4,6 +4,7 @@ using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace NetworkIO.src
 {
@@ -20,14 +21,21 @@ namespace NetworkIO.src
             Camera = new Camera(this);
             Input.Camera = Camera;
         }
+        public Player(Input input, [OptionalAttribute]Vector2 position) : base()
+        {
+            this.Input = input;
+            Camera = new Camera(this);
+            Input.Camera = Camera;
+        }
 
         public override void Update(GameTime gameTime)
         {
             if (!actionsLocked)
             {
-                Rotate();
+                RotateTo(Input.MousePositionGameCoords);
                 Accelerate();
-                Shoot(gameTime);
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    Shoot(gameTime);
             }
             
             Camera.Update();
@@ -36,18 +44,7 @@ namespace NetworkIO.src
              * Rotate, calculate course, check collisions, update course, move, base.update
              */
         }
-        private void Shoot(GameTime gameTime)
-        {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                foreach (Entity e in collidables)
-                    if(e is Shooter gun)
-                        gun.Shoot(gameTime);
-        }
-        protected void Rotate()
-        {
-            foreach (Entity e in collidables)
-                e.RotateTo(Input.MousePositionGameCoords);
-        }
+
         protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
             if (Input == null)
@@ -82,8 +79,8 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (Entity e in collidables)
-                    e.Accelerate(accelerationVector, e.Thrust);
+                foreach (EntityController eC in collidables)
+                    eC.Accelerate(accelerationVector);
             }
         }
 

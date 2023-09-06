@@ -43,6 +43,11 @@ namespace NetworkIO.src
             TotalExteriorForce += new Vector2((float)Math.Cos((double)angle), (float)Math.Sin((double)angle)) * thrust;
         }
 
+        public void Accelerate(Vector2 directionalVector)
+        {
+            Accelerate(directionalVector, Thrust);
+        }
+
         /**
          * Recieved a directional vector and accelerates with a certain thrust
          */

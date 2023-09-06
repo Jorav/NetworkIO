@@ -8,8 +8,8 @@ namespace NetworkIO.src.menu
 {
     public interface IComponent
     {
-        public abstract void Draw(SpriteBatch spritebatch);
+        public void Draw(SpriteBatch spritebatch);
 
-        public abstract void Update(GameTime gameTime);
+        public void Update(GameTime gameTime);
     }
 }

@@ -11,7 +11,7 @@ namespace NetworkIO
     {
         protected float relativeSpeed; //1->0
         protected Camera camera;
-        public Background(List<ICollidable> collidables, float relativeSpeed, Camera camera) : base(collidables)
+        public Background(List<src.ICollidable> collidables, float relativeSpeed, Camera camera) : base(collidables)
         {
             this.relativeSpeed = relativeSpeed;
             this.camera = camera;

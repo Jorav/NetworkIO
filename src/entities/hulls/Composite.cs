@@ -10,16 +10,16 @@ namespace NetworkIO.src.entities.hulls
     public abstract class Composite : Entity
     {
         protected Entity[] components;
-        protected EntityController compositeController;
+        public EntityController EntityController { get; set; }
         protected int capacity;
 
         public Composite(Sprite sprite, Vector2 position, EntityController controller = null, int capacity = 4) : base(sprite, position)
         {
             this.capacity = capacity;
             if (controller == null)
-                this.compositeController = new EntityController(new List<ICollidable>() { this });
+                this.EntityController = new EntityController(new List<ICollidable>() { this });
             else
-                this.compositeController = controller;
+                this.EntityController = controller;
             components = new Entity[capacity];
         }
         /**
@@ -33,7 +33,7 @@ namespace NetworkIO.src.entities.hulls
 
         public void AddEntity(Entity e, int pos)
         {
-            compositeController.AddEntity(e);
+            EntityController.AddEntity(e);
             if (Links.Count > pos && e.Links.Count > 0)
                 Links[pos].Connect(e.Links[0]);
             else

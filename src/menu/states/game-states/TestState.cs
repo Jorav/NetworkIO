@@ -15,15 +15,15 @@ namespace NetworkIO.src.menu.states.game_states
     {
         public TestState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
-
-            Player = new Player(
+            Player = new Player(input);
+            /**Player = new Player(
             new List<ICollidable>()
             {
-                        /**
+                        
                         new Shooter(new Sprite(textureSprayGun), new Vector2(0,0),
                             new Projectile(new Sprite(textureProjectile), new Vector2(0,0))),
                         new Shooter(new Sprite(textureHullRotating), new Vector2(0,100),
-                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))*/
+                            new Projectile(new Sprite(textureProjectile), new Vector2(0,100)))
                         EntityFactory.Create(new Vector2(0,0), IDs.COMPOSITE)
 
                 //EntityFactory.Create(new Vector2(0,0), IDs.SHOOTER),
@@ -34,7 +34,7 @@ namespace NetworkIO.src.menu.states.game_states
             ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 0);
             ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 1);
             ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 2);
-            ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);
+            ((RectangularComposite)Player.collidables[0]).AddEntity(EntityFactory.Create(new Vector2(0, 0), IDs.SHOOTER), 3);*/
             
             /*Player = new Player(
             new List<Entity>()

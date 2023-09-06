@@ -26,6 +26,11 @@ namespace NetworkIO.src
             SetCollidables(collidables);
         }
 
+        public Controller()
+        {
+            this.collisionDetector = new CollidableCircle(Position, Radius);
+        }
+
         public virtual void SetCollidables(List<ICollidable> newCollidables)
         {
             if (newCollidables != null)
@@ -42,6 +47,14 @@ namespace NetworkIO.src
         }
 
         public abstract void AddCollidable(ICollidable c);
+
+        public abstract void Shoot(GameTime gameTime);
+
+        public void RotateTo(Vector2 position)
+        {
+            foreach (ICollidable c in collidables)
+                c.RotateTo(position);
+        }
 
         public void MoveTo(Vector2 newPosition)
         {
@@ -66,7 +79,7 @@ namespace NetworkIO.src
         }
 
         //TODO: make this work 
-        protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
+        protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list, TODO: only allow IsCollidable to affect this?
         {
             if (collidables.Count == 1)
             {
@@ -76,38 +89,34 @@ namespace NetworkIO.src
             else if (collidables.Count > 1)
             {
                 float largestDistance = 0;
-                foreach (Entity e in collidables)
+                foreach (ICollidable c in collidables)
                 {
-                    if (e.IsVisible)
-                    {
-                        float distance = Vector2.Distance(e.Position, Position)+(float)Math.Sqrt(Math.Pow(e.Width/2,2)+ Math.Pow(e.Height/2, 2));
-                        if (distance > largestDistance)
-                            largestDistance = distance;
-                    }
+                    float distance = Vector2.Distance(c.Position, Position)+c.Radius;
+                    if (distance > largestDistance)
+                        largestDistance = distance;
                 }
                 Radius = largestDistance;
             }
         }
         
-        protected void UpdatePosition()
+        protected void UpdatePosition() //TODO: only allow IsCollidable to affect this?
         {
             Vector2 sum = Vector2.Zero;
             int nrOfLiving = 0;
-            foreach (Entity e in collidables)
-                if (e.IsVisible)
-                {
-                    sum += e.Position;
-                    nrOfLiving++;
-                }
+            foreach (ICollidable c in collidables) 
+            { 
+                sum += c.Position;
+                nrOfLiving++;
+            }
             if(nrOfLiving > 0)  
                 sum /= nrOfLiving;
             Position = sum;
         }
 
-        public virtual void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb)
         {
-            foreach (Entity e in collidables)
-                e.Draw(sb);
+            foreach (ICollidable c in collidables)
+                c.Draw(sb);
         }
 
         public virtual void Collide(ICollidable collidable) // OBS - THIS NEEDS TO BE ADAPTED FOR ICOLLIDABLE
@@ -115,20 +124,6 @@ namespace NetworkIO.src
             if (CollidesWith(collidable))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
                 foreach (ICollidable c in collidables)
                     c.Collide(collidable);
-        }
-
-        public virtual object Clone()
-        {
-            Controller cNew = (Controller)this.MemberwiseClone();
-            cNew.collidables = new List<ICollidable>();
-            foreach (Entity e in collidables)
-                cNew.collidables.Add((Entity)e.Clone());
-            foreach (EntityController ec in collidables)
-                cNew.collidables.Add((Entity)ec.Clone());
-            foreach (CollidablesController cc in collidables)
-                cNew.collidables.Add((Entity)cc.Clone());
-            cNew.collisionDetector = new CollidableCircle(Position, radius);
-            return cNew;
         }
 
         public bool CollidesWith(IIntersectable c)
@@ -141,6 +136,23 @@ namespace NetworkIO.src
                         return true;
             return false;
         }
+
+        public void Accelerate(Vector2 directionalVector, float thrust)
+        {
+            foreach (ICollidable c in collidables)
+                c.Accelerate(directionalVector, thrust);
+        }
+
+        public virtual object Clone()
+        {
+            Controller cNew = (Controller)this.MemberwiseClone();
+            cNew.collidables = new List<ICollidable>();
+            foreach (ICollidable c in collidables)
+                cNew.AddCollidable((ICollidable)c.Clone());
+            cNew.collisionDetector = new CollidableCircle(Position, radius);
+            return cNew;
+        }
+
     }
 }
      

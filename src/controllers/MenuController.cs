@@ -27,7 +27,7 @@ namespace NetworkIO.src.controllers
         public Entity MouseOnEntity()
         {
             foreach (Entity e in collidables)
-                if (e.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
+                if (e.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform)) //if (c is EntityController ec && ec.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
                     return e;
             return null;
         }

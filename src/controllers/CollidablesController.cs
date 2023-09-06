@@ -1,7 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using NetworkIO.src.collidables;
 using NetworkIO.src.entities;
+using NetworkIO.src.entities.hulls;
+using NetworkIO.src.factories;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NetworkIO.src.controllers
@@ -11,6 +16,13 @@ namespace NetworkIO.src.controllers
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
         public CollidablesController(List<ICollidable> collidables) : base(collidables)
         {
+        }
+
+        public CollidablesController([OptionalAttribute]Vector2 position) : base(null)
+        {
+            if (position == null)
+                position = Vector2.Zero;
+            SetCollidables(new List<ICollidable>() { new EntityController(position) });
         }
 
         public override void Update(GameTime gameTime)
@@ -45,7 +57,12 @@ namespace NetworkIO.src.controllers
                     UpdateRadius();
                 }
             }
+        }
 
+        public override void Shoot(GameTime gameTime)
+        {
+            foreach (Controller c in collidables)
+                c.Shoot(gameTime);
         }
 
         public override void SetCollidables(List<ICollidable> newCollidables)
@@ -82,26 +99,22 @@ namespace NetworkIO.src.controllers
         protected void ApplyInternalGravity()
         {
             Vector2 distanceFromController;
-            foreach (Entity e1 in collidables)
+            foreach (ICollidable c1 in collidables)
             {
-                foreach (Entity e2 in collidables)
+                foreach (ICollidable c2 in collidables)//TODO: only allow IsCollidable to affect this?
                 {
-                    if (e1.IsVisible && e2.IsVisible)
+                    float r = Vector2.Distance(c1.Position, c2.Position);
+                    if (c1 != c2 && r < 100 && r != 0)
                     {
-                        float r = Vector2.Distance(e1.Position, e2.Position);
-                        if (e1 != e2 && r < 100 && r != 0)
-                        {
-                            if (r < 10)
-                                r = 10;
-                            float res = Physics.CalculateGravity(0.1f, 0.1f, 30f, 30f, r);
-                            e1.Accelerate(Vector2.Normalize(e2.Position - e1.Position), res);
-
-                        }
+                        if (r < 10)
+                            r = 10;
+                        float res = Physics.CalculateGravity(0.1f, 0.1f, 30f, 30f, r);
+                        c1.Accelerate(Vector2.Normalize(c2.Position - c1.Position), res);
                     }
                 }
-                distanceFromController = Position - e1.Position;
+                distanceFromController = Position - c1.Position;
                 if (distanceFromController.Length() != 0)
-                    e1.Accelerate(Vector2.Normalize(Position - e1.Position), distanceFromController.Length() / 1000);
+                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), distanceFromController.Length() / 1000);
             }
         }
 
@@ -111,10 +124,24 @@ namespace NetworkIO.src.controllers
             if(collidable is CollidablesController cc)
             foreach (Queue<Projectile> pList in projectiles)
                 foreach (Projectile p in pList)
-                    foreach (Entity eC in cc.collidables) //OBS need adaption for new structure
-                        p.Collide(eC);
+                    foreach (ICollidable c in cc.collidables) //OBS need adaption for new structure
+                        p.Collide(c);
         }
-        public void Collide(Controller c) //Todo: handle subentities collision in e.g. shooter (+projectile)
+
+        protected virtual void GiveOrders(){}
+
+        public override object Clone()
+        {
+            CollidablesController cNew = (CollidablesController)this.MemberwiseClone();
+            cNew.projectiles = new List<Queue<Projectile>>();
+            cNew.collidables = new List<ICollidable>();
+            foreach (ICollidable c in collidables)
+                cNew.AddCollidable((ICollidable)c.Clone());
+            cNew.collisionDetector = new CollidableCircle(Position, radius);
+            return cNew;
+        }
+
+        /*public void Collide(Controller c) //Todo: handle subentities collision in e.g. shooter (+projectile)
         {
             if (CollidesWith(c))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
                 foreach (Entity e in collidables)
@@ -124,21 +151,6 @@ namespace NetworkIO.src.controllers
                 foreach (Projectile p in pList)
                     foreach (Entity eC in c.collidables)
                         p.Collide(eC);
-        }
-
-        protected virtual void GiveOrders()
-        {
-
-        }
-
-        public override object Clone()
-        {
-            CollidablesController cNew = (CollidablesController)this.MemberwiseClone();
-            cNew.projectiles = new List<Queue<Projectile>>();
-            foreach (Entity e in collidables)
-                if (e is Shooter s)
-                    cNew.projectiles.Add(s.Projectiles);
-            return cNew;
-        }
+        }*/
     }
 }

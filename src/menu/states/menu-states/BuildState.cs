@@ -24,8 +24,8 @@ namespace NetworkIO.src.menu.states.menu_states
         protected List<ICollidable> CopyEntitiesFromController(Controller controller)
         {
             List<ICollidable> collidables = new List<ICollidable>();
-            foreach (Entity e in controller.collidables)
-                collidables.Add((Entity)e.Clone());
+            foreach (ICollidable c in controller.collidables)
+                collidables.Add((ICollidable)c.Clone());
             return collidables;
         }
 
