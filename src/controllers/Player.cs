@@ -2,20 +2,21 @@
 using Microsoft.Xna.Framework.Input;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
+using NetworkIO.src.movable;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace NetworkIO.src
 {
-    public class Player : CollidablesController
+    public class Player : Controller
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
         public bool actionsLocked;
         
         
-        public Player(List<ICollidable> collidables, Input input) : base(collidables)
+        public Player(List<IControllable> collidables, Input input) : base(collidables)
         {
             this.Input = input;
             Camera = new Camera(this);
@@ -79,8 +80,8 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (EntityController eC in collidables)
-                    eC.Accelerate(accelerationVector);
+                foreach (Entity e in controllables)
+                    e.Accelerate(accelerationVector);
             }
         }
 

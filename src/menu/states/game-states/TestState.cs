@@ -45,12 +45,64 @@ namespace NetworkIO.src.menu.states.game_states
 
             }, input);*/
 
-            controllers = new List<Controller>();
+            controllers = new List<IControllable>();
             Random r = new Random();
-
-            controllers.Add(
+            controllers.Add(Player);
+            ChaserAI chaser = new ChaserAI(new Vector2(500,500),Player);
+            controllers.Add(chaser);
+            /*
+            controllers.Add(new ChaserAI(
+                     new List<IController>()
+                     {
+                        EntityFactory.Create(new Vector2(-100,-100),IDs.SHOOTER),
+                        EntityFactory.Create(new Vector2(-200,-200),IDs.SHOOTER),
+                        EntityFactory.Create(new Vector2(-300,-300),IDs.SHOOTER)
+                     }, Player)
+             );
+            controllers.Add(new IndecisiveAI(
+                    new List<IController>()
+                    {
+                        EntityFactory.Create( new Vector2(467,213), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(212,512), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(512,413), IDs.SHOOTER)
+                    })
+            );
+            controllers.Add(new RandomAI(
+                    new List<IController>()
+                    {
+                        EntityFactory.Create( new Vector2(886,1243), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(241,253), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(354,-3), IDs.SHOOTER)
+                    })
+            );
+            controllers.Add(new CircularAI(
+                    new List<IController>()
+                    {
+                        EntityFactory.Create( new Vector2(200,500), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(600,600), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(300,300), IDs.SHOOTER),
+                    })
+            );
+            controllers.Add(new CollidablesController( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
+                    new List<IController>()
+                    {
+                        EntityFactory.Create( new Vector2(123,325), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(325,325), IDs.SHOOTER),
+                        EntityFactory.Create( new Vector2(325,125), IDs.SHOOTER),
+                    }/*, p)
+            );*/
+            backgrounds = new List<Background>(){
                 new WrappingBackground(
-                    new List<ICollidable>()
+                    new List<IControllable>()
+                    {
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
+                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
+                    },
+                    0.3f, base.Player.Camera)
+            };
+            backgrounds.Add(new WrappingBackground(
+                    new List<IControllable>()
                     {
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
@@ -65,59 +117,6 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD)
                     }, 0.6f, base.Player.Camera)
             );
-
-            controllers.Add(Player);
-
-            controllers.Add(new ChaserAI(
-                     new List<ICollidable>()
-                     {
-                        EntityFactory.Create(new Vector2(-100,-100),IDs.SHOOTER),
-                        EntityFactory.Create(new Vector2(-200,-200),IDs.SHOOTER),
-                        EntityFactory.Create(new Vector2(-300,-300),IDs.SHOOTER)
-                     }, Player)
-             );
-            controllers.Add(new IndecisiveAI(
-                    new List<ICollidable>()
-                    {
-                        EntityFactory.Create( new Vector2(467,213), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(212,512), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(512,413), IDs.SHOOTER)
-                    })
-            );
-            controllers.Add(new RandomAI(
-                    new List<ICollidable>()
-                    {
-                        EntityFactory.Create( new Vector2(886,1243), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(241,253), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(354,-3), IDs.SHOOTER)
-                    })
-            );
-            controllers.Add(new CircularAI(
-                    new List<ICollidable>()
-                    {
-                        EntityFactory.Create( new Vector2(200,500), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(600,600), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(300,300), IDs.SHOOTER),
-                    })
-            );
-            controllers.Add(new CollidablesController( //att lägga till en till fick det att explodera typ... weird. och de trycker inte bort varandra
-                    new List<ICollidable>()
-                    {
-                        EntityFactory.Create( new Vector2(123,325), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(325,325), IDs.SHOOTER),
-                        EntityFactory.Create( new Vector2(325,125), IDs.SHOOTER),
-                    }/*, p*/)
-            );
-            backgrounds = new List<Background>(){
-                new WrappingBackground(
-                    new List<ICollidable>()
-                    {
-                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
-                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
-                        EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
-                    },
-                    0.3f, base.Player.Camera)
-            };
         }
     }
 }

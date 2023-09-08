@@ -5,9 +5,9 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class CircularAI : CollidablesController
+    public class CircularAI : Controller
     {
-        public CircularAI(List<ICollidable> collidables) : base(collidables)
+        public CircularAI(List<IControllable> collidables) : base(collidables)
         {
         }
 
@@ -19,7 +19,7 @@ namespace NetworkIO.src.controllers
 
         protected void Accelerate()
         {
-            foreach (Entity e in collidables)
+            foreach (WorldEntity e in controllables)
             {
                     Vector2 accelerationVector = new Vector2((float)Math.Cos(e.Rotation+=0.02f), (float) Math.Sin(e.Rotation += 0.02f));
                     accelerationVector.Normalize();

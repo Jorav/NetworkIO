@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NetworkIO.src.entities
 {
-    class Shooter : Entity
+    class Shooter : WorldEntity
     {
         float fireRatePerSecond;
         float lastTimeFired;

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class IndecisiveAI : CollidablesController
+    public class IndecisiveAI : Controller
     {
         Random r;
-        public IndecisiveAI(List<ICollidable> entities) : base(entities)
+        public IndecisiveAI(List<IControllable> entities) : base(entities)
         {
             r = new Random();
 
@@ -22,7 +22,7 @@ namespace NetworkIO.src.controllers
 
         protected void Accelerate()
         {
-            foreach (Entity e in collidables)
+            foreach (WorldEntity e in controllables)
             {
                     Vector2 accelerationVector = new Vector2((float)Math.Cos(r.NextDouble()*Math.PI*2), (float) Math.Sin(r.NextDouble() * Math.PI * 2));
                     accelerationVector.Normalize();

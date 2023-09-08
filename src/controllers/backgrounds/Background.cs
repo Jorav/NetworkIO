@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace NetworkIO
 {
-    public class Background : CollidablesController
+    public class Background : Controller
     {
         protected float relativeSpeed; //1->0
         protected Camera camera;
-        public Background(List<src.ICollidable> collidables, float relativeSpeed, Camera camera) : base(collidables)
+        public Background(List<src.IControllable> collidables, float relativeSpeed, Camera camera) : base(collidables)
         {
             this.relativeSpeed = relativeSpeed;
             this.camera = camera;
@@ -19,7 +19,7 @@ namespace NetworkIO
         
         public override void Update(GameTime gameTime) //OBS: assumes background sprites not rotated
         {
-            foreach (Entity e in collidables)
+            foreach (WorldEntity e in controllables)
             {
                 Vector2 cameraChange = camera.Position - camera.PreviousPosition;
                 Vector2 positionChange = cameraChange* (1 - relativeSpeed);

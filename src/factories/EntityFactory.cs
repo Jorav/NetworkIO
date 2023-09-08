@@ -14,21 +14,23 @@ namespace NetworkIO.src.factories
         public static Texture2D projectile;
         public static Texture2D cloud;
         public static Texture2D sun;
+        public static Texture2D emptyLink;
 
-        public static Entity Create(Vector2 position, IDs id)
+        public static WorldEntity Create(Vector2 position, IDs id)
         {
             Vector2 defaultPosition = Vector2.Zero;
             switch (id)
             {
-                case IDs.ENTITY_DEFAULT: return new Entity(new Sprite(hull), position);
+                case IDs.ENTITY_DEFAULT: return new WorldEntity(new Sprite(hull), position);
                 case IDs.COMPOSITE: return new RectangularComposite(new Sprite(hull), position);
                 case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE));
                 case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position);
+                case IDs.EMPTY_LINK: return new RectangularComposite(new Sprite(emptyLink), position);
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
 
                 #region background
-                case IDs.CLOUD: return new Entity(new Sprite(cloud), position, isCollidable: false);
-                case IDs.SUN: return new Entity(new Sprite(sun), position, isCollidable:false);
+                case IDs.CLOUD: return new WorldEntity(new Sprite(cloud), position, isCollidable: false);
+                case IDs.SUN: return new WorldEntity(new Sprite(sun), position, isCollidable:false);
                 #endregion
 
                 default:

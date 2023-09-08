@@ -7,20 +7,19 @@ using System.Text;
 
 namespace NetworkIO.src.entities.hulls
 {
-    public abstract class Composite : Entity
+    public abstract class Composite : WorldEntity
     {
-        protected Entity[] components;
-        public EntityController EntityController { get; set; }
+        protected WorldEntity[] components;
         protected int capacity;
 
         public Composite(Sprite sprite, Vector2 position, EntityController controller = null, int capacity = 4) : base(sprite, position)
         {
             this.capacity = capacity;
             if (controller == null)
-                this.EntityController = new EntityController(new List<ICollidable>() { this });
+                this.EntityController = new EntityController(position, this);
             else
                 this.EntityController = controller;
-            components = new Entity[capacity];
+            components = new WorldEntity[capacity];
         }
         /**
         public void AddEntity(Entity e, int pos) // TODO: add support for several hull parts?
@@ -31,13 +30,13 @@ namespace NetworkIO.src.entities.hulls
             }
         }*/
 
-        public void AddEntity(Entity e, int pos)
+        public void AddEntity(WorldEntity eToBeAdded, WorldEntity ePosition)
         {
-            EntityController.AddEntity(e);
-            if (Links.Count > pos && e.Links.Count > 0)
-                Links[pos].Connect(e.Links[0]);
-            else
-                throw new Exception("Cannot connect these links");
+            EntityController.AddEntity(eToBeAdded);
+            //if (Links.Count > pos && e.Links.Count > 0)
+                //Links[pos].Connect(e.Links[0].Connect(e));
+            //else
+                //throw new Exception("Cannot connect these links");
         }
 
         public override void Update(GameTime gameTime)
@@ -47,9 +46,10 @@ namespace NetworkIO.src.entities.hulls
 
         public override void Draw(SpriteBatch sb)
         {
-            foreach (Entity e in components)
+            /*
+            foreach (WorldEntity e in components)
                 if(e!=null)
-                    e.Draw(sb);
+                    e.Draw(sb);*/
             base.Draw(sb);
         }
     }

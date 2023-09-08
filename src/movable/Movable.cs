@@ -5,17 +5,17 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    public class Movable
+    public abstract class Movable
     {
-        protected float Mass { get; set; }
-        public float Thrust { get; set; }
+        protected virtual float Mass { get; set; }
+        public virtual float Thrust { get; set; }
         // protected float turnSpeed; //TODO: Implement this?
         public virtual Vector2 Position { get; set; }
         protected Vector2 position;
         public virtual float Rotation { get; set; }
         protected float rotation;
         public Vector2 Velocity { get; set; }
-        public float Friction { get; set; } // percent, where 0.1f = 10% friction
+        public virtual float Friction { get; set; } // percent, where 0.1f = 10% friction
         public Vector2 TotalExteriorForce;
 
         public Movable(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f)
@@ -75,7 +75,7 @@ namespace NetworkIO.src
             return Velocity * Mass;
         }
 
-        public void RotateTo(Vector2 position)
+        public virtual void RotateTo(Vector2 position)
         {
             RotateTo(position, Position);
         }
@@ -83,7 +83,7 @@ namespace NetworkIO.src
         public void RotateTo(Vector2 p, Vector2 p0)
         {
             Vector2 position = p - p0;
-            if (position.X >= 0)
+            if (position.Y >= 0)
                 Rotation = (float)Math.Atan(position.Y / position.X);
             else
                 Rotation = (float)Math.Atan(position.Y / position.X) - MathHelper.ToRadians(180);
