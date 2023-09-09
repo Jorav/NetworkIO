@@ -5,17 +5,17 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    public class Movable
+    public abstract class Movable
     {
-        protected float Mass { get; set; }
-        public float Thrust { get; set; }
+        protected virtual float Mass { get; set; }
+        public virtual float Thrust { get; set; }
         // protected float turnSpeed; //TODO: Implement this?
         public virtual Vector2 Position { get; set; }
         protected Vector2 position;
         public virtual float Rotation { get; set; }
         protected float rotation;
         public Vector2 Velocity { get; set; }
-        public float Friction { get; set; } // percent, where 0.1f = 10% friction
+        public virtual float Friction { get; set; } // percent, where 0.1f = 10% friction
         public Vector2 TotalExteriorForce;
 
         public Movable(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f)
@@ -41,6 +41,11 @@ namespace NetworkIO.src
         public void Accelerate(float angle, float thrust) //TODO: Long term make "thruster" into its own entity type
         {
             TotalExteriorForce += new Vector2((float)Math.Cos((double)angle), (float)Math.Sin((double)angle)) * thrust;
+        }
+
+        public void Accelerate(Vector2 directionalVector)
+        {
+            Accelerate(directionalVector, Thrust);
         }
 
         /**
@@ -70,7 +75,7 @@ namespace NetworkIO.src
             return Velocity * Mass;
         }
 
-        public void RotateTo(Vector2 position)
+        public virtual void RotateTo(Vector2 position)
         {
             RotateTo(position, Position);
         }

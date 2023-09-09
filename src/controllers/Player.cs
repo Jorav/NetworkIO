@@ -2,19 +2,27 @@
 using Microsoft.Xna.Framework.Input;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
+using NetworkIO.src.movable;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace NetworkIO.src
 {
-    public class Player : EntityController
+    public class Player : Controller
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
         public bool actionsLocked;
         
         
-        public Player(List<Entity> entities, Input input) : base(entities)
+        public Player(List<IControllable> collidables, Input input) : base(collidables)
+        {
+            this.Input = input;
+            Camera = new Camera(this);
+            Input.Camera = Camera;
+        }
+        public Player(Input input, [OptionalAttribute]Vector2 position) : base()
         {
             this.Input = input;
             Camera = new Camera(this);
@@ -25,9 +33,10 @@ namespace NetworkIO.src
         {
             if (!actionsLocked)
             {
-                Rotate();
+                RotateTo(Input.MousePositionGameCoords);
                 Accelerate();
-                Shoot(gameTime);
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    Shoot(gameTime);
             }
             
             Camera.Update();
@@ -36,18 +45,7 @@ namespace NetworkIO.src
              * Rotate, calculate course, check collisions, update course, move, base.update
              */
         }
-        private void Shoot(GameTime gameTime)
-        {
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                foreach (Entity e in entities)
-                    if(e is Shooter gun)
-                        gun.Shoot(gameTime);
-        }
-        protected void Rotate()
-        {
-            foreach (Entity e in entities)
-                e.RotateTo(Input.MousePositionGameCoords);
-        }
+
         protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
             if (Input == null)
@@ -82,8 +80,8 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (Entity e in entities)
-                    e.Accelerate(accelerationVector, e.Thrust);
+                foreach (Entity e in controllables)
+                    e.Accelerate(accelerationVector);
             }
         }
 

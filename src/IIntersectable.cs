@@ -5,9 +5,10 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    public interface ICollidable
+    public interface IIntersectable
     {
         public Vector2 Position { get; set; }
-        public bool CollidesWith(ICollidable c);
+        public float Radius { get; }
+        public bool CollidesWith(IIntersectable c);
     }
 }

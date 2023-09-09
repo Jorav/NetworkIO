@@ -13,6 +13,7 @@ namespace NetworkIO.src.utility
         COMPOSITE,
         CLOUD,
         SUN,
+        EMPTY_LINK,
         #endregion
         
         #region Controllers

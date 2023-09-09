@@ -7,7 +7,7 @@ using System.Text;
 namespace NetworkIO.src.collidables
 {
     //OBS: Old heritage, god knows how this works
-    public class CollidableRectangle : ICollidable
+    public class CollidableRectangle : IIntersectable
     {
         private Vector2 UL { get; set; }
         private Vector2 DL { get; set; }
@@ -56,6 +56,8 @@ namespace NetworkIO.src.collidables
             }
             get { return rotation; }
         }
+        public float Radius { get { return (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2)); } }
+
         public CollidableRectangle(Vector2 position, float rotation, int width, int height)
         {
             UL = new Vector2(position.X, position.Y);
@@ -68,10 +70,10 @@ namespace NetworkIO.src.collidables
             origin = new Vector2(Width / 2, Height / 2);
             Rotation = rotation;
         }
-        public bool CollidesWith(ICollidable c)
+        public bool CollidesWith(IIntersectable c)
         {
             if (c is CollidableRectangle cR)
-                return CollidesWithRectangle((CollidableRectangle) cR);
+                return CollidesWithRectangle(cR);
             if (c is CollidableCircle cc)
                 return CollidesWithCircle(cc);
             throw new NotImplementedException();
@@ -79,8 +81,11 @@ namespace NetworkIO.src.collidables
 
         private bool CollidesWithCircle(CollidableCircle cc) //NOT TESTED
         {
-            float deltaX = cc.Position.X - Math.Max(Position.X - Width / 2, Math.Min(cc.Position.X, Position.X + Width / 2));
-            float deltaY = cc.Position.Y - Math.Max(Position.Y, Math.Min(cc.Position.Y - Height / 2, Position.Y + Height / 2));
+            Vector2 unrotatedCircle = new Vector2(
+                (float)(Math.Cos(rotation) * (cc.Position.X - Position.X) - Math.Sin(rotation) * (cc.Position.Y - Position.Y) + Position.X),
+                (float)(Math.Sin(rotation) * (cc.Position.X - Position.X) + Math.Cos(rotation) * (cc.Position.Y - Position.Y) + Position.Y));
+            float deltaX = unrotatedCircle.X - Math.Max(Position.X - Width / 2, Math.Min(unrotatedCircle.X, Position.X + Width / 2));
+            float deltaY = unrotatedCircle.Y - Math.Max(Position.Y, Math.Min(unrotatedCircle.Y - Height / 2, Position.Y + Height / 2));
             return (deltaX * deltaX + deltaY * deltaY) <= (cc.Radius * cc.Radius);
         }
 
@@ -142,6 +147,11 @@ namespace NetworkIO.src.collidables
             axes[2] = new Vector2(r.UL.X - r.DL.X, r.UL.Y - r.DL.Y);
             axes[3] = new Vector2(r.UL.X - r.UR.X, r.UL.Y - r.UR.Y);
             return axes;
+        }
+
+        public void Collide(IIntersectable c) //TEMPORARY, THESE SHOULD NOT COLLIDE DIRECTLY (or be part of ICollide interface)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -16,12 +16,12 @@ namespace NetworkIO.src.menu.states
     public abstract class GameState : State
     {
         public Player Player { get; protected set; }
-        protected List<Controller> controllers;
+        protected List<IControllable> controllers;
         protected List<Background> backgrounds;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
-            Player = new Player(new List<Entity>(), input);
+            Player = new Player(new List<IControllable>(), input);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -37,7 +37,7 @@ namespace NetworkIO.src.menu.states
                 b.Draw(spriteBatch);
             }
 
-            foreach (Controller c in controllers)
+            foreach (IControllable c in controllers)
             {
                 c.Draw(spriteBatch);
             }
@@ -61,10 +61,10 @@ namespace NetworkIO.src.menu.states
 
         public void RunGame(GameTime gameTime)
         {
-            foreach (Controller c in controllers)
+            foreach (IControllable c in controllers)
                 c.Update(gameTime);
-            foreach (Controller c1 in controllers)
-                foreach (Controller c2 in controllers)
+            foreach (IControllable c1 in controllers)
+                foreach (IControllable c2 in controllers)
                     if (c1 != c2)
                         c1.Collide(c2);
             foreach (Background b in backgrounds)

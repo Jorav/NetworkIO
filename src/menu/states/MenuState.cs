@@ -10,7 +10,7 @@ namespace NetworkIO.src.menu.states
 {
     public abstract class MenuState : State
     {
-        protected List<Component> components;
+        protected List<IComponent> components;
 
         public MenuState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
@@ -19,14 +19,14 @@ namespace NetworkIO.src.menu.states
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            foreach (Component component in components)
+            foreach (IComponent component in components)
                 component.Draw(spriteBatch);
             spriteBatch.End();
         }
         
         public override void Update(GameTime gameTime)
         {
-            foreach (Component component in components)
+            foreach (IComponent component in components)
                 component.Update(gameTime);
         }
 

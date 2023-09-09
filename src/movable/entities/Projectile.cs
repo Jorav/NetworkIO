@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetworkIO.src.entities
 {
-    class Projectile : Entity
+    class Projectile : WorldEntity
     {
         private float timer = 0;
         private float maxLifeSpan;
@@ -17,7 +17,7 @@ namespace NetworkIO.src.entities
             this.maxLifeSpan = maxLifeSpan;
             this.minLifeSpan = minLifeSpan;
         }
-        public override void Collide(Entity e)
+        public void Collide(WorldEntity e)
         {
             if (CollidesWith(e))
             {

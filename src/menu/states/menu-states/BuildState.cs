@@ -21,12 +21,12 @@ namespace NetworkIO.src.menu.states.menu_states
             gameState.Player.actionsLocked = true;
         }
 
-        protected List<Entity> CopyEntitiesFromController(Controller controller)
+        protected List<IControllable> CopyEntitiesFromController(Controller controller)
         {
-            List<Entity> entities = new List<Entity>();
-            foreach (Entity e in controller.entities)
-                entities.Add((Entity)e.Clone());
-            return entities;
+            List<IControllable> collidables = new List<IControllable>();
+            foreach (IControllable c in controller.controllables)
+                collidables.Add((IControllable)c.Clone());
+            return collidables;
         }
 
         public override void Update(GameTime gameTime)

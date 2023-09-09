@@ -2,9 +2,11 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.controllers;
+using NetworkIO.src.entities.hulls;
 using NetworkIO.src.factories;
 using NetworkIO.src.menu.controls;
 using NetworkIO.src.menu.states.menu_states;
+using NetworkIO.src.movable;
 using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ namespace NetworkIO.src.menu.states
 {
     public class BuildOverviewState : BuildState
     {
-        public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controller) : base(game, graphicsDevice, content, gameState, input, controller)
+        public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
         {
             Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
             background.Scale = background.Height / Game1.ScreenHeight;
@@ -33,7 +35,7 @@ namespace NetworkIO.src.menu.states
             addEntityButton.Click += AddEntityButton_Click;
             resetEntityButton.Click += ResetEntityButton_Click;
 
-            components = new List<Component>()
+            components = new List<IComponent>()
             {                
                 background,
                 //controller,
@@ -44,28 +46,32 @@ namespace NetworkIO.src.menu.states
 
         private void AddEntityButton_Click(object sender, EventArgs e)
         {
-            menuController.entities.Add(EntityFactory.Create(menuController.Position, IDs.SHOOTER));
+            menuController.AddControllable(new EntityController(menuController.Position));
         }
         private void ResetEntityButton_Click(object sender, EventArgs e)
         {
-            menuController.SetEntities(CopyEntitiesFromController(controllerEdited));
+            menuController.SetControllables(CopyEntitiesFromController(controllerEdited));
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (input.leftMBClicked) { 
-                Entity clickedE = menuController.MouseOnEntity();
+            if (input.leftMBClicked) { //OBS will have to be adapted after controllers of controllers
+                IControllable clickedE = menuController.ControllableClicked();
                 if (clickedE != null)
                 {
-                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new EntityController(new List<Entity>() { clickedE }))); //obs, save build states?
+                    if (clickedE is Controller c)
+                        menuController.FocusOn(clickedE);
+                    else if (clickedE is EntityController ec)
+                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedE }))); //obs, save build states?
+                    //game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>(ec.entities)))); //obs, save build states?
                 }
             }
             //playerCopy.Update(gameTime);
             //if(gameState.Player.)
             if (input.BuildClicked)
             {
-                gameState.Player.SetEntities(menuController.entities);
+                gameState.Player.SetControllables(menuController.controllables); // OBS this needs edit in the future to handle stacked controllers
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
                 gameState.Player.actionsLocked = false;

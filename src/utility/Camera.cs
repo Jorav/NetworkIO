@@ -19,9 +19,9 @@ namespace NetworkIO.src
         public bool InBuildScreen { get; set; }
 
         private CollidableRectangle frame;
-        private Controller controller;
+        private IControllable controller;
 
-        public Camera(Controller controller, bool inBuildScreen = false)
+        public Camera(IControllable controller, bool inBuildScreen = false)
         {
             
             this.controller = controller;

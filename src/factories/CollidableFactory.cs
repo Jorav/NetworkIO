@@ -8,7 +8,7 @@ namespace NetworkIO.src.factories
 {
     static class CollidableFactory
     {
-        public static ICollidable CreateCollissionDetector(Vector2 position, float rotation, int width, int height, bool isCircle = false)
+        public static IIntersectable CreateCollissionDetector(Vector2 position, float rotation, int width, int height, bool isCircle = false)
         {
             if (isCircle)
                 return new CollidableCircle(position, rotation);
