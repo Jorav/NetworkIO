@@ -37,8 +37,8 @@ namespace NetworkIO.src.controllers
 
         public override void Update(GameTime gameTime)
         {
-            Camera.Update();
             base.Update(gameTime);
+            Camera.Update();
         }
 
         public void FocusOn(IControllable c)
