@@ -16,7 +16,7 @@ namespace NetworkIO.src.movable
         public Entity(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float elasticity = 1) : base(position, rotation, mass, thrust, friction) { Elasticity = elasticity; }
 
         public abstract bool Contains(Vector2 point);
-        public abstract bool ContainsInSpace(Vector2 position, Matrix transform);
+        public abstract IControllable ControllableContainingInSpace(Vector2 position, Matrix transform);
         public abstract bool CollidesWith(IIntersectable c);
         public abstract void Draw(SpriteBatch sb);
         public abstract void Collide(IControllable c);

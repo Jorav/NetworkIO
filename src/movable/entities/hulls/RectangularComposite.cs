@@ -17,10 +17,10 @@ namespace NetworkIO.src.entities.hulls
         {
             if (Links.Count > 0)
                 Links.Clear();
-            Links.Add(new Link(new Vector2(-Width / 2, 0)));
-            Links.Add(new Link(new Vector2(0, -Height/2)));
-            Links.Add(new Link(new Vector2(Width / 2, 0)));
-            Links.Add(new Link(new Vector2(0, Height / 2)));
+            Links.Add(new Link(new Vector2(-Width / 2, 0), this));
+            Links.Add(new Link(new Vector2(0, -Height/2), this));
+            Links.Add(new Link(new Vector2(Width / 2, 0), this));
+            Links.Add(new Link(new Vector2(0, Height / 2), this));
         }
 
 

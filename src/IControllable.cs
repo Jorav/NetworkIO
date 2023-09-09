@@ -10,6 +10,9 @@ namespace NetworkIO.src
         public void Accelerate(Vector2 directionalVector, float thrust);
         public void Shoot(GameTime gameTime);
         public object Clone();
-        public bool ContainsInSpace(Vector2 position, Matrix transform);
+        /**
+         * returns the IControllable that contains 'position' in space 'transform', null if none does
+         */
+        public IControllable ControllableContainingInSpace(Vector2 position, Matrix transform);
     }
 }

@@ -60,12 +60,34 @@ namespace NetworkIO.src.controllers
         /**
          * returns the entity clicked by player, null if no entity was clicked
          */
-        public IControllable MouseOnEntity()
+        public IControllable ControllableClicked()
         {
             foreach (IControllable c in controllables)
-                if (c.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform)) //if (c is EntityController ec && ec.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
+            {
+                IControllable clicked = c.ControllableContainingInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform); //if (c is EntityController ec && ec.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
+                if (clicked != null)
                     return c;
+            }
             return null;
+        }
+        public WorldEntity EntityClicked()
+        {
+            foreach (IControllable c in controllables)
+            {
+                IControllable clicked = c.ControllableContainingInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform); //if (c is EntityController ec && ec.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
+                if (clicked != null && clicked is WorldEntity clickedE)
+                    return clickedE;
+            }
+            return null;
+        }
+
+        public void ReplaceEntity(WorldEntity oldEntity, WorldEntity newEntity)
+        {
+            foreach (IControllable c in controllables)
+            {
+                if(c is EntityController ec)
+                ec.ReplaceEntity(oldEntity, newEntity);
+            }
         }
     }
 }

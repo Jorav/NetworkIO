@@ -202,31 +202,64 @@ namespace NetworkIO.src.controllers
             return false;
         }
 
-        public override bool ContainsInSpace(Vector2 position, Matrix transform)
+        /*public override bool EntityContainingInSpace(Vector2 position, Matrix transform)
         {
             foreach (WorldEntity e in entities)
-                if (e.ContainsInSpace(position, transform))
+                if (e.EntityContainingInSpace(position, transform))
                     return true;
             return false;
-        }
+        }*/
         public void AddAvailableLinkDisplays()
         {
+            List<WorldEntity> tempEntities = new List<WorldEntity>();
             foreach (WorldEntity e in entities)
-                e.FillEmptyLinks();
+            {
+                if (!e.IsFiller) { 
+                    e.FillEmptyLinks();
+                    foreach (WorldEntity ee in e.FillerEntities)
+                        if(!entities.Contains(ee))
+                            tempEntities.Add(ee);
+                }
+            }
+            foreach (WorldEntity eT in tempEntities)
+            {
+                bool overlaps = false;
+                foreach (WorldEntity eE in entities)
+                    if (eT.Contains(eE.Position))
+                        overlaps = true;
+                if (!overlaps)
+                    AddEntity(eT);
+                else
+                    eT.Links[0].connection.SeverConnection();
+             }
         }
         public void ClearAvailableLinks()
         {
+            List<WorldEntity> tempEntities = new List<WorldEntity>();
             foreach (WorldEntity e in entities)
-                e.ClearAvailableLinks();
+            {
+                foreach (WorldEntity ee in e.FillerEntities)
+                    tempEntities.Add(ee);
+            }
+            foreach (WorldEntity e in tempEntities)
+                entities.Remove(e);
+            foreach(WorldEntity e in entities)
+                e.ClearEmptyLinks();
         }
-        public void ReplaceEntity(WorldEntity e, WorldEntity entityReplaced)
+        public void ReplaceEntity(WorldEntity eOld, WorldEntity eNew)
         {
+            if (entities.Contains(eOld))
+            {
+                eNew.ConnectTo(eOld.Links[0].connection.Entity, eOld.Links[0].connection);
+                entities.Remove(eOld);
+                AddEntity(eNew);
+            }
 
         }
-        public Entity EntityContainingInSpace(Vector2 position, Matrix transform)
+        public override IControllable ControllableContainingInSpace(Vector2 position, Matrix transform)
         {
             foreach (WorldEntity e in entities)
-                if (e.ContainsInSpace(position, transform))
+                if (e.ControllableContainingInSpace(position, transform) != null)
                     return e;
             return null;
         }

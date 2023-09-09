@@ -57,7 +57,7 @@ namespace NetworkIO.src.menu.states
         {
             base.Update(gameTime);
             if (input.leftMBClicked) { //OBS will have to be adapted after controllers of controllers
-                IControllable clickedE = menuController.MouseOnEntity();
+                IControllable clickedE = menuController.ControllableClicked();
                 if (clickedE != null)
                 {
                     if (clickedE is Controller c)

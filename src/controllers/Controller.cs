@@ -34,8 +34,6 @@ namespace NetworkIO.src
                 position = Vector2.Zero;
             SetControllables(new List<IControllable>() { new EntityController(position) });
         }
-
-
         public virtual void SetControllables(List<IControllable> newControllables)
         {
             if (newControllables != null)
@@ -194,12 +192,17 @@ namespace NetworkIO.src
 
         protected virtual void GiveOrders() { }
 
-        public bool ContainsInSpace(Vector2 position, Matrix transform)
+        public IControllable ControllableContainingInSpace(Vector2 position, Matrix transform)
         {
-            foreach (IControllable c in controllables)
-                if (c.ContainsInSpace(position, transform))
-                    return true;
-            return false;
+            IControllable controllable;
+            foreach(IControllable c in controllables)
+            {
+                controllable = c.ControllableContainingInSpace(position, transform);
+                if (controllable != null)
+                    return controllable;
+            }
+            return null;
+
         }
     }
 }

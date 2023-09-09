@@ -28,7 +28,15 @@ namespace NetworkIO.src
         public override float Radius { get { return collisionDetector.Radius; } }
         public List<Link> Links { get; private set; }
         private float internalRotation;
-        private List<WorldEntity> emptyLinks;
+        public bool IsFiller { get; set; }
+        public List<WorldEntity> FillerEntities { get {
+                List<WorldEntity> fillerEntities = new List<WorldEntity>();
+                foreach (Link l in Links)
+                    if (!l.ConnectionAvailable() && l.connection.Entity.IsFiller)
+                        fillerEntities.Add(l.connection.Entity);
+                return fillerEntities;
+            } 
+        }
 
         public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 100, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
@@ -46,22 +54,21 @@ namespace NetworkIO.src
             Origin = new Vector2(Width / 2, Height / 2);
             Links = new List<Link>();
             AddLinks();
-            emptyLinks = new List<WorldEntity>();
         }
 
         protected virtual void AddLinks()
         {
             if (Links.Count > 0)
                 Links.Clear();
-            Links.Add(new Link(new Vector2(-Width/2, 0)));
+            Links.Add(new Link(new Vector2(-Width/2, 0), this));
         }
 
         public override void Draw(SpriteBatch sb)
         {
             if (IsVisible)
             {
-                foreach (WorldEntity e in emptyLinks)
-                    e.Draw(sb);
+                //foreach (WorldEntity e in fillerEntities)
+                    //e.Draw(sb);
                 sprite.Draw(sb);
             }
             
@@ -86,9 +93,15 @@ namespace NetworkIO.src
             return IsCollidable && collisionDetector.Contains(point);
         }
 
-        public override bool ContainsInSpace(Vector2 position, Matrix transform)
+        /*public override bool EntityContainingInSpace(Vector2 position, Matrix transform)
         {
             return IsCollidable && collisionDetector.ContainsInSpace(position, transform);
+        }*/
+        public override IControllable ControllableContainingInSpace(Vector2 position, Matrix transform)
+        {
+            if (IsCollidable && collisionDetector.ContainsInSpace(position, transform))
+                return this;
+            return null;
         }
 
         public bool CollidesWith(WorldEntity e)
@@ -120,6 +133,8 @@ namespace NetworkIO.src
             eNew.collisionDetector = new CollidableRectangle(position, rotation, (int)Width, (int)Height);
             eNew.Velocity = Vector2.Zero;
             eNew.TotalExteriorForce = Vector2.Zero;
+            eNew.Links = new List<Link>();
+            eNew.AddLinks();
             return eNew;
         }
 
@@ -134,7 +149,9 @@ namespace NetworkIO.src
 
         public void ConnectTo(WorldEntity eConnectedTo, Link lConnectedTo)
         {
-            if (Links.Count > 0 && Links[0] != null) { 
+            if (Links.Count > 0 && Links[0] != null) {
+                //if(!lConnectedTo.ConnectionAvailable())
+                   // eConnectedTo.fillerEntities.Remove(lConnectedTo.connection.Entity);
                 internalRotation = Links[0].ConnectTo(lConnectedTo);
                 Position = eConnectedTo.Position + lConnectedTo.DistanceFromConnection * 
                     new Vector2((float)Math.Cos(eConnectedTo.Rotation + lConnectedTo.LinkRotation), (float)Math.Sin(eConnectedTo.Rotation + lConnectedTo.LinkRotation));
@@ -149,27 +166,37 @@ namespace NetworkIO.src
                 {
                     WorldEntity e = EntityFactory.Create(position, fillerType);
                     e.ConnectTo(this, l);
-                    emptyLinks.Add(e);
+                    e.IsFiller = true;
                 }
         }
-        public void ClearAvailableLinks()
+        public void ClearEmptyLinks()
         {
-            foreach (WorldEntity e in emptyLinks)
-                foreach (Link l in e.Links) {
+            foreach (Link l in Links) {
+                if(!l.ConnectionAvailable() && l.connection.Entity.IsFiller)
+                    l.SeverConnection();
+            }
+        }
+
+        public void SeverConnection(WorldEntity e)
+        {
+            foreach(Link l in Links)
+                if(l.ConnectionAvailable() && l.connection.Entity == e)
+                {
                     l.SeverConnection();
                 }
-            emptyLinks.Clear();
         }
 
         public class Link
         {
-            private Link connection; //links to other entities
+            public WorldEntity Entity { get; private set; }
+            public Link connection; //links to other entities
             private Vector2 relativePosition; //position in relation to the entity it belongs to in an unrotated state
             public float LinkRotation { get; private set; } //rotation of link in relation to center of entity
             public float DistanceFromConnection { get { if (!ConnectionAvailable()) return relativePosition.Length() + connection.relativePosition.Length(); return -1; } }
 
-            public Link(Vector2 relativePosition, Link connection = null)
+            public Link(Vector2 relativePosition, WorldEntity entity, Link connection = null)
             {
+                this.Entity = entity;
                 if (relativePosition.Length() == 0)
                     throw new ArgumentException();
 
@@ -186,9 +213,11 @@ namespace NetworkIO.src
              */
             public float ConnectTo(Link l)
             {
+                if (!l.ConnectionAvailable())
+                    l.SeverConnection();
                 connection = l;
                 l.connection = this;
-                return MathHelper.ToRadians(180)- MathHelper.WrapAngle(- l.LinkRotation - LinkRotation);
+                return MathHelper.ToRadians(180) - MathHelper.WrapAngle(-l.LinkRotation - LinkRotation);
             }
 
             public bool ConnectionAvailable()
@@ -204,6 +233,11 @@ namespace NetworkIO.src
                     connection = null;
                 }
             }
+            /*
+            public object Clone()
+            {
+                Link lNew = (Link)this.MemberwiseClone();
+            }*/
         }
     }
 }
