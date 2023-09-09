@@ -51,6 +51,7 @@ namespace NetworkIO.src.menu.states
         private void ResetEntityButton_Click(object sender, EventArgs e)
         {
             menuController.SetControllables(CopyEntitiesFromController(controllerEdited));
+            menuController.Camera.InBuildScreen = true;
         }
 
         public override void Update(GameTime gameTime)
@@ -75,6 +76,7 @@ namespace NetworkIO.src.menu.states
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
                 gameState.Player.actionsLocked = false;
+                gameState.Player.Camera.InBuildScreen = false;
             }
         }
     }

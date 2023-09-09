@@ -41,6 +41,7 @@ namespace NetworkIO.src.menu.states.menu_states
                     previousState.menuController.controllables.Remove(entityEdited);
                     previousState.menuController.AddControllable(menuController.controllables[0]);
                     previousState.menuController.MoveTo(previousState.menuController.Position);
+                    previousState.menuController.Camera.InBuildScreen = true;
                     menuController.Reset();
                     game.ChangeState(previousState);
                 }
@@ -62,6 +63,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
                 gameState.Player.MoveTo(gameState.Player.Position);
                 game.ChangeState(gameState);
+                gameState.Player.Camera.InBuildScreen = false;
                 gameState.Player.actionsLocked = false;
             }
         }

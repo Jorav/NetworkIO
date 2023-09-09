@@ -16,23 +16,31 @@ namespace NetworkIO.src
         public float Zoom { get; set; }
         public float Width { get { return Game1.ScreenWidth / Zoom; } }
         public float Height { get { return Game1.ScreenHeight / Zoom; } }
-        public bool InBuildScreen { get; set; }
-
+        private bool inBuildScreen;
+        public bool InBuildScreen { get { return inBuildScreen; } 
+            set {
+                if(value)
+                    Zoom = BuildMenuZoom;
+                else
+                    Zoom = GameZoom;
+                inBuildScreen = value;
+            } 
+        }
+        public float BuildMenuZoom { get { return (Game1.ScreenHeight) / (2 * controller.Radius + Game1.ScreenHeight / 8); } }
+        public float GameZoom { get { return Game1.ScreenHeight / (Game1.ScreenHeight + 1 * controller.Radius); } }
         private CollidableRectangle frame;
         private IControllable controller;
+        private float zoomSpeed;
 
-        public Camera(IControllable controller, bool inBuildScreen = false)
+        public Camera(IControllable controller, bool inBuildScreen = false, float zoomSpeed = 0.05f)
         {
             
             this.controller = controller;
             Position = controller.Position;
             PreviousPosition = Position;
-            if (InBuildScreen)
-                Zoom = (Game1.ScreenHeight + 2 * controller.Radius) / Game1.ScreenHeight;
-            else
-                Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 1 * controller.Radius);
             Rotation = 0;
             InBuildScreen = inBuildScreen;
+            this.zoomSpeed = zoomSpeed;
             UpdateTransformMatrix();
         }
 
@@ -41,11 +49,36 @@ namespace NetworkIO.src
             PreviousPosition = Position;
             Position = controller.Position;
             if (InBuildScreen)
-                Zoom = (Game1.ScreenHeight) / (2 * controller.Radius + Game1.ScreenHeight/8);
+            {
+                AdjustZoom(BuildMenuZoom);
+            }
             else
-                Zoom = Game1.ScreenHeight / (Game1.ScreenHeight + 2 * controller.Radius);
+            {
+                AdjustZoom(GameZoom);
+            }
+                
             Rotation = 0;
             UpdateTransformMatrix();
+        }
+        private void AdjustZoom(float optimalZoom)
+        {
+            if (optimalZoom > Zoom)
+            {
+                if (optimalZoom - Zoom > zoomSpeed)
+                    Zoom += zoomSpeed;
+                else
+                    Zoom = optimalZoom;
+            }
+            else if (optimalZoom < Zoom)
+            {
+                if (Zoom - optimalZoom > zoomSpeed)
+                    Zoom -= zoomSpeed;
+                else
+                    Zoom = optimalZoom;
+            }
+                
+
+
         }
 
         public void UpdateTransformMatrix()
