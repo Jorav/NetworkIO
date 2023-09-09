@@ -47,7 +47,7 @@ namespace NetworkIO.src
             }
         }
         private bool leftMBDown;
-        public bool leftMBClicked //OBS, new state of button needs to change each update
+        public bool LeftMBClicked //OBS, new state of button needs to change each update
         {
             get
             {
@@ -59,6 +59,13 @@ namespace NetworkIO.src
                 }
                 leftMBDown = newLeftMBDown;
                 return leftMBClicked;
+            }
+        }
+        public bool LeftMBDown
+        {
+            get
+            {
+                return Mouse.GetState().LeftButton == ButtonState.Pressed;
             }
         }
     }

@@ -56,7 +56,7 @@ namespace NetworkIO.src.menu.states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (input.leftMBClicked) { //OBS will have to be adapted after controllers of controllers
+            if (input.LeftMBClicked) { //OBS will have to be adapted after controllers of controllers
                 IControllable clickedE = menuController.ControllableClicked();
                 if (clickedE != null)
                 {

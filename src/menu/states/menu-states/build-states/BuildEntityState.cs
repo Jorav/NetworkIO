@@ -33,10 +33,10 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (input.leftMBClicked)
+            if (input.LeftMBDown)
             {
                 IControllable clicked = menuController.EntityClicked();
-                if(clicked == null) {
+                if(input.LeftMBClicked && clicked == null) {
                     previousState.menuController.controllables.Remove(entityEdited);
                     previousState.menuController.AddControllable(menuController.controllables[0]);
                     previousState.menuController.MoveTo(previousState.menuController.Position);
