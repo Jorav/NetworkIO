@@ -47,7 +47,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 {
                     if (clicked is WorldEntity clickedE && clickedE.IsFiller)
                     {
-                        menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, utility.IDs.SHOOTER));
+                        menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, utility.IDs.COMPOSITE));
                         menuController.AddOpenLinks();
                     }
                         

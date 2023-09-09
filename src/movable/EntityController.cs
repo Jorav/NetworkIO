@@ -33,8 +33,8 @@ namespace NetworkIO.src.controllers
                 foreach(WorldEntity e in entities)
                 {
                     Vector2 relativePosition = e.Position - Position;
-                    Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(dRotation));
-                    e.Position += newRelativePosition - relativePosition;
+                    Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
+                    e.Position = newRelativePosition + Position;
                     e.Rotation = value;
                 }
                 rotation = value;

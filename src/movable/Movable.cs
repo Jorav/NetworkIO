@@ -83,7 +83,7 @@ namespace NetworkIO.src
         public void RotateTo(Vector2 p, Vector2 p0)
         {
             Vector2 position = p - p0;
-            if (position.Y >= 0)
+            if (position.X >= 0)
                 Rotation = (float)Math.Atan(position.Y / position.X);
             else
                 Rotation = (float)Math.Atan(position.Y / position.X) - MathHelper.ToRadians(180);
