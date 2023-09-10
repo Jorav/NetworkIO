@@ -14,6 +14,7 @@ namespace NetworkIO.src.menu.states.menu_states
     {
         BuildOverviewState previousState;
         IControllable entityEdited;
+        bool clickRegistered;
         public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, BuildOverviewState previousState, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
         {
             this.previousState = previousState;
@@ -34,7 +35,9 @@ namespace NetworkIO.src.menu.states.menu_states
         {
             base.Update(gameTime);
             bool newClick = input.LeftMBClicked;
-            if (input.LeftMBDown)
+            if (newClick)
+                clickRegistered = true;
+            if (input.LeftMBDown && clickRegistered)
             {
                 IControllable clicked = menuController.EntityClicked();
                 if (clicked == null && newClick) {
@@ -45,9 +48,8 @@ namespace NetworkIO.src.menu.states.menu_states
                     menuController.Reset();
                     game.ChangeState(previousState);
                 }
-                else
+                else if (clicked is WorldEntity clickedE && clickedE.IsFiller) 
                 {
-                    if (clicked is WorldEntity clickedE && clickedE.IsFiller)
                     {
                         menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, utility.IDs.COMPOSITE));
                         menuController.AddOpenLinks();
@@ -66,6 +68,8 @@ namespace NetworkIO.src.menu.states.menu_states
                 gameState.Player.Camera.InBuildScreen = false;
                 gameState.Player.actionsLocked = false;
             }
+            if (!input.LeftMBDown)
+                clickRegistered = false;
         }
     }
 }
