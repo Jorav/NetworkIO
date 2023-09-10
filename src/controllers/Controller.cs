@@ -21,10 +21,10 @@ namespace NetworkIO.src
         public Vector2 Position { get { return position; } set { position = value; collisionDetector.Position = value; } }
         protected Vector2 position;
 
-        public Controller(List<IControllable> collidables)
+        public Controller(List<IControllable> controllables)
         {
             this.collisionDetector = new CollidableCircle(Position, Radius);
-            SetControllables(collidables);
+            SetControllables(controllables);
         }
 
         public Controller([OptionalAttribute] Vector2 position)
@@ -79,6 +79,15 @@ namespace NetworkIO.src
             UpdatePosition();
             UpdateRadius();
             ApplyInternalGravity();
+            InternalCollission();
+        }
+
+        private void InternalCollission()
+        {
+            foreach (IControllable c1 in controllables)
+                foreach (IControllable c2 in controllables)
+                    if (c1 != c2)
+                        c1.Collide(c2);
         }
 
         private void UpdateControllable(GameTime gameTime)
@@ -119,13 +128,13 @@ namespace NetworkIO.src
                     {
                         if (r < 10)
                             r = 10;
-                        float res = Physics.CalculateGravity(0.1f, 0.1f, 30f, 30f, r);
+                        float res = /*Physics.CalculateAttraction(c1.Radius, c2.Radius, r)*/-Physics.CalculateGravityRepulsion(c1.Radius, c2.Radius,r);
                         c1.Accelerate(Vector2.Normalize(c2.Position - c1.Position), res);
                     }
                 }
                 distanceFromController = Position - c1.Position;
                 if (distanceFromController.Length() != 0)
-                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), distanceFromController.Length() / 1000);
+                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/Radius) / 10);
             }
         }
         protected void UpdatePosition() //TODO: only allow IsCollidable to affect this?

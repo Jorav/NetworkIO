@@ -7,7 +7,7 @@ namespace NetworkIO.src
 {
     public abstract class Movable
     {
-        protected virtual float Mass { get; set; }
+        public virtual float Mass { get; set; }
         public virtual float Thrust { get; set; }
         // protected float turnSpeed; //TODO: Implement this?
         public virtual Vector2 Position { get; set; }

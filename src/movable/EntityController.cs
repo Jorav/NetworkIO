@@ -40,7 +40,7 @@ namespace NetworkIO.src.controllers
                 rotation = value;
             }
         }
-        protected override float Mass { get { float sum = 0; foreach (WorldEntity e in entities) sum += e.Thrust; return sum; } set => base.Thrust = value; }
+        public override float Mass { get { float sum = 0; foreach (WorldEntity e in entities) sum += e.Thrust; return sum; } set => base.Thrust = value; }
         public override float Thrust { get { float sum = 0; foreach (WorldEntity e in entities) sum += e.Thrust; return sum; } set => base.Thrust = value; }
 
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
@@ -126,12 +126,15 @@ namespace NetworkIO.src.controllers
                     foreach (WorldEntity e in entities)
                         foreach (WorldEntity eCE in eC.entities)
                             if (e.CollidesWith(eCE))
+                            {
                                 collides = true;
+                                TotalExteriorForce += 0.4f * Physics.CalculateRepulsionForce(e.Position, eCE.Position, e.Elasticity, eCE.Elasticity, Vector2.Distance(e.Position, eCE.Position));
+                                TotalExteriorForce += 0.4f * Physics.CalculateRepulsionForce(Position, eC.Position, e.Elasticity, eCE.Elasticity, Vector2.Distance(e.Position, eCE.Position)); //, Vector2.Distance(e.Position, eCE.Position)
+                            }
+                                
                     if (collides)
                     {
-                        Vector2 directionalVector = Position - eC.Position;
-                        directionalVector.Normalize();
-                        TotalExteriorForce += Physics.CalculateCollisionRepulsion(Position, Velocity, Mass, eC.Position, eC.Velocity, eC.Mass, Math.Max(Radius, eC.Radius), Elasticity, eC.Elasticity); //OBS: might break after changes
+                        TotalExteriorForce += Physics.CalculateBounceForce(Position, Velocity, Mass, eC.Position, eC.Velocity, eC.Mass)*eC.Elasticity;
                     }
 
                     /*
@@ -144,8 +147,21 @@ namespace NetworkIO.src.controllers
                                 p.Collide(eE);*/
                 }
                 else if (controllable is WorldEntity wE)
+                {
+                    bool collides = false;
                     foreach (WorldEntity e in entities)
-                        e.Collide(wE);
+                        if (e.CollidesWith(wE))
+                        {
+                            collides = true;
+                            TotalExteriorForce += 0.3f * Physics.CalculateRepulsionForce(e.Position, wE.Position, e.Elasticity, wE.Elasticity, Vector2.Distance(e.Position, wE.Position));
+                        }
+                    if (collides)
+                    {
+                        TotalExteriorForce += Physics.CalculateBounceForce(Position, Velocity, Mass, wE.Position, wE.Velocity, wE.Mass) * wE.Elasticity;
+                    }
+
+                }
+                    
             }
         }
         public override object Clone()
