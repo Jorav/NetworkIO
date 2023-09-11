@@ -4,6 +4,7 @@ using NetworkIO.src.collidables;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using NetworkIO.src.menu;
+using NetworkIO.src.movable;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -19,6 +20,18 @@ namespace NetworkIO.src
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
         public Vector2 Position { get { return position; } set { position = value; collisionDetector.Position = value; } }
+
+        public float Mass
+        {
+            get
+            {
+                float sum = 0;
+                foreach (IControllable c in controllables)
+                    sum += c.Mass;
+                return sum;
+            }
+        }
+
         protected Vector2 position;
 
         public Controller(List<IControllable> controllables)
@@ -79,6 +92,7 @@ namespace NetworkIO.src
             UpdatePosition();
             UpdateRadius();
             ApplyInternalGravity();
+            ApplyInternalRepulsion();
             InternalCollission();
         }
 
@@ -116,39 +130,53 @@ namespace NetworkIO.src
                 Radius = largestDistance;
             }
         }
+        protected float AverageDistance()
+        {
+            float nr = 0;
+            float distance = 0;
+            foreach (IControllable c in controllables)
+            {
+                distance += (Vector2.Distance(c.Position, Position) + c.Radius);
+                nr += 1;
+            }
+            if(nr != 0)
+                return distance / nr;
+            return 1;
+        }
         protected void ApplyInternalGravity()
         {
             Vector2 distanceFromController;
             foreach (IControllable c1 in controllables)
             {
-                foreach (IControllable c2 in controllables)//TODO: only allow IsCollidable to affect this?
-                {
-                    float r = Vector2.Distance(c1.Position, c2.Position);
-                    if (c1 != c2 && r < 100 && r != 0)
-                    {
-                        if (r < 10)
-                            r = 10;
-                        float res = /*Physics.CalculateAttraction(c1.Radius, c2.Radius, r)*/-Physics.CalculateGravityRepulsion(c1.Radius, c2.Radius,r);
-                        c1.Accelerate(Vector2.Normalize(c2.Position - c1.Position), res);
-                    }
-                }
                 distanceFromController = Position - c1.Position;
                 if (distanceFromController.Length() != 0)
-                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/Radius) / 10);
+                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/AverageDistance()) / 10);
             }
         }
+        public void ApplyInternalRepulsion()
+        {
+            foreach (IControllable c1 in controllables)
+            {
+                foreach (IControllable c2 in controllables)//TODO: only allow IsCollidable to affect this?
+                {
+                    if (c1 != c2 && c1 is Entity e1 && c2 is Entity e2)
+                        e1.ApplyRepulsion(e2);
+                }
+            }
+        }
+
         protected void UpdatePosition() //TODO: only allow IsCollidable to affect this?
         {
             Vector2 sum = Vector2.Zero;
-            int nrOfLiving = 0;
+            float weight = 0;
             foreach (IControllable c in controllables) 
-            { 
-                sum += c.Position;
-                nrOfLiving++;
+            {
+                weight += c.Mass;
+                sum += c.Position*c.Mass;
             }
-            if(nrOfLiving > 0)  
-                sum /= nrOfLiving;
-            Position = sum;
+            if(weight > 0)
+                Position = sum / (weight);
+                
         }
 
         public void Draw(SpriteBatch sb)

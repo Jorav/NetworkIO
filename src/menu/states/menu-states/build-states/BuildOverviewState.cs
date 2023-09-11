@@ -47,7 +47,7 @@ namespace NetworkIO.src.menu.states
         private void AddEntityButton_Click(object sender, EventArgs e)
         {
             Random r = new Random();
-            menuController.AddControllable(new EntityController(menuController.Position+new Vector2(1+(float)r.NextDouble(), (float)r.NextDouble())));
+            menuController.AddControllable(new EntityController(menuController.Position+new Vector2((float)r.NextDouble()-0.5f, (float)r.NextDouble() - 0.5f)));
         }
         private void ResetEntityButton_Click(object sender, EventArgs e)
         {

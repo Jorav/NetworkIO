@@ -5,6 +5,7 @@ namespace NetworkIO.src
 {
     public interface IControllable : IIntersectable, IComponent //should be renamed
     {
+        public float Mass { get;}
         public void Collide(IControllable c);
         public void RotateTo(Vector2 position);
         public void Accelerate(Vector2 directionalVector, float thrust);
@@ -14,5 +15,6 @@ namespace NetworkIO.src
          * returns the IControllable that contains 'position' in space 'transform', null if none does
          */
         public IControllable ControllableContainingInSpace(Vector2 position, Matrix transform);
+        //public void ApplyInternalRepulsion(IControllable controllable);
     }
 }

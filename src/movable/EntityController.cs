@@ -40,8 +40,8 @@ namespace NetworkIO.src.controllers
                 rotation = value;
             }
         }
-        public override float Mass { get { float sum = 0; foreach (WorldEntity e in entities) sum += e.Thrust; return sum; } set => base.Thrust = value; }
-        public override float Thrust { get { float sum = 0; foreach (WorldEntity e in entities) sum += e.Thrust; return sum; } set => base.Thrust = value; }
+        public override float Mass { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller)sum += e.Thrust; return sum; } set => base.Thrust = value; }
+        public override float Thrust { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller) sum += e.Thrust; return sum; } set => base.Thrust = value; }
 
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
         //public EntityController(List<IController> collidables) : base(collidables)
@@ -98,7 +98,7 @@ namespace NetworkIO.src.controllers
             int nrOfLiving = 0;
             foreach (WorldEntity e in entities)
             {
-                if (e.IsVisible)
+                if (e.IsVisible && !e.IsFiller)
                 {
                     sum += e.Position;
                     nrOfLiving++;
@@ -164,6 +164,29 @@ namespace NetworkIO.src.controllers
                     
             }
         }
+
+        public override void ApplyRepulsion(Entity otherEntity)
+        {
+            if (Radius + otherEntity.Radius + REPULSIONDISTANCE > Vector2.Distance(Position, otherEntity.Position))
+            {
+                if (otherEntity is EntityController otherEC)
+                {
+                    foreach (Entity e1 in entities)
+                        foreach (Entity e2 in otherEC.entities)
+                        {
+                            TotalExteriorForce += CalculateGravitationalRepulsion(e1, e2);
+                        }
+                }
+                else if (otherEntity is WorldEntity otherWE)
+                {
+                    foreach (Entity e in entities)
+                    {
+                        TotalExteriorForce += CalculateGravitationalRepulsion(e, otherWE);
+                    }
+                }
+            }
+        }
+
         public override object Clone()
         {
             EntityController cNew = (EntityController)this.MemberwiseClone();
