@@ -116,7 +116,8 @@ namespace NetworkIO.src
                 //float r = Vector2.Distance(Position, e.Position);
                 Vector2 directionalVector = Position - e.Position;
                 directionalVector.Normalize();
-                TotalExteriorForce += Physics.CalculateCollisionRepulsion(Position, Velocity, Mass, e.Position, e.Velocity, e.Mass, Math.Min(Math.Max(e.Width, e.Height), Math.Max(Width, Height)), Elasticity, e.Elasticity); //OBS: might break after changes
+                TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity, e.Velocity);
+                TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position, Radius);
             }
             else if (c is Controller)
                 foreach (IControllable cc in ((Controller)c).controllables)

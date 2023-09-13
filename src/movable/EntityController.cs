@@ -34,7 +34,8 @@ namespace NetworkIO.src.controllers
                 {
                     Vector2 relativePosition = e.Position - Position;
                     Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
-                    e.Position = newRelativePosition + Position;
+                    //e.Position = newRelativePosition + Position;
+                    e.Velocity = newRelativePosition-relativePosition;
                     e.Rotation = value;
                 }
                 rotation = value;
@@ -127,13 +128,21 @@ namespace NetworkIO.src.controllers
                         foreach (WorldEntity eCE in eC.entities)
                             if (e.CollidesWith(eCE))
                             {
-                                collides = true;
-                                TotalExteriorForce += 0.4f * Physics.CalculateRepulsionForce(e.Position, eCE.Position, e.Elasticity, eCE.Elasticity, Vector2.Distance(e.Position, eCE.Position));
-                                TotalExteriorForce += 0.4f * Physics.CalculateRepulsionForce(Position, eC.Position, e.Elasticity, eCE.Elasticity, Vector2.Distance(e.Position, eCE.Position)); //, Vector2.Distance(e.Position, eCE.Position)
+                                //collides = true;
+                                TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position, eCE.Position, e.Velocity, eCE.Velocity);
+                                TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, eCE.Position, e.Radius);
+                                TotalExteriorForce += 0.5f*Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
+
                             }
                                 
                     if (collides)
                     {
+                        Vector2 eToPosition = eC.Position - Position;
+                        float distance = eToPosition.Length();
+                        eToPosition.Normalize();
+                        float totalForce = Vector2.Dot(Velocity, eToPosition) * Mass + Vector2.Dot(eC.Velocity, eToPosition) * eC.Mass;
+                        
+                        Accelerate(-eToPosition, totalForce/50);
                         TotalExteriorForce += Physics.CalculateBounceForce(Position, Velocity, Mass, eC.Position, eC.Velocity, eC.Mass)*eC.Elasticity;
                     }
 
@@ -153,11 +162,13 @@ namespace NetworkIO.src.controllers
                         if (e.CollidesWith(wE))
                         {
                             collides = true;
-                            TotalExteriorForce += 0.3f * Physics.CalculateRepulsionForce(e.Position, wE.Position, e.Elasticity, wE.Elasticity, Vector2.Distance(e.Position, wE.Position));
+                            TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position, wE.Position, e.Velocity, wE.Velocity);
+                            TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, wE.Position, e.Radius);
+                            TotalExteriorForce += 0.5f * Physics.CalculateOverlapRepulsion(Position, wE.Position, e.Radius);
                         }
                     if (collides)
                     {
-                        TotalExteriorForce += Physics.CalculateBounceForce(Position, Velocity, Mass, wE.Position, wE.Velocity, wE.Mass) * wE.Elasticity;
+                        //TotalExteriorForce += Physics.CalculateBounceForce(Position, Velocity, Mass, wE.Position, wE.Velocity, wE.Mass) * wE.Elasticity;
                     }
 
                 }
@@ -204,7 +215,11 @@ namespace NetworkIO.src.controllers
                 //TotalExteriorForce += e.TotalExteriorForce;
             base.Update(gameTime);
             foreach (WorldEntity e in entities)
-                e.Position += Velocity;
+            {
+                e.Position += Velocity+e.Velocity;
+                //e.Velocity = Vector2.Zero;
+            }
+                //e.Position += Velocity;
         }
         public void MoveTo(Vector2 newPosition)
         {

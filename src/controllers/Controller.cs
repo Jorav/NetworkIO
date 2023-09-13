@@ -150,7 +150,7 @@ namespace NetworkIO.src
             {
                 distanceFromController = Position - c1.Position;
                 if (distanceFromController.Length() != 0)
-                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/AverageDistance()) / 10);
+                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/AverageDistance()) / 5);
             }
         }
         public void ApplyInternalRepulsion()
