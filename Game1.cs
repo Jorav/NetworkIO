@@ -69,7 +69,7 @@ namespace NetworkIO
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _graphics.ApplyChanges();
 
-            Texture2D textureHullRotating = Content.Load<Texture2D>("parts/Hull_rotating");
+            Texture2D textureHullRotating = Content.Load<Texture2D>("parts/Hull_12");
             Texture2D textureSprayGun = Content.Load<Texture2D>("parts/SprayGun");
             Texture2D textureProjectile = Content.Load<Texture2D>("projectiles/Bullet");
             Texture2D textureSun = Content.Load<Texture2D>("background/solar");

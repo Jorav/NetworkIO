@@ -21,14 +21,19 @@ namespace NetworkIO.src.controllers
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public new float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
-        public override Vector2 Position { get { return position; } set { position = value; collisionDetector.Position = value; } }
+        public override Vector2 Position { get { return position; } set {
+                Vector2 posChange = value - Position;
+                foreach (WorldEntity e in entities)
+                    e.Velocity += posChange;
+                position = value; collisionDetector.Position = value; } }
+        private float oldRotation;
         public override float Rotation
         {
             get {
                 return rotation;
             }
             set
-            {
+            {/*
                 float dRotation = Rotation - value;
                 foreach(WorldEntity e in entities)
                 {
@@ -37,7 +42,8 @@ namespace NetworkIO.src.controllers
                     //e.Position = newRelativePosition + Position;
                     e.Velocity = newRelativePosition-relativePosition;
                     e.Rotation = value;
-                }
+                }*/
+                oldRotation = rotation;
                 rotation = value;
             }
         }
@@ -54,9 +60,18 @@ namespace NetworkIO.src.controllers
             entities = new List<WorldEntity>();
             this.collisionDetector = new CollidableCircle(Position, Radius);
             if(e != null)
+            {
                 AddEntity(e);
+                e.Friction = 0;
+            }
+
             else
-                AddEntity(EntityFactory.Create(position, IDs.COMPOSITE));
+            {
+                e = EntityFactory.Create(position, IDs.COMPOSITE);
+                AddEntity(e);
+                e.Friction = 0;
+            }
+                
             
         }
 
@@ -69,6 +84,7 @@ namespace NetworkIO.src.controllers
                     projectiles.Add(s.Projectiles);
                 UpdatePosition();
                 UpdateRadius();
+                e.Friction = 0;
             }
 
         }
@@ -107,7 +123,8 @@ namespace NetworkIO.src.controllers
             }
             if (nrOfLiving > 0)
                 sum /= nrOfLiving;
-            Position = sum;
+            position = sum;
+            collisionDetector.Position = position;
         }
         public override void Shoot(GameTime gameTime)
         {
@@ -143,7 +160,7 @@ namespace NetworkIO.src.controllers
                                     TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position, e.Radius);
                                     TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
                                 }
-                                else if (Vector2.Dot(e.Velocity, eToPosition) > 0 && Vector2.Dot(eCE.Velocity, eToPosition) < 0 && eCE.CollidesWithDuringMove(e))
+                                else if (Vector2.Dot(e.Velocity, eToPosition) >= 0 && Vector2.Dot(eCE.Velocity, eToPosition) <= 0 && eCE.CollidesWithDuringMove(e))
                                 {
                                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Velocity, eCE.Velocity);
                                     TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Radius);
@@ -230,22 +247,39 @@ namespace NetworkIO.src.controllers
         public override void Update(GameTime gameTime)
         {
             //foreach (WorldEntity e in entities)
-                //TotalExteriorForce += e.TotalExteriorForce;
-            base.Update(gameTime);
+            //TotalExteriorForce += e.TotalExteriorForce;
+            float dRotation = oldRotation - Rotation;
             foreach (WorldEntity e in entities)
             {
-                e.Position += Velocity+e.Velocity;
+                    Vector2 relativePosition = e.Position - Position;
+                    Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
+                    e.Velocity = newRelativePosition - relativePosition;
+                    e.Rotation = Rotation;
+                    //e.Position += Velocity+e.Velocity;
+                    //e.Velocity += Velocity;
+            }
+            oldRotation = rotation;
+            base.Update(gameTime);
+            //Rotation = Rotation;
+            foreach (WorldEntity e in entities)
+            {
+                //e.Velocity += Velocity;
+                //e.Position += e.Velocity;
+                e.Update(gameTime);
+                
                 //e.Velocity = Vector2.Zero;
             }
+            
                 //e.Position += Velocity;
         }
         public void MoveTo(Vector2 newPosition)
         {
-            UpdatePosition();
+            //UpdatePosition();
             Vector2 posChange = newPosition - Position;
             foreach (WorldEntity e in entities)
                 e.Position += posChange;
-            Position = position + posChange;
+            position = position + posChange;
+            collisionDetector.Position = position;
         }
         public override bool CollidesWith(IIntersectable c) //NO CHECK DONE, JUST COPY PASTE
         {
@@ -274,13 +308,6 @@ namespace NetworkIO.src.controllers
             return false;
         }
 
-        /*public override bool EntityContainingInSpace(Vector2 position, Matrix transform)
-        {
-            foreach (WorldEntity e in entities)
-                if (e.EntityContainingInSpace(position, transform))
-                    return true;
-            return false;
-        }*/
         public void AddAvailableLinkDisplays()
         {
             List<WorldEntity> tempEntities = new List<WorldEntity>();
