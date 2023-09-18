@@ -76,6 +76,7 @@ namespace NetworkIO.src.controllers
                 UpdatePosition();
                 UpdateRadius();
                 e.Friction = 0;
+                e.EntityController = this;
             }
 
         }

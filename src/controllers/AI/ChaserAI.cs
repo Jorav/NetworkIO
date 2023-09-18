@@ -16,7 +16,6 @@ namespace NetworkIO.src.controllers
         public ChaserAI([OptionalAttribute] Vector2 position, Controller enemy) : base(position) //TODO: Change enemy targeting to something smarter
         {
             this.enemy = enemy;
-            entities[0].EntityController = this;
         }
         public override void Update(GameTime gameTime)
         {
