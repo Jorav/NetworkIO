@@ -14,7 +14,7 @@ namespace NetworkIO.src.entities
         //TODO: add accuracy
         public Queue<Projectile> Projectiles { get; set; }
         //Controller
-        public Shooter(Sprite sprite, Vector2 position, Projectile projectile, float fireRatePerSecond = 50f, float firingStrength = 10f) : base(sprite, position)
+        public Shooter(Sprite sprite, Vector2 position, Projectile projectile, float fireRatePerSecond = 50f, float firingStrength = 7f) : base(sprite, position)
         {
             this.fireRatePerSecond = fireRatePerSecond;
             this.firingStrength = firingStrength;
@@ -29,7 +29,7 @@ namespace NetworkIO.src.entities
                 p.Update(gameTime);
         }
 
-        public void Shoot(GameTime gameTime)
+        public override void Shoot(GameTime gameTime)
         {
             float currentTime = (float)gameTime.TotalGameTime.TotalSeconds;
             if (currentTime-lastTimeFired > (1 / fireRatePerSecond))

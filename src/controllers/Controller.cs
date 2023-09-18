@@ -190,6 +190,16 @@ namespace NetworkIO.src
             if (CollidesWith(collidable))//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
                 foreach (IControllable c in controllables)
                     c.Collide(collidable);
+            CollideProjectiles(collidable);
+        }
+
+        private void CollideProjectiles(IControllable collidable)
+        {
+            foreach (IControllable c in controllables)
+                if (c is Controller cc)
+                    cc.CollideProjectiles(collidable);
+                else if (c is EntityController ec)
+                    ec.CollideProjectiles(collidable);
         }
 
         public bool CollidesWith(IIntersectable c)

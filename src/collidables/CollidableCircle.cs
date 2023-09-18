@@ -25,14 +25,41 @@ namespace NetworkIO.src.collidables
             throw new NotImplementedException();
         }
 
-        public bool CollidesWithRectangle(CollidableRectangle cr) //NOT TESTED
+        public bool CollidesWithRectangle(CollidableRectangle r) //NOT TESTED
         {
             Vector2 unrotatedCircle = new Vector2(
-                (float)(Math.Cos(cr.Rotation) * (Position.X - cr.Position.X) - Math.Sin(cr.Rotation) * (Position.Y - cr.Position.Y) + cr.Position.X),
-                (float)(Math.Sin(cr.Rotation) * (Position.X - cr.Position.X) + Math.Cos(cr.Rotation) * (Position.Y - cr.Position.Y) + cr.Position.Y));
-            float deltaX = unrotatedCircle.X - Math.Max(cr.Position.X-cr.Width/2, Math.Min(unrotatedCircle.X, cr.Position.X + cr.Width/2));
-            float deltaY = unrotatedCircle.Y - Math.Max(cr.Position.Y, Math.Min(unrotatedCircle.Y - cr.Height/2, cr.Position.Y + cr.Height/2));
+                (float)(Math.Cos(r.Rotation) * (Position.X - r.Position.X) - Math.Sin(r.Rotation) * (Position.Y - r.Position.Y) + r.Position.X),
+                (float)(Math.Sin(r.Rotation) * (Position.X - r.Position.X) + Math.Cos(r.Rotation) * (Position.Y - r.Position.Y) + r.Position.Y));
+            
+            float deltaX = unrotatedCircle.X - Math.Max(r.Position.X-r.Width/2, Math.Min(unrotatedCircle.X, r.Position.X + r.Width/2));
+            float deltaY = unrotatedCircle.Y - Math.Max(r.Position.Y, Math.Min(unrotatedCircle.Y - r.Height/2, r.Position.Y + r.Height/2));
             return (deltaX * deltaX + deltaY * deltaY) <= (Radius * Radius);
+            /*
+            Vector2 closest;
+            if (unrotatedCircle.X < r.Position.X)
+                closest.X = r.Position.X;
+            else if (unrotatedCircle.X > r.Position.X + r.Width)
+                closest.X = r.Position.X + r.Width;
+            else
+                closest.X = unrotatedCircle.X;
+
+            // Find the unrotated closest y point from center of unrotated circle
+            if (unrotatedCircle.Y < r.Position.Y)
+                closest.Y = r.Position.Y;
+            else if (unrotatedCircle.Y > r.Position.Y + r.Height)
+                closest.Y = r.Position.Y + r.Height;
+            else
+                closest.Y = unrotatedCircle.Y;
+
+            // Determine collision
+            bool collision = false;
+
+            double distance = Vector2.Distance(unrotatedCircle, closest);
+            if (distance < Radius)
+                collision = true; // Collision
+            else
+                collision = false;
+            return collision;*/
         }
 
         //TODO: dubbelkolla att detta stämmer

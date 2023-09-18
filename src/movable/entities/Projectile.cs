@@ -21,8 +21,8 @@ namespace NetworkIO.src.entities
         {
             if (CollidesWith(e))
             {
-                e.Collide(this);
-                base.Collide(e);
+                e.EntityController.Collide(this);
+                base.Collide(e.EntityController);
                 e.Health--;
                 IsCollidable = false;
             }

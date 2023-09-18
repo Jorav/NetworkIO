@@ -52,7 +52,7 @@ namespace NetworkIO.src
         protected float health;
         public override float Radius { get { return collisionDetector.Radius; } }
         public List<Link> Links { get; private set; }
-        public float internalRotation;
+        private float internalRotation;
         public bool IsFiller { get; set; }
         public List<WorldEntity> FillerEntities { get {
                 List<WorldEntity> fillerEntities = new List<WorldEntity>();
@@ -63,7 +63,7 @@ namespace NetworkIO.src
             } 
         }
 
-        public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 100, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
+        public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 1000, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;
             collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
@@ -112,6 +112,8 @@ namespace NetworkIO.src
             Velocity = Physics.CalculateVelocity(Position, Velocity, TotalExteriorForce, Mass, Friction);
             Position += Velocity;
             TotalExteriorForce = Vector2.Zero;
+            if (Health < 0)
+                Die();
         }
 
         public override bool Contains(Vector2 point)
@@ -148,10 +150,26 @@ namespace NetworkIO.src
         {
             if (c is WorldEntity e)
             {
-                Vector2 directionalVector = Position - e.Position;
-                directionalVector.Normalize();
-                TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity, e.Velocity);
-                TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position, Radius);
+                if (CollidesWith(e))
+                {
+                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity, e.Velocity);
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position, Radius);
+                }
+                else
+                {
+                    Vector2 distanceBeforeMoving = Position - Velocity - (e.Position - e.Velocity);
+                    Vector2 distance = Position - e.Position;
+                    if (Vector2.Dot(e.Velocity, distanceBeforeMoving) > Vector2.Dot(Velocity, distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))//if they move
+                    {
+                        TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position - Velocity, e.Position, Velocity, e.Velocity);
+                        TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position - Velocity, e.Position, Radius);
+                    }
+                    else if (Vector2.Dot(Velocity, -distanceBeforeMoving) > Vector2.Dot(e.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))
+                    {
+                        TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position - e.Velocity, Velocity, e.Velocity);
+                        TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position - e.Velocity, Radius);
+                    }
+                }
             }
             else if (c is Controller)
                 foreach (IControllable cc in ((Controller)c).controllables)
