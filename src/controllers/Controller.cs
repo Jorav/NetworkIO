@@ -96,7 +96,7 @@ namespace NetworkIO.src
             InternalCollission();
         }
 
-        private void InternalCollission()
+        protected void InternalCollission()
         {
             foreach (IControllable c1 in controllables)
                 foreach (IControllable c2 in controllables)
@@ -150,7 +150,7 @@ namespace NetworkIO.src
             {
                 distanceFromController = Position - c1.Position;
                 if (distanceFromController.Length() != 0)
-                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/AverageDistance()) / 5);
+                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/AverageDistance()) / 2);
             }
         }
         public void ApplyInternalRepulsion()

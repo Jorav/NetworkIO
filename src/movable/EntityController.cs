@@ -21,6 +21,8 @@ namespace NetworkIO.src.controllers
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public new float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
+
+        public override Vector2 Velocity { get { return velocity; } set { if (value.Length() > 100) value = value / value.Length() * 100; velocity = value; } }
         public override Vector2 Position { get { return position; } set {
                 Vector2 posChange = value - Position;
                 foreach (WorldEntity e in entities)
@@ -33,16 +35,7 @@ namespace NetworkIO.src.controllers
                 return rotation;
             }
             set
-            {/*
-                float dRotation = Rotation - value;
-                foreach(WorldEntity e in entities)
-                {
-                    Vector2 relativePosition = e.Position - Position;
-                    Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
-                    //e.Position = newRelativePosition + Position;
-                    e.Velocity = newRelativePosition-relativePosition;
-                    e.Rotation = value;
-                }*/
+            {
                 oldRotation = rotation;
                 rotation = value;
             }
@@ -51,8 +44,6 @@ namespace NetworkIO.src.controllers
         public override float Thrust { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller) sum += e.Thrust; return sum; } set => base.Thrust = value; }
 
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
-        //public EntityController(List<IController> collidables) : base(collidables)
-        //{}
         public EntityController([OptionalAttribute] Vector2 position, [OptionalAttribute] WorldEntity e) : base(position)
         {//only allow composite for now
             if (position == null)
@@ -132,9 +123,9 @@ namespace NetworkIO.src.controllers
                 if (e is Shooter gun)
                     gun.Shoot(gameTime);
         }
-        public override void Collide(IControllable controllable)
+        public override void Collide(IControllable controllable) //OBS: ADD COLLISSION HADNLING SUPPORT FOR WORLDENTITIES NOT BELONGING TO ENTITY CONTROLLER
         {
-            if (CollidesWith(controllable)) {//TODO(lowprio): Add predicitive collision e.g. by calculating many steps (make extended collisionobject starting from before calculation and ending where it ended)
+            if (CollidesWith(controllable)) {
                 if (controllable is Controller c)
                     foreach (IControllable iC in c.controllables)
                         Collide(iC);
@@ -153,14 +144,15 @@ namespace NetworkIO.src.controllers
                             }
                             else
                             {
-                                Vector2 eToPosition = e.Position-e.Velocity - (eCE.Position-eCE.Velocity);
-                                if (Vector2.Dot(e.Velocity, eToPosition)>0 && Vector2.Dot(eCE.Velocity, eToPosition) < 0 && e.CollidesWithDuringMove(eCE))//if they move
+                                Vector2 distanceBeforeMoving = e.Position-e.Velocity - (eCE.Position-eCE.Velocity);
+                                Vector2 distance = e.Position - eCE.Position;
+                                if (Vector2.Dot(eCE.Velocity, distanceBeforeMoving) > Vector2.Dot(e.Velocity, distanceBeforeMoving)+distanceBeforeMoving.Length() && eCE.CollidesWithDuringMove(e))//if they move
                                 {
                                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position - e.Velocity, eCE.Position, e.Velocity, eCE.Velocity);
                                     TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position, e.Radius);
                                     TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
                                 }
-                                else if (Vector2.Dot(e.Velocity, eToPosition) >= 0 && Vector2.Dot(eCE.Velocity, eToPosition) <= 0 && eCE.CollidesWithDuringMove(e))
+                                else if (Vector2.Dot(e.Velocity, -distanceBeforeMoving) > Vector2.Dot(eCE.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && eCE.CollidesWithDuringMove(e))
                                 {
                                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Velocity, eCE.Velocity);
                                     TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Radius);
@@ -246,32 +238,26 @@ namespace NetworkIO.src.controllers
 
         public override void Update(GameTime gameTime)
         {
-            //foreach (WorldEntity e in entities)
-            //TotalExteriorForce += e.TotalExteriorForce;
+            MoveAndRotateEntities();
+            base.Update(gameTime);
+            foreach (WorldEntity e in entities)
+                e.Update(gameTime);
+        }
+
+        private void MoveAndRotateEntities()
+        {
             float dRotation = oldRotation - Rotation;
             foreach (WorldEntity e in entities)
             {
-                    Vector2 relativePosition = e.Position - Position;
-                    Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
-                    e.Velocity = newRelativePosition - relativePosition;
-                    e.Rotation = Rotation;
-                    //e.Position += Velocity+e.Velocity;
-                    //e.Velocity += Velocity;
+                Vector2 relativePosition = e.Position - Position;
+                Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
+                e.Velocity = newRelativePosition - relativePosition;
+                e.Rotation = Rotation;
+
             }
             oldRotation = rotation;
-            base.Update(gameTime);
-            //Rotation = Rotation;
-            foreach (WorldEntity e in entities)
-            {
-                //e.Velocity += Velocity;
-                //e.Position += e.Velocity;
-                e.Update(gameTime);
-                
-                //e.Velocity = Vector2.Zero;
-            }
-            
-                //e.Position += Velocity;
         }
+
         public void MoveTo(Vector2 newPosition)
         {
             //UpdatePosition();

@@ -14,11 +14,12 @@ namespace NetworkIO.src
         protected Vector2 position;
         public virtual float Rotation { get; set; }
         protected float rotation;
-        public Vector2 Velocity { get; set; }
+        protected Vector2 velocity;
+        public virtual Vector2 Velocity { get { return velocity; } set { velocity = value; } }
         public virtual float Friction { get; set; } // percent, where 0.1f = 10% friction
         public Vector2 TotalExteriorForce;
 
-        public Movable(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f)
+        public Movable(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.15f)
         {
             this.position = position;
             this.rotation = rotation;

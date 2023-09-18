@@ -52,7 +52,7 @@ namespace NetworkIO.src
         protected float health;
         public override float Radius { get { return collisionDetector.Radius; } }
         public List<Link> Links { get; private set; }
-        private float internalRotation;
+        public float internalRotation;
         public bool IsFiller { get; set; }
         public List<WorldEntity> FillerEntities { get {
                 List<WorldEntity> fillerEntities = new List<WorldEntity>();
@@ -119,10 +119,6 @@ namespace NetworkIO.src
             return IsCollidable && collisionDetector.Contains(point);
         }
 
-        /*public override bool EntityContainingInSpace(Vector2 position, Matrix transform)
-        {
-            return IsCollidable && collisionDetector.ContainsInSpace(position, transform);
-        }*/
         public override IControllable ControllableContainingInSpace(Vector2 position, Matrix transform)
         {
             if (IsCollidable && collisionDetector.ContainsInSpace(position, transform))
@@ -138,7 +134,6 @@ namespace NetworkIO.src
                     return true;
             }
             return false;
-            //return IsCollidable && e.IsCollidable && collisionDetector.CollidesWith(e.collisionDetector);
         }
         public bool CollidesWithDuringMove(WorldEntity e)
         {
@@ -153,7 +148,6 @@ namespace NetworkIO.src
         {
             if (c is WorldEntity e)
             {
-                //float r = Vector2.Distance(Position, e.Position);
                 Vector2 directionalVector = Position - e.Position;
                 directionalVector.Normalize();
                 TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity, e.Velocity);
@@ -191,12 +185,10 @@ namespace NetworkIO.src
         public void ConnectTo(WorldEntity eConnectedTo, Link lConnectedTo)
         {
             if (Links.Count > 0 && Links[0] != null) {
-                //if(!lConnectedTo.ConnectionAvailable())
-                   // eConnectedTo.fillerEntities.Remove(lConnectedTo.connection.Entity);
                 internalRotation = Links[0].ConnectTo(lConnectedTo);
                 Position = eConnectedTo.Position + lConnectedTo.DistanceFromConnection * 
-                    new Vector2((float)Math.Cos(eConnectedTo.Rotation + lConnectedTo.LinkRotation), (float)Math.Sin(eConnectedTo.Rotation + lConnectedTo.LinkRotation));
-                Rotation = eConnectedTo.Rotation;
+                    new Vector2((float)Math.Cos(MathHelper.WrapAngle(eConnectedTo.Rotation + lConnectedTo.LinkRotation)), (float)Math.Sin(MathHelper.WrapAngle(eConnectedTo.Rotation + lConnectedTo.LinkRotation)));
+                Rotation = eConnectedTo.Rotation-eConnectedTo.internalRotation;
             }
         }
         public void FillEmptyLinks()
@@ -258,7 +250,8 @@ namespace NetworkIO.src
                     l.SeverConnection();
                 connection = l;
                 l.connection = this;
-                return MathHelper.ToRadians(180) - MathHelper.WrapAngle(-l.LinkRotation - LinkRotation);
+                return MathHelper.WrapAngle(l.Entity.internalRotation + l.LinkRotation + LinkRotation + MathHelper.ToRadians(180)) ;
+                //return MathHelper.ToRadians(180) - MathHelper.WrapAngle(-l.LinkRotation - LinkRotation);
             }
 
             public bool ConnectionAvailable()
