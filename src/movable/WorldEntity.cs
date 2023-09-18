@@ -16,10 +16,35 @@ namespace NetworkIO.src
     {
         protected Sprite sprite = null;
         public CollidableRectangle collisionDetector;
+        public CollidableRectangle oldCollisionDetector;
         public EntityController EntityController { get; set; }
-        public override Vector2 Position { get { return position; } set{ position = value; sprite.Position = value; collisionDetector.Position = value; } }
-        public override float Rotation { get { return rotation; } set { rotation = value + internalRotation; sprite.Rotation = value+internalRotation; collisionDetector.Rotation = value+internalRotation; } }
-        public Vector2 Origin { get { return origin; } set { origin = value; sprite.Origin = value; collisionDetector.Origin = value; } }
+        public override Vector2 Position { get { return position; } 
+            set
+            { 
+                position = value;
+                sprite.Position = value;
+                oldCollisionDetector.Position = collisionDetector.Position;
+                collisionDetector.Position = value;
+            } 
+        }
+        public override float Rotation { get { return rotation; } 
+            set 
+            { 
+                rotation = value + internalRotation; 
+                sprite.Rotation = value+internalRotation; 
+                oldCollisionDetector.Rotation = collisionDetector.Rotation; 
+                collisionDetector.Rotation = value+internalRotation; 
+            } 
+        }
+        public Vector2 Origin { get { return origin; } 
+            set 
+            { 
+                origin = value; 
+                sprite.Origin = value;
+                oldCollisionDetector.Origin = collisionDetector.Origin;
+                collisionDetector.Origin = value; 
+            } 
+        }
         protected Vector2 origin;
         public float Width { get { return sprite.Width; } }
         public float Height { get { return sprite.Height; } }
@@ -42,6 +67,7 @@ namespace NetworkIO.src
         {
             this.sprite = sprite;
             collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
+            oldCollisionDetector = (CollidableRectangle)CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
             if (entityController == null)
                 this.EntityController = new EntityController(position, this);
             else
@@ -106,7 +132,21 @@ namespace NetworkIO.src
 
         public bool CollidesWith(WorldEntity e)
         {
-            return IsCollidable && e.IsCollidable && collisionDetector.CollidesWith(e.collisionDetector);
+            if (IsCollidable && e.IsCollidable)
+            {
+                if (collisionDetector.CollidesWith(e.collisionDetector))
+                    return true;
+            }
+            return false;
+            //return IsCollidable && e.IsCollidable && collisionDetector.CollidesWith(e.collisionDetector);
+        }
+        public bool CollidesWithDuringMove(WorldEntity e)
+        {
+            bool collides = false;
+            collisionDetector.StretchToRectangle(oldCollisionDetector);
+            collides = collisionDetector.StretchCollidesWithRectangle(e.collisionDetector) && IsCollidable && e.IsCollidable;
+            collisionDetector.StopStretch();
+            return collides;
         }
 
         public override void Collide(IControllable c)

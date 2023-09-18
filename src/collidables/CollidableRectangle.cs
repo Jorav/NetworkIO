@@ -57,8 +57,18 @@ namespace NetworkIO.src.collidables
             get { return rotation; }
         }
         public float Radius { get { return (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2)); } }
+        private CollidableRectangle stretchedRectangle;
 
-        public CollidableRectangle(Vector2 position, float rotation, int width, int height)
+        public CollidableRectangle(Vector2 UL, Vector2 DL, Vector2 DR, Vector2 UR)
+        {
+            this.UL = UL;
+            this.DL = DL;
+            this.DR = DR;
+            this.UR = UR;
+            Height = (int)(Math.Round((DL - UL).Length()));
+            Width = (int)(Math.Round((UR - UL).Length()));
+        }
+            public CollidableRectangle(Vector2 position, float rotation, int width, int height)
         {
             UL = new Vector2(position.X, position.Y);
             DL = new Vector2(position.X, position.Y+height);
@@ -121,6 +131,7 @@ namespace NetworkIO.src.collidables
 
         public bool CollidesWithRectangle(CollidableRectangle r)
         {
+            bool collides = true;
             Vector2[] axes = GenerateAxes(r);
             float[] scalarA = new float[4];
             float[] scalarB = new float[4];
@@ -135,9 +146,21 @@ namespace NetworkIO.src.collidables
                 scalarB[2] = Vector2.Dot(axis, Vector2.Multiply(axis, Vector2.Dot(r.DR, axis) / axis.LengthSquared()));
                 scalarB[3] = Vector2.Dot(axis, Vector2.Multiply(axis, Vector2.Dot(r.UR, axis) / axis.LengthSquared()));
                 if (scalarB.Max() < scalarA.Min() || scalarA.Max() < scalarB.Min())
-                    return false;
+                    collides = false;
+            }/*
+            if(!collides && stretchedRectangle != null)
+            {
+                return stretchedRectangle.CollidesWithRectangle(r);
+            }*/
+            return collides;
+        }
+        public bool StretchCollidesWithRectangle(CollidableRectangle r)
+        {
+            if (stretchedRectangle != null)
+            {
+                return stretchedRectangle.CollidesWithRectangle(r);
             }
-            return true;
+            return false;
         }
         private Vector2[] GenerateAxes(CollidableRectangle r)
         {
@@ -147,6 +170,44 @@ namespace NetworkIO.src.collidables
             axes[2] = new Vector2(r.UL.X - r.DL.X, r.UL.Y - r.DL.Y);
             axes[3] = new Vector2(r.UL.X - r.UR.X, r.UL.Y - r.UR.Y);
             return axes;
+        }
+
+        public void StretchToRectangle(CollidableRectangle r)
+        {
+            if (Position != r.Position)
+            {
+                Vector2 change = r.Position - position;
+                Vector2 perpendicular = new Vector2(change.Y, -change.X);
+                perpendicular.Normalize();
+                float ULProjection = Vector2.Dot(UL, perpendicular);
+                float DLProjection = Vector2.Dot(DL, perpendicular);
+                float DRProjection = Vector2.Dot(DR, perpendicular);
+                float URProjection = Vector2.Dot(UR, perpendicular);
+                List<(Vector2, float)> list = new List<(Vector2, float)> { (UL, ULProjection), (DL, DLProjection), (DR, DRProjection), (UR, URProjection) };
+                list.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+                Vector2 min = list[0].Item1;
+                Vector2 max = list[3].Item1;
+                ULProjection = Vector2.Dot(r.UL, perpendicular);
+                DLProjection = Vector2.Dot(r.DL, perpendicular);
+                DRProjection = Vector2.Dot(r.DR, perpendicular);
+                URProjection = Vector2.Dot(r.UR, perpendicular);
+                list = new List<(Vector2, float)> { (r.UL, ULProjection), (r.DL, DLProjection), (r.DR, DRProjection), (r.UR, URProjection) };
+                list.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+                Vector2 minR = list[0].Item1;
+                Vector2 maxR = list[3].Item1;
+                stretchedRectangle = new CollidableRectangle(min, max, maxR, minR);
+            }
+            else
+                stretchedRectangle = null;
+        }
+        public void StopStretch()
+        {
+            stretchedRectangle = null;
+        }
+
+        public bool CollidesAlongLine(IIntersectable i, Vector2 line)
+        {
+            return false;
         }
 
         public void Collide(IIntersectable c) //TEMPORARY, THESE SHOULD NOT COLLIDE DIRECTLY (or be part of ICollide interface)

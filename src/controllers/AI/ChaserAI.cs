@@ -25,9 +25,7 @@ namespace NetworkIO.src.controllers
         }
         protected void Rotate()
         {
-            foreach (WorldEntity e in entities)
-                if(e.IsVisible)
-                    e.RotateTo(enemy.controllables[0].Position);
+            RotateTo(enemy.controllables[0].Position);
         }
         protected void Accelerate()
         {
