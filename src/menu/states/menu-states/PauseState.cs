@@ -23,35 +23,35 @@ namespace NetworkIO.src.menu.states
             background.Scale = background.Height/ Game1.ScreenHeight;
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
 
-            Button continueButton = new Button(buttonTexture, buttonFont)
+            Button continueButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(300, 150), //or preferably center
                 Text = "Continue",
             };
             continueButton.Click += ContinueButton_Click;
 
-            Button newGameButton = new Button(buttonTexture, buttonFont)
+            Button newGameButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(300, 200), //or preferably center
                 Text = "New Game",
             };
             newGameButton.Click += NewGameButton_Click;
 
-            Button loadGameButton = new Button(buttonTexture, buttonFont)
+            Button loadGameButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(300, 250), //or preferably center
                 Text = "Load Game",
             };
             loadGameButton.Click += LoadGameButton_Click;
 
-            Button mainMenuButton = new Button(buttonTexture, buttonFont)
+            Button mainMenuButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(300, 300), //or preferably center
                 Text = "Main Menu",
             };
             mainMenuButton.Click += MainMenuButton_Click;
 
-            Button quitGameButton = new Button(buttonTexture, buttonFont)
+            Button quitGameButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(300, 350), //or preferably center
                 Text = "Quit Game",

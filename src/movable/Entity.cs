@@ -9,7 +9,6 @@ namespace NetworkIO.src.movable
     public abstract class Entity : Movable, IControllable
     {
         public float Elasticity;
-        public bool IsVisible { get; set; }
         public bool IsCollidable { get; set; }
         public virtual float Radius { get; }
         public static float REPULSIONDISTANCE = 100;

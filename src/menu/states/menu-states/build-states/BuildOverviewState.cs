@@ -22,12 +22,12 @@ namespace NetworkIO.src.menu.states
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
-            Button addEntityButton = new Button(buttonTexture, buttonFont)
+            Button addEntityButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(Game1.ScreenWidth-buttonTexture.Width-100, Game1.ScreenHeight - buttonTexture.Height-150), //make this vary with Zoom
                 Text = "Add Hull",
             };
-            Button resetEntityButton = new Button(buttonTexture, buttonFont)
+            Button resetEntityButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(Game1.ScreenWidth - buttonTexture.Width - 100, Game1.ScreenHeight - buttonTexture.Height - 100), //make this vary with Zoom
                 Text = "Reset",

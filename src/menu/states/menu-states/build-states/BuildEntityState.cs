@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.controllers;
 using NetworkIO.src.factories;
+using NetworkIO.src.menu.controls;
 using NetworkIO.src.movable;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +17,9 @@ namespace NetworkIO.src.menu.states.menu_states
         BuildOverviewState previousState;
         IControllable entityEdited;
         bool clickRegistered;
+        IDs idToBeAddded;
+        private bool buttonClicked = false;
+
         public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, BuildOverviewState previousState, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
         {
             this.previousState = previousState;
@@ -24,52 +29,82 @@ namespace NetworkIO.src.menu.states.menu_states
             background.Scale = background.Height / Game1.ScreenHeight;
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
             this.entityEdited = controllerEdited.controllables[0];
+            idToBeAddded = IDs.COMPOSITE;
+            Button addHullButton = new Button(new Sprite(EntityFactory.hull))
+            {
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Scale = 3
+            };
+            addHullButton.Click += AddHullButton_Click;
+            Button addShooterButton = new Button(new Sprite(EntityFactory.gun))
+            {
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 220),
+                Scale = 3
+            };
+            addShooterButton.Click += AddShooterButton_Click;
 
             components = new List<IComponent>()
             {
                 background,
+                addHullButton,
+                addShooterButton
             };
         }
-
+        private void AddHullButton_Click(object sender, EventArgs e)
+        {
+            idToBeAddded = IDs.COMPOSITE;
+            buttonClicked = true;
+        }
+        private void AddShooterButton_Click(object sender, EventArgs e)
+        {
+            idToBeAddded = IDs.SHOOTER;
+            buttonClicked = true; 
+        }
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            bool newClick = input.LeftMBClicked;
-            if (newClick)
-                clickRegistered = true;
-            if (input.LeftMBDown && clickRegistered)
+            if (!buttonClicked)
             {
-                IControllable clicked = menuController.EntityClicked();
-                if (clicked == null && newClick) {
+                bool newClick = input.LeftMBClicked;
+                if (newClick)
+                    clickRegistered = true;
+                if (input.LeftMBDown && clickRegistered)
+                {
+                    IControllable clicked = menuController.EntityClicked();
+                    if (clicked == null && newClick)
+                    {
+                        previousState.menuController.controllables.Remove(entityEdited);
+                        previousState.menuController.AddControllable(menuController.controllables[0]);
+                        previousState.menuController.MoveTo(previousState.menuController.Position);
+                        previousState.menuController.Camera.InBuildScreen = true;
+                        menuController.Reset();
+                        game.ChangeState(previousState);
+                    }
+                    else if (clicked is WorldEntity clickedE && clickedE.IsFiller)
+                    {
+                        {
+                            menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
+                            menuController.AddOpenLinks();
+                        }
+
+                    }
+                }
+                if (input.BuildClicked)
+                {
                     previousState.menuController.controllables.Remove(entityEdited);
                     previousState.menuController.AddControllable(menuController.controllables[0]);
-                    previousState.menuController.MoveTo(previousState.menuController.Position);
-                    previousState.menuController.Camera.InBuildScreen = true;
                     menuController.Reset();
-                    game.ChangeState(previousState);
+                    gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
+                    gameState.Player.MoveTo(gameState.Player.Position);
+                    game.ChangeState(gameState);
+                    gameState.Player.Camera.InBuildScreen = false;
+                    gameState.Player.actionsLocked = false;
                 }
-                else if (clicked is WorldEntity clickedE && clickedE.IsFiller) 
-                {
-                    {
-                        menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, utility.IDs.SHOOTER));
-                        menuController.AddOpenLinks();
-                    }
-                        
-                }
+                if (!input.LeftMBDown)
+                    clickRegistered = false;
             }
-            if (input.BuildClicked)
-            {
-                previousState.menuController.controllables.Remove(entityEdited);
-                previousState.menuController.AddControllable(menuController.controllables[0]);
-                menuController.Reset();
-                gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
-                gameState.Player.MoveTo(gameState.Player.Position);
-                game.ChangeState(gameState);
-                gameState.Player.Camera.InBuildScreen = false;
-                gameState.Player.actionsLocked = false;
-            }
-            if (!input.LeftMBDown)
-                clickRegistered = false;
+            else
+                buttonClicked = false;
         }
     }
 }

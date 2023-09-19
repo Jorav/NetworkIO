@@ -14,6 +14,7 @@ namespace NetworkIO.src
         public Vector2 Origin { get; set; }
         public int Height { get { return (int)Math.Round(texture.Height * Scale); } }
         public int Width { get { return (int)Math.Round(texture.Width * Scale); } }
+        public bool isVisible = true;
         /*public Matrix LocalTransform
         {
             get
@@ -37,7 +38,15 @@ namespace NetworkIO.src
         public void Draw(SpriteBatch sb)
         {
             //Matrix globalTransform = LocalTransform * parentTransform;
-            sb.Draw(texture, Position, null, Color.White, Rotation, Origin, Scale, SpriteEffects.None,0f);
+            if(isVisible)
+                sb.Draw(texture, Position, null, Color.White, Rotation, Origin, Scale, SpriteEffects.None,0f);
+        }
+
+        public void Draw(SpriteBatch sb, Color color)
+        {
+            //Matrix globalTransform = LocalTransform * parentTransform;
+            if (isVisible)
+                sb.Draw(texture, Position, null, color, Rotation, Origin, Scale, SpriteEffects.None, 0f);
         }
 
         public object Clone()

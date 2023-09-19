@@ -10,9 +10,9 @@ namespace NetworkIO.src.entities
         private float timer = 0;
         private float maxLifeSpan;
         private float minLifeSpan;
-        private float lowerVelocityLimit=2;
+        private float lowerVelocityLimit=3;
 
-        public Projectile(Sprite sprite, Vector2 position, float maxLifeSpan = 20f, float minLifeSpan = 2f) : base(sprite, position, mass:0.4f, friction:0.03f, isVisible:false, isCollidable:false)
+        public Projectile(Sprite sprite, Vector2 position, float maxLifeSpan = 3f, float minLifeSpan = 1f) : base(sprite, position, mass:0.4f, friction:0.03f, isVisible:false, isCollidable:false)
         {
             this.maxLifeSpan = maxLifeSpan;
             this.minLifeSpan = minLifeSpan;

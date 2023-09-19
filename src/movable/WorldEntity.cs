@@ -15,6 +15,7 @@ namespace NetworkIO.src
     public class WorldEntity : Entity, IComponent, IIntersectable
     {
         protected Sprite sprite = null;
+        public bool IsVisible { get { return sprite.isVisible; } set { sprite.isVisible = value; } }
         public CollidableRectangle collisionDetector;
         public CollidableRectangle oldCollisionDetector;
         public EntityController EntityController { get; set; }
@@ -91,13 +92,7 @@ namespace NetworkIO.src
 
         public override void Draw(SpriteBatch sb)
         {
-            if (IsVisible)
-            {
-                //foreach (WorldEntity e in fillerEntities)
-                    //e.Draw(sb);
-                sprite.Draw(sb);
-            }
-            
+            sprite.Draw(sb);
         }
         public virtual void Die()
         {
