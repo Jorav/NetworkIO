@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
+using NetworkIO.src.movable.entities;
 using NetworkIO.src.utility;
 using System;
 
@@ -15,6 +16,7 @@ namespace NetworkIO.src.factories
         public static Texture2D cloud;
         public static Texture2D sun;
         public static Texture2D emptyLink;
+        public static Texture2D spike;
 
         public static WorldEntity Create(Vector2 position, IDs id)
         {
@@ -26,6 +28,7 @@ namespace NetworkIO.src.factories
                 case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE));
                 case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position);
                 case IDs.EMPTY_LINK: return new RectangularComposite(new Sprite(emptyLink), position);
+                case IDs.SPIKE: return new Spike(new Sprite(spike), position);
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
 
                 #region background

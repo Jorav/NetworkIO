@@ -76,12 +76,14 @@ namespace NetworkIO
             Texture2D textureCloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
             Texture2D textureCloudCreepyBlurry = Content.Load<Texture2D>("background/cloud_creepy_blurry");
             Texture2D textureEmptyLink = Content.Load<Texture2D>("parts/empty_link_directed");
+            Texture2D textureSpike = Content.Load<Texture2D>("parts/spike");
             EntityFactory.hull = textureHullRotating;
             EntityFactory.gun = textureSprayGun;
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
             EntityFactory.sun = textureSun;
             EntityFactory.emptyLink = textureEmptyLink;
+            EntityFactory.spike = textureSpike;
 
         }
         

@@ -14,6 +14,7 @@ namespace NetworkIO.src.utility
         CLOUD,
         SUN,
         EMPTY_LINK,
+        SPIKE,
         #endregion
         
         #region Controllers

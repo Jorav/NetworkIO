@@ -17,7 +17,6 @@ namespace NetworkIO.src.menu.states.menu_states
         BuildOverviewState previousState;
         IControllable entityEdited;
         IDs idToBeAddded;
-        private bool buttonClicked = false;
 
         public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, BuildOverviewState previousState, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
         {
@@ -41,14 +40,28 @@ namespace NetworkIO.src.menu.states.menu_states
                 Scale = 3
             };
             addShooterButton.Click += AddShooterButton_Click;
+            Button addSpikeButton = new Button(new Sprite(EntityFactory.spike))
+            {
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 420 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Scale = 3
+            };
+            addSpikeButton.Click += AddSpikeButton_Click;
 
             components = new List<IComponent>()
             {
                 background,
                 addHullButton,
                 addShooterButton,
+                addSpikeButton,
             };
         }
+
+        private void AddSpikeButton_Click(object sender, EventArgs e)
+        {
+            idToBeAddded = IDs.SPIKE;
+            menuController.requireNewClick = true;
+        }
+
         private void AddHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.COMPOSITE;

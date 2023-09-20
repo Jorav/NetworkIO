@@ -5,6 +5,7 @@ using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
 using NetworkIO.src.factories;
 using NetworkIO.src.movable;
+using NetworkIO.src.movable.entities;
 using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
@@ -183,9 +184,9 @@ namespace NetworkIO.src.controllers
                     TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
                 }
             }
-            if (collides && e is Projectile p)
+            if (collides && e is Spike s)
             {
-                //p.Collide(eCE);
+                s.Collide(eCE);
             }
         }
 
