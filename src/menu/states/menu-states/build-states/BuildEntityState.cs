@@ -28,22 +28,23 @@ namespace NetworkIO.src.menu.states.menu_states
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
             this.entityEdited = controllerEdited.controllables[0];
             idToBeAddded = IDs.COMPOSITE;
-            Button addHullButton = new Button(new Sprite(EntityFactory.hull))
+            EntityButton addHullButton = new EntityButton(new Sprite(EntityFactory.hull), new Sprite(EntityFactory.entityButton), true)
             {
+                Scale = 3,
                 Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
-                Scale = 3
             };
             addHullButton.Click += AddHullButton_Click;
-            Button addShooterButton = new Button(new Sprite(EntityFactory.gun))
+            EntityButton addShooterButton = new EntityButton(new Sprite(EntityFactory.gun), new Sprite(EntityFactory.entityButton))
             {
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 220),
-                Scale = 3
+                Scale = 3,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, addHullButton.Position.Y+addHullButton.Rectangle.Height),
+                
             };
             addShooterButton.Click += AddShooterButton_Click;
-            Button addSpikeButton = new Button(new Sprite(EntityFactory.spike))
-            {
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 420 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
-                Scale = 3
+            EntityButton addSpikeButton = new EntityButton(new Sprite(EntityFactory.spike), new Sprite(EntityFactory.entityButton))
+            {Scale = 3,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                
             };
             addSpikeButton.Click += AddSpikeButton_Click;
 

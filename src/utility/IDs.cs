@@ -15,6 +15,7 @@ namespace NetworkIO.src.utility
         SUN,
         EMPTY_LINK,
         SPIKE,
+        ENTITY_BUTTON,
         #endregion
         
         #region Controllers

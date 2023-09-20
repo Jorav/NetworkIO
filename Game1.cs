@@ -69,21 +69,25 @@ namespace NetworkIO
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _graphics.ApplyChanges();
 
-            Texture2D textureHullRotating = Content.Load<Texture2D>("parts/Hull_12");
-            Texture2D textureSprayGun = Content.Load<Texture2D>("parts/SprayGun");
-            Texture2D textureProjectile = Content.Load<Texture2D>("projectiles/Bullet");
+            Texture2D textureHullRotating = Content.Load<Texture2D>("parts/RotatingHull");
+            //Texture2D textureSprayGun = Content.Load<Texture2D>("parts/SprayGun");
+            Texture2D textureGun = Content.Load<Texture2D>("parts/Gun");
+            Texture2D textureProjectile = Content.Load<Texture2D>("projectiles/BulletWhite");
             Texture2D textureSun = Content.Load<Texture2D>("background/solar");
             Texture2D textureCloudCreepy = Content.Load<Texture2D>("background/cloud_creepy");
             Texture2D textureCloudCreepyBlurry = Content.Load<Texture2D>("background/cloud_creepy_blurry");
             Texture2D textureEmptyLink = Content.Load<Texture2D>("parts/empty_link_directed");
             Texture2D textureSpike = Content.Load<Texture2D>("parts/spike");
-            EntityFactory.hull = textureHullRotating;
-            EntityFactory.gun = textureSprayGun;
+            Texture2D textureEntityButton = Content.Load<Texture2D>("controls/entityButton");
+            Texture2D textureCircularHull = Content.Load<Texture2D>("parts/CircularHull");
+            EntityFactory.hull = textureCircularHull;
+            EntityFactory.gun = textureGun;
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
             EntityFactory.sun = textureSun;
             EntityFactory.emptyLink = textureEmptyLink;
             EntityFactory.spike = textureSpike;
+            EntityFactory.entityButton = textureEntityButton;
 
         }
         

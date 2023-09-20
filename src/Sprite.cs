@@ -7,7 +7,7 @@ namespace NetworkIO.src
 {
     public class Sprite : IComponent
     {
-        private Texture2D texture;
+        public Texture2D texture;
         public float Scale { get; set; }
         public float Rotation { get; set; }
         public Vector2 Position { get; set; }
@@ -52,6 +52,11 @@ namespace NetworkIO.src
         public object Clone()
         {
             return this.MemberwiseClone();
+        }
+
+        internal void DamageEffect()
+        {
+            //throw new NotImplementedException();
         }
     }
 }

@@ -49,7 +49,16 @@ namespace NetworkIO.src
         protected Vector2 origin;
         public float Width { get { return sprite.Width; } }
         public float Height { get { return sprite.Height; } }
-        public float Health { get { return health; } set { health = value; if(value<=0) Die(); } }
+        public float Health { get { return health; } 
+            set 
+            {
+                if (health > value)
+                    sprite.DamageEffect();
+                health = value; 
+                if(value<=0) 
+                    Die();
+            } 
+        }
         protected float health;
         public override float Radius { get { return collisionDetector.Radius; } }
         public List<Link> Links { get; private set; }

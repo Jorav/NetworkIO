@@ -17,6 +17,7 @@ namespace NetworkIO.src.factories
         public static Texture2D sun;
         public static Texture2D emptyLink;
         public static Texture2D spike;
+        public static Texture2D entityButton;
 
         public static WorldEntity Create(Vector2 position, IDs id)
         {

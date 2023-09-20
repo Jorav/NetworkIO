@@ -21,10 +21,10 @@ namespace NetworkIO.src.menu.controls
         public event EventHandler Click;
         public bool Clicked { get; private set; }
         public Color PenColour;
-        private Vector2 position;
-        public Vector2 Position { get { return position; } set { sprite.Position = value; position = value; } }
-        private float scale;
-        public float Scale { get { return scale; } set { sprite.Scale = value; scale = value; } } //doesnt work with text
+        protected Vector2 position;
+        public virtual Vector2 Position { get { return position; } set { sprite.Position = value; position = value; } }
+        protected float scale;
+        public virtual float Scale { get { return scale; } set { sprite.Scale = value; scale = value; } } //doesnt work with text
         public Rectangle Rectangle
         {
             get
@@ -42,7 +42,7 @@ namespace NetworkIO.src.menu.controls
             this.font = font;
             PenColour = Color.Black;
             sprite.Origin = Vector2.Zero;
-            Scale = 1;
+            //Scale = 1;
         }
         public bool MouseIntersects()
         {
@@ -63,7 +63,7 @@ namespace NetworkIO.src.menu.controls
                 }
             }
         }
-        public void Draw(SpriteBatch spritebatch)
+        public virtual void Draw(SpriteBatch spritebatch)
         {
             Color color = Color.White;
             if (isHovering)
