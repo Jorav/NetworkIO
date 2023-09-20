@@ -16,7 +16,7 @@ namespace NetworkIO.src.menu.states.menu_states
         public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
-            this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited));
+            this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
             this.gameState = gameState;
             gameState.Player.actionsLocked = true;
         }

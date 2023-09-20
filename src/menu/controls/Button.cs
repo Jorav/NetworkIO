@@ -44,17 +44,20 @@ namespace NetworkIO.src.menu.controls
             sprite.Origin = Vector2.Zero;
             Scale = 1;
         }
-        
+        public bool MouseIntersects()
+        {
+            Rectangle mouseRectangle = new Rectangle(currentMouse.X, currentMouse.Y, 1, 1);
+            return mouseRectangle.Intersects(Rectangle);
+        }
         public void Update(GameTime gameTime)
         {
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
-            Rectangle mouseRectangle = new Rectangle(currentMouse.X, currentMouse.Y, 1, 1);
             isHovering = false;
-            if (mouseRectangle.Intersects(Rectangle)) { 
+            if (MouseIntersects()) { 
                 isHovering = true;
                 //if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
-                if (currentMouse.LeftButton == ButtonState.Pressed)
+                if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
                 {
                     Click?.Invoke(this, new EventArgs());
                 }

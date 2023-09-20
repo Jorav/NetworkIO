@@ -14,7 +14,7 @@ namespace NetworkIO.src.entities
         //TODO: add accuracy
         public Queue<Projectile> Projectiles { get; set; }
         //Controller
-        public Shooter(Sprite sprite, Vector2 position, Projectile projectile, float fireRatePerSecond = 50f, float firingStrength = 7f) : base(sprite, position)
+        public Shooter(Sprite sprite, Vector2 position, Projectile projectile, float fireRatePerSecond = 15f, float firingStrength = 10f) : base(sprite, position)
         {
             this.fireRatePerSecond = fireRatePerSecond;
             this.firingStrength = firingStrength;
@@ -53,7 +53,7 @@ namespace NetworkIO.src.entities
                 p.Position = Position;
                 p.Rotation = Rotation;
                 Vector2 directionalVector = new Vector2((float)Math.Cos(p.Rotation), (float)Math.Sin(p.Rotation));
-                p.Velocity = MomentumAlongVector(directionalVector); //give velocity to projectile corresponding to shooter movement
+                p.Velocity = EntityController.Velocity; //give velocity to projectile corresponding to shooter movement
                 p.Accelerate(p.Rotation, firingStrength);
                 lastTimeFired = currentTime;
             }

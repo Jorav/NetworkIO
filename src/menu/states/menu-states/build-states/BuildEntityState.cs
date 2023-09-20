@@ -16,7 +16,6 @@ namespace NetworkIO.src.menu.states.menu_states
     {
         BuildOverviewState previousState;
         IControllable entityEdited;
-        bool clickRegistered;
         IDs idToBeAddded;
         private bool buttonClicked = false;
 
@@ -47,64 +46,61 @@ namespace NetworkIO.src.menu.states.menu_states
             {
                 background,
                 addHullButton,
-                addShooterButton
+                addShooterButton,
             };
         }
         private void AddHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.COMPOSITE;
-            buttonClicked = true;
+            menuController.requireNewClick = true;
         }
         private void AddShooterButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SHOOTER;
-            buttonClicked = true; 
+            menuController.requireNewClick = true;
         }
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (!buttonClicked)
+            if (menuController.addEntity)
             {
-                bool newClick = input.LeftMBClicked;
-                if (newClick)
-                    clickRegistered = true;
-                if (input.LeftMBDown && clickRegistered)
+                IControllable clickedC = menuController.controllableClicked;
+                if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
                 {
-                    IControllable clicked = menuController.EntityClicked();
-                    if (clicked == null && newClick)
-                    {
-                        previousState.menuController.controllables.Remove(entityEdited);
-                        previousState.menuController.AddControllable(menuController.controllables[0]);
-                        previousState.menuController.MoveTo(previousState.menuController.Position);
-                        previousState.menuController.Camera.InBuildScreen = true;
-                        menuController.Reset();
-                        game.ChangeState(previousState);
-                    }
-                    else if (clicked is WorldEntity clickedE && clickedE.IsFiller)
-                    {
-                        {
-                            menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
-                            menuController.AddOpenLinks();
-                        }
-
-                    }
+                    menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
+                    menuController.AddOpenLinks();
                 }
-                if (input.BuildClicked)
+                menuController.addEntity = false;
+            }
+            if (menuController.clickedOutside)
+            {
+                bool switchState = true;
+                foreach (IComponent c in components)
+                    if (c is Button b && b.MouseIntersects())
+                        switchState = false;
+                if (switchState)
                 {
+                    menuController.ClearOpenLinks();
                     previousState.menuController.controllables.Remove(entityEdited);
                     previousState.menuController.AddControllable(menuController.controllables[0]);
+                    previousState.menuController.MoveTo(previousState.menuController.Position);
+                    previousState.menuController.Camera.InBuildScreen = true;
                     menuController.Reset();
-                    gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
-                    gameState.Player.MoveTo(gameState.Player.Position);
-                    game.ChangeState(gameState);
-                    gameState.Player.Camera.InBuildScreen = false;
-                    gameState.Player.actionsLocked = false;
+                    game.ChangeState(previousState);
                 }
-                if (!input.LeftMBDown)
-                    clickRegistered = false;
+                menuController.clickedOutside = false;
             }
-            else
-                buttonClicked = false;
+            if (input.BuildClicked)
+            {
+                previousState.menuController.controllables.Remove(entityEdited);
+                previousState.menuController.AddControllable(menuController.controllables[0]);
+                menuController.Reset();
+                gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
+                gameState.Player.MoveTo(gameState.Player.Position);
+                game.ChangeState(gameState);
+                gameState.Player.Camera.InBuildScreen = false;
+                gameState.Player.actionsLocked = false;
+            }
         }
     }
 }

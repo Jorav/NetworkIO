@@ -13,10 +13,18 @@ namespace NetworkIO.src.controllers
     {
         public Camera Camera { get; private set; }
         public List<IControllable> oldControllables;
-        public MenuController(List<IControllable> collidables) : base(collidables)
+        Input input;
+        public bool clickedOutside;
+        private bool previouslyLeftMBDOwn;
+        public IControllable controllableClicked;
+        public bool requireNewClick;
+        public bool addEntity;
+        public MenuController(List<IControllable> collidables, Input input) : base(collidables)
         {
             oldControllables = controllables;
             Camera = new Camera(this, true);
+            this.input = input;
+            requireNewClick = true;
         }
 
         public void AddOpenLinks()
@@ -39,6 +47,25 @@ namespace NetworkIO.src.controllers
         {
             base.Update(gameTime);
             Camera.Update();
+            if (!requireNewClick)
+            {
+                if (input.LeftMBDown)
+                {
+                    if (controllables[0] is Controller)
+                        controllableClicked = ControllableClicked();
+                    else if (controllables[0] is EntityController)
+                        controllableClicked = EntityClicked();
+                    if (!previouslyLeftMBDOwn && controllableClicked == null)
+                        clickedOutside = true;
+                    else if (previouslyLeftMBDOwn && controllableClicked != null)
+                    {
+                        addEntity = true;
+                    }
+                }
+                previouslyLeftMBDOwn = input.LeftMBDown;
+            }
+            else
+                requireNewClick = input.LeftMBDown;
         }
 
         public void FocusOn(IControllable c)
@@ -86,7 +113,7 @@ namespace NetworkIO.src.controllers
             foreach (IControllable c in controllables)
             {
                 if(c is EntityController ec)
-                ec.ReplaceEntity(oldEntity, newEntity);
+                    ec.ReplaceEntity(oldEntity, newEntity);
             }
         }
     }
