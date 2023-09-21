@@ -34,7 +34,7 @@ namespace NetworkIO.src.factories
                 case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position);
                 case IDs.EMPTY_LINK: return new RectangularComposite(new Sprite(emptyLink), position);
                 case IDs.SPIKE: return new Spike(new Sprite(spike), position);
-                case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(circularHull), position) { Scale = 4 };
+                case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(circularHull), position) { Scale = 1 };
                 case IDs.LINK_COMPOSITE: return new LinkComposite(new Sprite(linkHull), position);
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
 
