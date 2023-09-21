@@ -108,13 +108,14 @@ namespace NetworkIO.src.controllers
             return null;
         }
 
-        public void ReplaceEntity(WorldEntity oldEntity, WorldEntity newEntity)
+        public bool ReplaceEntity(WorldEntity oldEntity, WorldEntity newEntity)
         {
             foreach (IControllable c in controllables)
             {
                 if(c is EntityController ec)
-                    ec.ReplaceEntity(oldEntity, newEntity);
+                    return ec.ReplaceEntity(oldEntity, newEntity);
             }
+            return false;
         }
     }
 }

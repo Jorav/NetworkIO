@@ -7,13 +7,17 @@ namespace NetworkIO.src.collidables
 {
     public class CollidableCircle : IIntersectable
     {
-        public Vector2 Position { set; get; }
-        public float Radius { set; get; }
+        public Vector2 Position {  get; set; }
+        private float radius;
+        public float Radius { get { return radius * scale; } set { radius = value / scale; } }
+        private float scale;
+        public float Scale { get { return scale; } set { scale = value; } }
 
         public CollidableCircle(Vector2 position, float radius)
         {
             Position = position;
             Radius = radius;
+            scale = 1;
         }
 
         public bool CollidesWith(IIntersectable c)

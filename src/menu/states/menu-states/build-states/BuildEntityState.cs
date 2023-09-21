@@ -53,13 +53,13 @@ namespace NetworkIO.src.menu.states.menu_states
             EntityButton addShooterButton = new EntityButton(new Sprite(EntityFactory.gun), new Sprite(EntityFactory.entityButton))
             {
                 Scale = scale,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, addRectangularHullButton.Position.Y+addRectangularHullButton.Rectangle.Height),
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5+addRectangularHullButton.Position.Y+addRectangularHullButton.Rectangle.Height),
                 
             };
             addShooterButton.Click += AddShooterButton_Click;
             EntityButton addSpikeButton = new EntityButton(new Sprite(EntityFactory.spike), new Sprite(EntityFactory.entityButton))
             {Scale = scale,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5+addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
                 
             };
             addSpikeButton.Click += AddSpikeButton_Click;
@@ -124,6 +124,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
                 {
                     menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
+                    menuController.ClearOpenLinks();
                     menuController.AddOpenLinks();
                 }
                 menuController.addEntity = false;

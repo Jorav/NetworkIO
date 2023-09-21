@@ -67,10 +67,16 @@ namespace NetworkIO.src.controllers
             
         }
 
-        public void AddEntity(WorldEntity e)
+        /*
+         * returns whether an entity was succesfully added
+         */
+        public bool AddEntity(WorldEntity e)
         {
             if (e != null)
             {
+                foreach (WorldEntity ee in entities)
+                    if (!ee.IsFiller && ee.CollidesWith(e))
+                        return false;
                 entities.Add(e);
                 if (e is Shooter s)
                     projectiles.Add(s.Projectiles);
@@ -78,8 +84,9 @@ namespace NetworkIO.src.controllers
                 UpdateRadius();
                 e.Friction = 0;
                 e.EntityController = this;
+                return true;
             }
-
+            return false;
         }
         protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
@@ -309,7 +316,7 @@ namespace NetworkIO.src.controllers
             {
                 bool overlaps = false;
                 foreach (WorldEntity eE in entities)
-                    if (eT.Contains(eE.Position))
+                    if (eT.CollidesWith(eE))//eT.Contains(eE.Position) || eE.Contains(eT.Position))
                         overlaps = true;
                 if (!overlaps)
                     AddEntity(eT);
@@ -330,15 +337,21 @@ namespace NetworkIO.src.controllers
             foreach(WorldEntity e in entities)
                 e.ClearEmptyLinks();
         }
-        public void ReplaceEntity(WorldEntity eOld, WorldEntity eNew)
+        public bool ReplaceEntity(WorldEntity eOld, WorldEntity eNew)
         {
             if (entities.Contains(eOld))
             {
                 eNew.ConnectTo(eOld.Links[0].connection.Entity, eOld.Links[0].connection);
                 entities.Remove(eOld);
-                AddEntity(eNew);
+                if (!AddEntity(eNew))
+                {
+                    eOld.ConnectTo(eNew.Links[0].connection.Entity, eNew.Links[0].connection);
+                    AddEntity(eOld);
+                    return false;
+                }
+                return true;
             }
-
+            return false;
         }
         public override IControllable ControllableContainingInSpace(Vector2 position, Matrix transform)
         {

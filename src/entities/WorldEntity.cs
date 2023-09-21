@@ -72,7 +72,7 @@ namespace NetworkIO.src
                 return fillerEntities;
             } 
         }
-        public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; /*add collisionDetector scale in the future*/ } }
+        public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; collisionDetector.Scale = value; foreach (Link l in Links) l.Scale = value;/*add collisionDetector scale in the future*/ } }
         public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 1000, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;
@@ -246,8 +246,9 @@ namespace NetworkIO.src
             public WorldEntity Entity { get; private set; }
             public Link connection; //links to other entities
             private Vector2 relativePosition; //position in relation to the entity it belongs to in an unrotated state
+            public float Scale { get; set; }
             public float LinkRotation { get; private set; } //rotation of link in relation to center of entity
-            public float DistanceFromConnection { get { if (!ConnectionAvailable()) return relativePosition.Length() + connection.relativePosition.Length(); return -1; } }
+            public float DistanceFromConnection { get { if (!ConnectionAvailable()) return relativePosition.Length()* Scale + connection.relativePosition.Length()* connection.Scale; return -1; } }
 
             public Link(Vector2 relativePosition, WorldEntity entity, Link connection = null)
             {
@@ -261,6 +262,7 @@ namespace NetworkIO.src
                     LinkRotation = (float)Math.Atan(relativePosition.Y / relativePosition.X);
                 else
                     LinkRotation = (float)Math.Atan(relativePosition.Y / relativePosition.X) - MathHelper.ToRadians(180);
+                Scale = 1;
             }
 
             /**
