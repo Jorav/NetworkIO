@@ -248,6 +248,30 @@
 /processorParam:TextureFormat=Color
 /build:parts/SprayGun.png
 
+#begin parts/Triangular90AngleHull.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:parts/Triangular90AngleHull.png
+
+#begin parts/TriangularEqualLeggedHull.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:parts/TriangularEqualLeggedHull.png
+
 #begin projectiles/BulletBlack.png
 /importer:TextureImporter
 /processor:TextureProcessor

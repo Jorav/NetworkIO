@@ -22,6 +22,8 @@ namespace NetworkIO.src.factories
         public static Texture2D spike;
         public static Texture2D entityButton;
         public static Texture2D linkHull;
+        public static Texture2D triangularEqualLeggedHull;
+        public static Texture2D triangular90AngleHull;
 
         public static WorldEntity Create(Vector2 position, IDs id)
         {
@@ -36,8 +38,9 @@ namespace NetworkIO.src.factories
                 case IDs.SPIKE: return new Spike(new Sprite(spike), position);
                 case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(circularHull), position) { Scale = 1 };
                 case IDs.LINK_COMPOSITE: return new LinkComposite(new Sprite(linkHull), position);
-                //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
-
+                case IDs.TRIANGULAR_EQUAL_COMPOSITE: return new TriangularEqualLeggedComposite(new Sprite(triangularEqualLeggedHull), position);
+                case IDs.TRIANGULAR_90ANGLE_COMPOSITE: return new Triangular90AngleComposite(new Sprite(triangular90AngleHull), position);
+                    //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
                 #region background
                 case IDs.CLOUD: return new WorldEntity(new Sprite(cloud), position, isCollidable: false);
                 case IDs.SUN: return new WorldEntity(new Sprite(sun), position, isCollidable:false);

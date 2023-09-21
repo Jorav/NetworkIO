@@ -245,23 +245,23 @@ namespace NetworkIO.src
         {
             public WorldEntity Entity { get; private set; }
             public Link connection; //links to other entities
-            private Vector2 relativePosition; //position in relation to the entity it belongs to in an unrotated state
+            public Vector2 relativePosition; //position in relation to the entity it belongs to in an unrotated state
             public float Scale { get; set; }
-            public float LinkRotation { get; private set; } //rotation of link in relation to center of entity
+            public float LinkRotation { get; set; } //rotation of link in relation to center of entity
             public float DistanceFromConnection { get { if (!ConnectionAvailable()) return relativePosition.Length()* Scale + connection.relativePosition.Length()* connection.Scale; return -1; } }
 
             public Link(Vector2 relativePosition, WorldEntity entity, Link connection = null)
             {
                 this.Entity = entity;
-                if (relativePosition.Length() == 0)
-                    throw new ArgumentException();
-
                 this.relativePosition = relativePosition;
                 this.connection = connection;
-                if (relativePosition.X >= 0)
-                    LinkRotation = (float)Math.Atan(relativePosition.Y / relativePosition.X);
-                else
-                    LinkRotation = (float)Math.Atan(relativePosition.Y / relativePosition.X) - MathHelper.ToRadians(180);
+                if (relativePosition.Length() != 0)
+                {
+                    if (relativePosition.X >= 0)
+                        LinkRotation = (float)Math.Atan(relativePosition.Y / relativePosition.X);
+                    else
+                        LinkRotation = (float)Math.Atan(relativePosition.Y / relativePosition.X) - MathHelper.ToRadians(180);
+                }
                 Scale = 1;
             }
 

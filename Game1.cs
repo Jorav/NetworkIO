@@ -81,6 +81,8 @@ namespace NetworkIO
             Texture2D textureEntityButton = Content.Load<Texture2D>("controls/entityButton");
             Texture2D textureCircularHull = Content.Load<Texture2D>("parts/CircularHull");
             Texture2D textureLinkHull = Content.Load<Texture2D>("parts/LinkHull");
+            Texture2D textureTriangularEqualLeggedHull = Content.Load<Texture2D>("parts/TriangularEqualLeggedHull");
+            Texture2D textureTriangular90AngleHull = Content.Load<Texture2D>("parts/Triangular90AngleHull");
             EntityFactory.rectangularHull = textureHullRotating;
             EntityFactory.circularHull = textureCircularHull;
             EntityFactory.gun = textureGun;
@@ -91,6 +93,8 @@ namespace NetworkIO
             EntityFactory.spike = textureSpike;
             EntityFactory.entityButton = textureEntityButton;
             EntityFactory.linkHull = textureLinkHull;
+            EntityFactory.triangularEqualLeggedHull = textureTriangularEqualLeggedHull;
+            EntityFactory.triangular90AngleHull = textureTriangular90AngleHull;
 
         }
 

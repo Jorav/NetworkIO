@@ -14,8 +14,10 @@ namespace NetworkIO.src.utility
         CIRCULAR_COMPOSITE,
         SPIKE,
         LINK_COMPOSITE,
+        TRIANGULAR_EQUAL_COMPOSITE,
+        TRIANGULAR_90ANGLE_COMPOSITE,
 
-        EMPTY_LINK,
+    EMPTY_LINK,
         CLOUD,
         SUN,
         ENTITY_BUTTON,
