@@ -10,6 +10,7 @@ namespace NetworkIO.src.menu.controls
     {
         Sprite entitySprite;
         float hullFactor = 1;
+        public bool IsClicked { get; set; }
         public override Vector2 Position { get { return position; } set { sprite.Position = value; entitySprite.Position = value + new Vector2(sprite.Width / 2, sprite.Height / 2); position = value; } }
         public override float Scale { get { return scale; } set { sprite.Scale = value; entitySprite.Scale = value*hullFactor; scale = value; Position = position; } } //doesnt work with text
         public EntityButton(Sprite entitySprite, Sprite backgroundSprite, bool displaysHull = false, SpriteFont font = null) : base(backgroundSprite, font)
@@ -22,12 +23,15 @@ namespace NetworkIO.src.menu.controls
 
         public override void Draw(SpriteBatch spritebatch)
         {
+            bool previousIsHovering = isHovering;
+            if (IsClicked)
+                isHovering = true;
             base.Draw(spritebatch);
             Color color = Color.White;
             if (isHovering)
                 color = Color.Gray;
             entitySprite.Draw(spritebatch, color);
-
+            isHovering = previousIsHovering;
         }
     }
 }

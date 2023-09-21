@@ -115,7 +115,7 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD)
-                    }, 0.6f, base.Player.Camera, new Vector2(0.5f,0.5f))
+                    }, 0.6f, base.Player.Camera, new Vector2(0.1f,0.1f))
             );
         }
     }

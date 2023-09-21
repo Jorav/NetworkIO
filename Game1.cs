@@ -80,7 +80,9 @@ namespace NetworkIO
             Texture2D textureSpike = Content.Load<Texture2D>("parts/spike");
             Texture2D textureEntityButton = Content.Load<Texture2D>("controls/entityButton");
             Texture2D textureCircularHull = Content.Load<Texture2D>("parts/CircularHull");
-            EntityFactory.hull = textureCircularHull;
+            Texture2D textureLinkHull = Content.Load<Texture2D>("parts/LinkHull");
+            EntityFactory.rectangularHull = textureHullRotating;
+            EntityFactory.circularHull = textureCircularHull;
             EntityFactory.gun = textureGun;
             EntityFactory.projectile = textureProjectile;
             EntityFactory.cloud = textureCloudCreepy;
@@ -88,9 +90,10 @@ namespace NetworkIO
             EntityFactory.emptyLink = textureEmptyLink;
             EntityFactory.spike = textureSpike;
             EntityFactory.entityButton = textureEntityButton;
+            EntityFactory.linkHull = textureLinkHull;
 
         }
-        
+
 
         protected override void Update(GameTime gameTime)
         {

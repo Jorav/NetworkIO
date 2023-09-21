@@ -13,6 +13,7 @@ namespace NetworkIO.src.utility
         COMPOSITE,
         CIRCULAR_COMPOSITE,
         SPIKE,
+        LINK_COMPOSITE,
 
         EMPTY_LINK,
         CLOUD,

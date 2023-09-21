@@ -17,6 +17,8 @@ namespace NetworkIO.src.menu.states.menu_states
         BuildOverviewState previousState;
         IControllable entityEdited;
         IDs idToBeAddded;
+        EntityButton clicked;
+        EntityButton previouslyClicked;
 
         public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, BuildOverviewState previousState, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
         {
@@ -28,22 +30,36 @@ namespace NetworkIO.src.menu.states.menu_states
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
             this.entityEdited = controllerEdited.controllables[0];
             idToBeAddded = IDs.COMPOSITE;
-            EntityButton addHullButton = new EntityButton(new Sprite(EntityFactory.hull), new Sprite(EntityFactory.entityButton), true)
+            float scale = 3;
+            EntityButton addRectangularHullButton = new EntityButton(new Sprite(EntityFactory.rectangularHull), new Sprite(EntityFactory.entityButton), true)
             {
-                Scale = 3,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Scale = scale,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
             };
-            addHullButton.Click += AddHullButton_Click;
+            addRectangularHullButton.Click += AddRectangularHullButton_Click;
+            EntityButton addCircularHullButton = new EntityButton(new Sprite(EntityFactory.circularHull), new Sprite(EntityFactory.entityButton), true)
+            {
+                Scale = scale,
+                Position = new Vector2(addRectangularHullButton.Position.X- EntityFactory.circularHull.Width* scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+            };
+
+            addCircularHullButton.Click += AddCircularHullButton_Click;
+            EntityButton addLinkHullButton = new EntityButton(new Sprite(EntityFactory.linkHull), new Sprite(EntityFactory.entityButton), true)
+            {
+                Scale = scale,
+                Position = new Vector2(addCircularHullButton.Position.X - EntityFactory.linkHull.Width * scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+            };
+            addLinkHullButton.Click += AddLinkHullButton_Click;
             EntityButton addShooterButton = new EntityButton(new Sprite(EntityFactory.gun), new Sprite(EntityFactory.entityButton))
             {
-                Scale = 3,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, addHullButton.Position.Y+addHullButton.Rectangle.Height),
+                Scale = scale,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, addRectangularHullButton.Position.Y+addRectangularHullButton.Rectangle.Height),
                 
             };
             addShooterButton.Click += AddShooterButton_Click;
             EntityButton addSpikeButton = new EntityButton(new Sprite(EntityFactory.spike), new Sprite(EntityFactory.entityButton))
-            {Scale = 3,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.hull.Width - 100, addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+            {Scale = scale,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
                 
             };
             addSpikeButton.Click += AddSpikeButton_Click;
@@ -51,31 +67,57 @@ namespace NetworkIO.src.menu.states.menu_states
             components = new List<IComponent>()
             {
                 background,
-                addHullButton,
+                addRectangularHullButton,
+                addCircularHullButton,
+                addLinkHullButton,
                 addShooterButton,
                 addSpikeButton,
             };
+        }
+
+        private void AddLinkHullButton_Click(object sender, EventArgs e)
+        {
+            idToBeAddded = IDs.LINK_COMPOSITE;
+            menuController.requireNewClick = true;
+            clicked = (EntityButton)sender;
+        }
+
+        private void AddCircularHullButton_Click(object sender, EventArgs e)
+        {
+            idToBeAddded = IDs.CIRCULAR_COMPOSITE;
+            menuController.requireNewClick = true;
+            clicked = (EntityButton)sender;
         }
 
         private void AddSpikeButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SPIKE;
             menuController.requireNewClick = true;
+            clicked = (EntityButton)sender;
         }
 
-        private void AddHullButton_Click(object sender, EventArgs e)
+        private void AddRectangularHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.COMPOSITE;
             menuController.requireNewClick = true;
+            clicked = (EntityButton)sender;
         }
         private void AddShooterButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SHOOTER;
             menuController.requireNewClick = true;
+            clicked = (EntityButton)sender;
         }
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            if(clicked != previouslyClicked)
+            {
+                if(previouslyClicked != null)
+                    previouslyClicked.IsClicked = false;
+                previouslyClicked = clicked;
+                clicked.IsClicked = true;
+            }
             if (menuController.addEntity)
             {
                 IControllable clickedC = menuController.controllableClicked;

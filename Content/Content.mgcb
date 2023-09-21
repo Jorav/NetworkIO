@@ -200,6 +200,18 @@
 /processorParam:TextureFormat=Color
 /build:parts/Hull_12.png
 
+#begin parts/LinkHull.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:parts/LinkHull.png
+
 #begin parts/RotatingHull.png
 /importer:TextureImporter
 /processor:TextureProcessor
