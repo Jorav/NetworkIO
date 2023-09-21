@@ -72,7 +72,7 @@ namespace NetworkIO.src
                 return fillerEntities;
             } 
         }
-
+        public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; /*add collisionDetector scale in the future*/ } }
         public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 1000, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;
@@ -156,7 +156,7 @@ namespace NetworkIO.src
             {
                 if (CollidesWith(e))
                 {
-                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity, e.Velocity);
+                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity * Mass, e.Velocity * e.Mass);
                     TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position, Radius);
                 }
                 else
@@ -165,12 +165,12 @@ namespace NetworkIO.src
                     Vector2 distance = Position - e.Position;
                     if (Vector2.Dot(e.Velocity, distanceBeforeMoving) > Vector2.Dot(Velocity, distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))//if they move
                     {
-                        TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position - Velocity, e.Position, Velocity, e.Velocity);
+                        TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position - Velocity, e.Position, Velocity*Mass, e.Velocity*e.Mass);
                         TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position - Velocity, e.Position, Radius);
                     }
                     else if (Vector2.Dot(Velocity, -distanceBeforeMoving) > Vector2.Dot(e.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))
                     {
-                        TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position - e.Velocity, Velocity, e.Velocity);
+                        TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position - e.Velocity, Velocity * Mass, e.Velocity * e.Mass);
                         TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position - e.Velocity, Radius);
                     }
                 }

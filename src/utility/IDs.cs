@@ -11,10 +11,12 @@ namespace NetworkIO.src.utility
         SHOOTER,
         PROJECTILE,
         COMPOSITE,
+        CIRCULAR_COMPOSITE,
+        SPIKE,
+
+        EMPTY_LINK,
         CLOUD,
         SUN,
-        EMPTY_LINK,
-        SPIKE,
         ENTITY_BUTTON,
         #endregion
         

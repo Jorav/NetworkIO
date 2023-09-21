@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
 using NetworkIO.src.movable.entities;
+using NetworkIO.src.movable.entities.hull;
 using NetworkIO.src.utility;
 using System;
 
@@ -30,6 +31,7 @@ namespace NetworkIO.src.factories
                 case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position);
                 case IDs.EMPTY_LINK: return new RectangularComposite(new Sprite(emptyLink), position);
                 case IDs.SPIKE: return new Spike(new Sprite(spike), position);
+                case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(spike), position);
                 //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
 
                 #region background

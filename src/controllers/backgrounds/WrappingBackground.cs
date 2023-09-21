@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using NetworkIO.src;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace NetworkIO
 {
     public class WrappingBackground : Background
     {
-        public WrappingBackground(List<src.IControllable> collidables, float relativeSpeed, Camera camera) : base(collidables, relativeSpeed, camera)
+        public WrappingBackground(List<src.IControllable> collidables, float relativeSpeed, Camera camera, [OptionalAttribute] Vector2 movement) : base(collidables, relativeSpeed, camera, movement)
         {
         }
         
