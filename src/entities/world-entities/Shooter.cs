@@ -8,16 +8,16 @@ namespace NetworkIO.src.entities
 {
     class Shooter : WorldEntity
     {
-        float fireRatePerSecond;
+        public float FireRatePerSecond { get; set; }
+        public float FiringStrength { get; set; }
         float lastTimeFired;
-        float firingStrength;
         //TODO: add accuracy
         public Queue<Projectile> Projectiles { get; set; }
         //Controller
         public Shooter(Sprite sprite, Vector2 position, Projectile projectile, float fireRatePerSecond = 15f, float firingStrength = 10f) : base(sprite, position)
         {
-            this.fireRatePerSecond = fireRatePerSecond;
-            this.firingStrength = firingStrength;
+            this.FireRatePerSecond = fireRatePerSecond;
+            this.FiringStrength = firingStrength;
             Projectiles = new Queue<Projectile>();
             Projectiles.Enqueue(projectile);
         }
@@ -32,7 +32,7 @@ namespace NetworkIO.src.entities
         public override void Shoot(GameTime gameTime)
         {
             float currentTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            if (currentTime-lastTimeFired > (1 / fireRatePerSecond))
+            if (currentTime-lastTimeFired > (1 / FireRatePerSecond))
             {
                 Projectile p;
                 
@@ -54,7 +54,7 @@ namespace NetworkIO.src.entities
                 p.Rotation = Rotation;
                 Vector2 directionalVector = new Vector2((float)Math.Cos(p.Rotation), (float)Math.Sin(p.Rotation));
                 p.Velocity = EntityController.Velocity; //give velocity to projectile corresponding to shooter movement
-                p.Accelerate(p.Rotation, firingStrength);
+                p.Accelerate(p.Rotation, FiringStrength);
                 lastTimeFired = currentTime;
             }
         }

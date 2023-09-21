@@ -25,7 +25,7 @@ namespace NetworkIO.src.movable
         }
         public virtual void ApplyRepulsion(Entity otherEntity)
         {
-            TotalExteriorForce+=CalculateGravitationalRepulsion(this, otherEntity);
+            TotalExteriorForce+=Mass*CalculateGravitationalRepulsion(this, otherEntity);
         }
         public static Vector2 CalculateGravitationalRepulsion(Entity entityAffected, Entity entityAffecting)
         {

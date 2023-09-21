@@ -41,8 +41,8 @@ namespace NetworkIO.src.controllers
                 rotation = value;
             }
         }
-        public override float Mass { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller)sum += e.Thrust; return sum; } set => base.Thrust = value; }
-        public override float Thrust { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller) sum += e.Thrust; return sum; } set => base.Thrust = value; }
+        public override float Mass { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller && e.IsAlive)sum += e.Mass; return sum; }}
+        public override float Thrust { get { float sum = 0; foreach (WorldEntity e in entities) if(!e.IsFiller && e.IsAlive) sum += e.Thrust; return sum; } }
 
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
         public EntityController([OptionalAttribute] Vector2 position, [OptionalAttribute] WorldEntity e) : base(position)
@@ -100,7 +100,7 @@ namespace NetworkIO.src.controllers
                 float largestDistance = 0;
                 foreach (WorldEntity e in entities)
                 {
-                    if (e.IsCollidable) { 
+                    if (e.IsAlive) { 
                         float distance = Vector2.Distance(e.Position, Position) + e.Radius;
                         if (distance > largestDistance)
                             largestDistance = distance;
@@ -169,7 +169,7 @@ namespace NetworkIO.src.controllers
             {
                 collides = true;
                 TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position-e.Velocity, eCE.Position-eCE.Velocity, e.Velocity*e.Mass, eCE.Velocity*e.Mass);
-                TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position - eCE.Velocity, e.Radius);
+                TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position - eCE.Velocity, e.Radius)*(e.Mass+eCE.Mass)/2;
                 TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position - e.Velocity, eCE.Position - eCE.Velocity, e.Radius);
             }
             else
@@ -180,14 +180,14 @@ namespace NetworkIO.src.controllers
                 {
                     collides = true;
                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position - e.Velocity, eCE.Position, e.Velocity * e.Mass, eCE.Velocity * e.Mass);
-                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position, e.Radius);
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position, e.Radius) * (e.Mass + eCE.Mass) / 2;
                     TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
                 }
                 else if (Vector2.Dot(e.Velocity, -distanceBeforeMoving) > Vector2.Dot(eCE.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && eCE.CollidesWithDuringMove(e))
                 {
                     collides = true;
                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Velocity * e.Mass, eCE.Velocity * e.Mass);
-                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Radius);
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Radius) * (e.Mass + eCE.Mass) / 2;
                     TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
                 }
             }
@@ -218,14 +218,14 @@ namespace NetworkIO.src.controllers
                     foreach (Entity e1 in entities)
                         foreach (Entity e2 in otherEC.entities)
                         {
-                            TotalExteriorForce += CalculateGravitationalRepulsion(e1, e2);
+                            TotalExteriorForce += Mass/entities.Count*CalculateGravitationalRepulsion(e1, e2);
                         }
                 }
                 else if (otherEntity is WorldEntity otherWE)
                 {
                     foreach (Entity e in entities)
                     {
-                        TotalExteriorForce += CalculateGravitationalRepulsion(e, otherWE);
+                        TotalExteriorForce += Mass / entities.Count*CalculateGravitationalRepulsion(e, otherWE);
                     }
                 }
             }

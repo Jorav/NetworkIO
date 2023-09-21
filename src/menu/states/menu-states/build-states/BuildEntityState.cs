@@ -52,22 +52,29 @@ namespace NetworkIO.src.menu.states.menu_states
                 Position = new Vector2(addCircularHullButton.Position.X - EntityFactory.linkHull.Width * scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
             };
             addLinkHullButton.Click += AddLinkHullButton_Click;
-            EntityButton addTriangularEqualLeggedHullButton = new EntityButton(new Sprite(EntityFactory.triangularEqualLeggedHull), new Sprite(EntityFactory.entityButton), true)
+            /*EntityButton addTriangularEqualLeggedHullButton = new EntityButton(new Sprite(EntityFactory.triangularEqualLeggedHull), new Sprite(EntityFactory.entityButton), true)
             {
                 Scale = scale,
-                Position = new Vector2(addLinkHullButton.Position.X - EntityFactory.entityButton.Width * scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Position = new Vector2(addLinkHullButton.Position.X - EntityFactory.entityButton.Width * scale, 20 ),
             };
             addTriangularEqualLeggedHullButton.Click += AddTriangularEqualLeggedHullButton_Click;
             EntityButton addTriangular90AngleHullButton = new EntityButton(new Sprite(EntityFactory.triangular90AngleHull), new Sprite(EntityFactory.entityButton), true)
             {
                 Scale = scale,
-                Position = new Vector2(addTriangularEqualLeggedHullButton.Position.X - EntityFactory.triangular90AngleHull.Width * scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Position = new Vector2(addTriangularEqualLeggedHullButton.Position.X - EntityFactory.triangular90AngleHull.Width * scale, 20),
             };
-            addTriangular90AngleHullButton.Click += AddTriangular90AngleHullButton_Click;
+            addTriangular90AngleHullButton.Click += AddTriangular90AngleHullButton_Click;*/
+            EntityButton addEngineButton = new EntityButton(new Sprite(EntityFactory.engine), new Sprite(EntityFactory.entityButton))
+            {
+                Scale = scale,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5 + addRectangularHullButton.Position.Y + addRectangularHullButton.Rectangle.Height),
+
+            };
+            addEngineButton.Click += AddEngineButton_Click;
             EntityButton addShooterButton = new EntityButton(new Sprite(EntityFactory.gun), new Sprite(EntityFactory.entityButton))
             {
                 Scale = scale,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5+addRectangularHullButton.Position.Y+addRectangularHullButton.Rectangle.Height),
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5+ addEngineButton.Position.Y+ addEngineButton.Rectangle.Height),
                 
             };
             addShooterButton.Click += AddShooterButton_Click;
@@ -86,9 +93,17 @@ namespace NetworkIO.src.menu.states.menu_states
                 addLinkHullButton,
                 //addTriangularEqualLeggedHullButton,
                 //addTriangular90AngleHullButton,
+                addEngineButton,
                 addShooterButton,
                 addSpikeButton,
             };
+        }
+
+        private void AddEngineButton_Click(object sender, EventArgs e)
+        {
+            idToBeAddded = IDs.ENGINE;
+            menuController.requireNewClick = true;
+            clicked = (EntityButton)sender;
         }
 
         private void AddTriangular90AngleHullButton_Click(object sender, EventArgs e)

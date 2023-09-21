@@ -132,15 +132,17 @@ namespace NetworkIO.src
         }
         protected float AverageDistance()
         {
-            float nr = 0;
+            float nr = 1;
             float distance = 0;
+            float mass = 0;
             foreach (IControllable c in controllables)
             {
-                distance += (Vector2.Distance(c.Position, Position) + c.Radius);
-                nr += 1;
+                distance += (Vector2.Distance(c.Position, Position) + c.Radius)*c.Mass;
+                //nr += 1;
+                mass += c.Mass;
             }
-            if(nr != 0)
-                return distance / nr;
+            if(mass != 0)
+                return distance / nr/mass;
             return 1;
         }
         protected void ApplyInternalGravity()
@@ -149,8 +151,8 @@ namespace NetworkIO.src
             foreach (IControllable c1 in controllables)
             {
                 distanceFromController = Position - c1.Position;
-                if (distanceFromController.Length() != 0)
-                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (distanceFromController.Length()/AverageDistance()) / 2);
+                if (distanceFromController.Length() > c1.Radius)
+                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (float)Math.Pow(((distanceFromController.Length()-c1.Radius)/AverageDistance()) / 2*c1.Mass,2));
             }
         }
         public void ApplyInternalRepulsion()

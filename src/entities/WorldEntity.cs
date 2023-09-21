@@ -60,6 +60,7 @@ namespace NetworkIO.src
             } 
         }
         protected float health;
+        public bool IsAlive { get { return health > 0; } }
         public override float Radius { get { return collisionDetector.Radius; } }
         public List<Link> Links { get; private set; }
         private float internalRotation;
@@ -157,7 +158,7 @@ namespace NetworkIO.src
                 if (CollidesWith(e))
                 {
                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity * Mass, e.Velocity * e.Mass);
-                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position, Radius);
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position, Radius) * (e.Mass + Mass) / 2;
                 }
                 else
                 {
@@ -166,12 +167,12 @@ namespace NetworkIO.src
                     if (Vector2.Dot(e.Velocity, distanceBeforeMoving) > Vector2.Dot(Velocity, distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))//if they move
                     {
                         TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position - Velocity, e.Position, Velocity*Mass, e.Velocity*e.Mass);
-                        TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position - Velocity, e.Position, Radius);
+                        TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position - Velocity, e.Position, Radius) * (e.Mass + Mass) / 2;
                     }
                     else if (Vector2.Dot(Velocity, -distanceBeforeMoving) > Vector2.Dot(e.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))
                     {
                         TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position - e.Velocity, Velocity * Mass, e.Velocity * e.Mass);
-                        TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position - e.Velocity, Radius);
+                        TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, e.Position - e.Velocity, Radius) * (e.Mass + Mass) / 2;
                     }
                 }
             }

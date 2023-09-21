@@ -16,8 +16,9 @@ namespace NetworkIO.src.utility
         LINK_COMPOSITE,
         TRIANGULAR_EQUAL_COMPOSITE,
         TRIANGULAR_90ANGLE_COMPOSITE,
+        EMPTY_LINK,
+        ENGINE,
 
-    EMPTY_LINK,
         CLOUD,
         SUN,
         ENTITY_BUTTON,
@@ -31,7 +32,7 @@ namespace NetworkIO.src.utility
         INDECISIVE_AI,
         RANDOM_AI,
         #endregion
-        
+
 
 
     }

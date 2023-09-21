@@ -8,14 +8,14 @@ namespace NetworkIO.src.entities
     class Projectile : WorldEntity
     {
         private float timer = 0;
-        private float maxLifeSpan;
-        private float minLifeSpan;
+        public float MaxLifeSpan;
+        public float MinLifeSpan;
         private float lowerVelocityLimit=3;
 
         public Projectile(Sprite sprite, Vector2 position, float maxLifeSpan = 3f, float minLifeSpan = 1f) : base(sprite, position, mass:0.4f, friction:0.03f, isVisible:false, isCollidable:false)
         {
-            this.maxLifeSpan = maxLifeSpan;
-            this.minLifeSpan = minLifeSpan;
+            this.MaxLifeSpan = maxLifeSpan;
+            this.MinLifeSpan = minLifeSpan;
         }
         public void Collide(WorldEntity e)
         {
@@ -34,8 +34,8 @@ namespace NetworkIO.src.entities
             {
                 base.Update(gameTime);
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if(timer > minLifeSpan)
-                    if (timer > maxLifeSpan || Velocity.Length()<= lowerVelocityLimit)
+                if(timer > MinLifeSpan)
+                    if (timer > MaxLifeSpan || Velocity.Length()<= lowerVelocityLimit)
                         Die();
                 RotateTo(Position + Velocity);
             }

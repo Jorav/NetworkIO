@@ -83,6 +83,7 @@ namespace NetworkIO
             Texture2D textureLinkHull = Content.Load<Texture2D>("parts/LinkHull");
             Texture2D textureTriangularEqualLeggedHull = Content.Load<Texture2D>("parts/TriangularEqualLeggedHull");
             Texture2D textureTriangular90AngleHull = Content.Load<Texture2D>("parts/Triangular90AngleHull");
+            Texture2D textureEngine = Content.Load<Texture2D>("parts/Engine");
             EntityFactory.rectangularHull = textureHullRotating;
             EntityFactory.circularHull = textureCircularHull;
             EntityFactory.gun = textureGun;
@@ -95,6 +96,7 @@ namespace NetworkIO
             EntityFactory.linkHull = textureLinkHull;
             EntityFactory.triangularEqualLeggedHull = textureTriangularEqualLeggedHull;
             EntityFactory.triangular90AngleHull = textureTriangular90AngleHull;
+            EntityFactory.engine = textureEngine;
 
         }
 

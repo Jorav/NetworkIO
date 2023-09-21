@@ -53,7 +53,7 @@ namespace NetworkIO.src
         {
             if (distance < 10)
                 distance = 10;
-            return 0.1f / (float)Math.Pow(distance/ (2*Math.Max(radius1,radius2))  / scale, 1);
+            return 0.1f / (float)Math.Pow(distance/ (2*Math.Max(radius1,radius2))  / scale, 2);
         }
 
         /*

@@ -25,7 +25,7 @@ namespace NetworkIO.src.controllers
         }
         protected void Rotate()
         {
-            RotateTo(enemy.controllables[0].Position);
+            //RotateTo(enemy.controllables[0].Position);
         }
         protected void Accelerate()
         {
@@ -38,7 +38,7 @@ namespace NetworkIO.src.controllers
                     accelerationVector = enemy.controllables[0].Position - (e.Position + e.Velocity);
 
                 accelerationVector.Normalize();
-                base.Accelerate(accelerationVector);
+                //(base.Accelerate(accelerationVector);
             }
         }
     }

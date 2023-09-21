@@ -24,6 +24,7 @@ namespace NetworkIO.src.factories
         public static Texture2D linkHull;
         public static Texture2D triangularEqualLeggedHull;
         public static Texture2D triangular90AngleHull;
+        public static Texture2D engine;
 
         public static WorldEntity Create(Vector2 position, IDs id)
         {
@@ -31,16 +32,22 @@ namespace NetworkIO.src.factories
             switch (id)
             {
                 case IDs.ENTITY_DEFAULT: return new WorldEntity(new Sprite(rectangularHull), position);
-                case IDs.COMPOSITE: return new RectangularComposite(new Sprite(rectangularHull), position);
-                case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE));
-                case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position);
                 case IDs.EMPTY_LINK: return new RectangularComposite(new Sprite(emptyLink), position);
-                case IDs.SPIKE: return new Spike(new Sprite(spike), position);
-                case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(circularHull), position) { Scale = 1 };
-                case IDs.LINK_COMPOSITE: return new LinkComposite(new Sprite(linkHull), position);
-                case IDs.TRIANGULAR_EQUAL_COMPOSITE: return new TriangularEqualLeggedComposite(new Sprite(triangularEqualLeggedHull), position);
-                case IDs.TRIANGULAR_90ANGLE_COMPOSITE: return new Triangular90AngleComposite(new Sprite(triangular90AngleHull), position);
-                    //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
+
+                case IDs.COMPOSITE: return new RectangularComposite(new Sprite(rectangularHull), position) { Mass = 2 };
+                case IDs.CIRCULAR_COMPOSITE: return new CircularComposite(new Sprite(circularHull), position) { Mass = 2, Scale = 2 };
+                case IDs.LINK_COMPOSITE: return new LinkComposite(new Sprite(linkHull), position) { Mass = 1f, Thrust = 0.5f };
+                case IDs.TRIANGULAR_EQUAL_COMPOSITE: return new TriangularEqualLeggedComposite(new Sprite(triangularEqualLeggedHull), position) { Mass = 2 };
+                case IDs.TRIANGULAR_90ANGLE_COMPOSITE: return new Triangular90AngleComposite(new Sprite(triangular90AngleHull), position) { Mass = 2 };
+
+
+                case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE))
+                    { Thrust = 0, FireRatePerSecond = 15f, FiringStrength = 10, Mass = 0.5f };
+                case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position)
+                    { Mass = 0.4f, Friction = 0.03f, MaxLifeSpan = 3f, MinLifeSpan = 1f };
+                case IDs.SPIKE: return new Spike(new Sprite(spike), position) { Thrust = 0, Mass = 0.5f };
+                case IDs.ENGINE: return new WorldEntity(new Sprite(engine), position) {Mass = 0.5f, Thrust = 2f };
+                //case (int)IDs.COMPOSITE: return new Composite(new Sprite(hull), position);
                 #region background
                 case IDs.CLOUD: return new WorldEntity(new Sprite(cloud), position, isCollidable: false);
                 case IDs.SUN: return new WorldEntity(new Sprite(sun), position, isCollidable:false);
