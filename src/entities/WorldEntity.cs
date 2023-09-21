@@ -72,7 +72,7 @@ namespace NetworkIO.src
                 return fillerEntities;
             } 
         }
-        public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; collisionDetector.Scale = value; foreach (Link l in Links) l.Scale = value;/*add collisionDetector scale in the future*/ } }
+        public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; collisionDetector.Scale = value; oldCollisionDetector.Scale = value; foreach (Link l in Links) l.Scale = value;/*add collisionDetector scale in the future*/ } }
         public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 1000, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;

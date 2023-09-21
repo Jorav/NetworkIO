@@ -13,8 +13,10 @@ namespace NetworkIO.src.collidables
         private Vector2 DL { get; set; }
         private Vector2 DR { get; set; }
         private Vector2 UR { get; set; }
-        public float Width { get { return (UR - UL).Length(); } }
-        public float Height { get { return (UR - DR).Length(); } }
+        private float width;
+        public float Width { get { return width * scale; } set { width = value / scale; } } //{ get { return (int)(Math.Round((UR - UL).Length())); } }
+        private float height;
+        public float Height { get { return height * scale; } set { height = value / scale; } }// { get { return (int)(Math.Round((UR - DR).Length())); } }
         public Vector2 AbsolutePosition { get { return (UL + DR) / 2; } }
         private Vector2 origin;
         public Vector2 Origin
@@ -26,7 +28,7 @@ namespace NetworkIO.src.collidables
             }
             get
             {
-                return origin*Scale;
+                return origin * Scale;
             }
         }
         private Vector2 position;
@@ -58,12 +60,14 @@ namespace NetworkIO.src.collidables
         }
         public float Radius { get { return (float)Math.Sqrt(Math.Pow(Width / 2, 2) + Math.Pow(Height / 2, 2)); } }
         private float scale;
-        public float Scale { get { return scale; }
+        public float Scale
+        {
+            get { return scale; }
             set
             {
                 scale = value;
                 UpdateScale();
-            } 
+            }
         }
 
         private CollidableRectangle stretchedRectangle;
@@ -78,14 +82,17 @@ namespace NetworkIO.src.collidables
         public CollidableRectangle(Vector2 position, float rotation, int width, int height)
         {
             UL = new Vector2(position.X, position.Y);
-            DL = new Vector2(position.X, position.Y+height);
-            DR = new Vector2(position.X+width, position.Y+height);
+            DL = new Vector2(position.X, position.Y + height);
+            DR = new Vector2(position.X + width, position.Y + height);
             UR = new Vector2(position.X + width, position.Y);
             this.position = position;
-            origin = new Vector2(Width / 2, Height / 2);
             scale = 1;
-            Rotation = rotation;
+            Width = width;
+            Height = height;
+            origin = new Vector2(Width / 2, Height / 2);
             
+            Rotation = rotation;
+
         }
         public bool CollidesWith(IIntersectable c)
         {
@@ -119,8 +126,8 @@ namespace NetworkIO.src.collidables
         private void UpdateScale()
         {
             Matrix rotationMatrix = Matrix.CreateRotationZ(rotation);
-            Vector2 height = new Vector2(0, Height*Scale);
-            Vector2 width = new Vector2(Width*Scale, 0);
+            Vector2 height = new Vector2(0, Height);
+            Vector2 width = new Vector2(Width, 0);
             UL = Position + Vector2.Transform(-Origin, rotationMatrix);
             DL = Position + Vector2.Transform(-Origin + height, rotationMatrix);
             DR = Position + Vector2.Transform(-Origin + height + width, rotationMatrix);
@@ -143,7 +150,7 @@ namespace NetworkIO.src.collidables
             Vector2 AM = positionInM - UL;
             Vector2 AD = DL - UL;
             Vector2 AB = UR - UL;
-            return 0 <= Vector2.Dot(AM, AB) && Vector2.Dot(AM,AB) <= Vector2.Dot(AB,AB) && 0 <= Vector2.Dot(AM,AD) && Vector2.Dot(AM,AD) <= Vector2.Dot(AD,AD);
+            return 0 <= Vector2.Dot(AM, AB) && Vector2.Dot(AM, AB) <= Vector2.Dot(AB, AB) && 0 <= Vector2.Dot(AM, AD) && Vector2.Dot(AM, AD) <= Vector2.Dot(AD, AD);
         }
 
         public bool CollidesWithRectangle(CollidableRectangle r)
@@ -162,7 +169,7 @@ namespace NetworkIO.src.collidables
                 scalarB[1] = Vector2.Dot(axis, Vector2.Multiply(axis, Vector2.Dot(r.DL, axis) / axis.LengthSquared()));
                 scalarB[2] = Vector2.Dot(axis, Vector2.Multiply(axis, Vector2.Dot(r.DR, axis) / axis.LengthSquared()));
                 scalarB[3] = Vector2.Dot(axis, Vector2.Multiply(axis, Vector2.Dot(r.UR, axis) / axis.LengthSquared()));
-                if (scalarB.Max() < scalarA.Min()+1 || scalarA.Max() < scalarB.Min()+1)
+                if (scalarB.Max() < scalarA.Min() +1|| scalarA.Max() < scalarB.Min()+1)
                     collides = false;
             }/*
             if(!collides && stretchedRectangle != null)
