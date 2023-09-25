@@ -79,11 +79,11 @@ namespace NetworkIO.src
 
         public void MoveTo(Vector2 newPosition) //OBS needs rework
         {
-            UpdatePosition();
             Vector2 posChange = newPosition - Position;
             foreach (IControllable c in controllables)
                 c.Position += posChange;
             Position = position + posChange;
+            UpdatePosition();
         }
 
         public virtual void Update(GameTime gameTime)
@@ -98,7 +98,7 @@ namespace NetworkIO.src
             InternalCollission();
         }
 
-        private void RemoveEmptyControllers()
+        protected void RemoveEmptyControllers()
         {
             List<IControllable> toBeRemoved = new List<IControllable>();
             foreach (IControllable c in controllables)

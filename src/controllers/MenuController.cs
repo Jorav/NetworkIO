@@ -151,7 +151,10 @@ namespace NetworkIO.src.controllers
                     ec.RemoveEntity(clickedE);
             }
             AddSeperatedEntities();
+            RemoveEmptyControllers();
             //AddOpenLinks();
+            UpdatePosition();
+            UpdateRadius();
         }
     }
 }

@@ -377,6 +377,7 @@ namespace NetworkIO.src.controllers
         public override void Update(GameTime gameTime)
         {
             MoveAndRotateEntities();
+            //UpdatePosition();
             base.Update(gameTime);
             foreach (WorldEntity e in Entities)
                 e.Update(gameTime);
