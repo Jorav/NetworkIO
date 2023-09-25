@@ -118,6 +118,9 @@ namespace NetworkIO.src.controllers
         {
             if (e != null && Entities.Remove(e))
             {
+                foreach (Link l in e.Links)
+                    if (!l.ConnectionAvailable && l.connection.Entity.Links.Count == 1)
+                        RemoveEntity(l.connection.Entity);
                 if (e is Shooter s)
                     projectiles.Remove(s.Projectiles);
                 
@@ -149,7 +152,7 @@ namespace NetworkIO.src.controllers
         /**
          * connects an entity to all other possible entities in entities
          */
-        private void ConnectToOthers(WorldEntity entity)
+        protected void ConnectToOthers(WorldEntity entity)
         {
             if (Entities.Count > 0 && !entity.IsFiller)
             {
@@ -158,10 +161,10 @@ namespace NetworkIO.src.controllers
                     if (entity != e && !e.IsFiller)
                     {
                         foreach (Link l1 in e.Links)
-                            if (l1.ConnectionAvailable && entity.Contains(l1.ConnectionPosition))
+                            if (l1.ConnectionAvailable)
                             {
                                 foreach (Link l2 in entity.Links)
-                                    if (l2.ConnectionAvailable && e.Contains(l2.ConnectionPosition))
+                                    if (l2.ConnectionAvailable && (e.Contains(l2.AbsolutePosition-l1.RelativePositionRotated) && entity.Contains(l1.AbsolutePosition - l2.RelativePositionRotated)))
                                     {
                                         l1.ConnectTo(l2);
                                     }
@@ -178,6 +181,7 @@ namespace NetworkIO.src.controllers
         private List<HashSet<WorldEntity>> GetSetsOfEntities()
         {
             List<HashSet<WorldEntity>> sets = new List<HashSet<WorldEntity>>();
+            //Entities.Sort((a, b) => a.Links.Count.CompareTo(a.Links.Count));
             foreach (WorldEntity e in Entities)
             {
                 bool containsEntity = false;
@@ -255,7 +259,7 @@ namespace NetworkIO.src.controllers
                 if (e is Shooter gun)
                     gun.Shoot(gameTime);
         }
-        public override void Collide(IControllable controllable) //OBS: ADD COLLISSION HADNLING SUPPORT FOR WORLDENTITIES NOT BELONGING TO ENTITY CONTROLLER
+        public override void Collide(IControllable controllable) //OBS: ADD COLLISSION HANDLING SUPPORT FOR WORLDENTITIES NOT BELONGING TO ENTITY CONTROLLER
         {
             if (controllable is Controller c)
                 foreach (IControllable iC in c.controllables)
@@ -365,13 +369,41 @@ namespace NetworkIO.src.controllers
             EntityController cNew = (EntityController)this.MemberwiseClone();
             cNew.projectiles = new List<Queue<Projectile>>();
             cNew.Entities = new List<WorldEntity>();
+            HashSet<WorldEntity> entitiesAdded = new HashSet<WorldEntity>();
             foreach (WorldEntity e in Entities)
                 cNew.AddEntity((WorldEntity)e.Clone());
+            cNew.UpdatePosition();
+            cNew.UpdateRadius();
+            cNew.MoveAndRotateEntities();
+            foreach (WorldEntity e in cNew.Entities)
+                cNew.ConnectToOthers(e);
             cNew.SeperatedEntities = new List<EntityController>();
             foreach (EntityController ec in SeperatedEntities)
                 cNew.SeperatedEntities.Add((EntityController)ec.Clone());
+            foreach (EntityController ec in cNew.SeperatedEntities)
+            {
+                ec.UpdatePosition();
+                ec.UpdateRadius();
+                ec.MoveAndRotateEntities();
+                foreach (WorldEntity w in ec.Entities)
+                    ec.ConnectToOthers(w);
+            }
             cNew.collisionDetector = new CollidableCircle(Position, radius);
             return cNew;
+        }
+        private List<WorldEntity> CloneEntitiesAndLinks(WorldEntity e, HashSet<WorldEntity> foundEntities, List<WorldEntity> listCopy)
+        {
+            foreach (Link l in e.Links)
+                if (!l.ConnectionAvailable)
+                    if (!foundEntities.Contains(l.connection.Entity))
+                    {
+                        foundEntities.Add(l.connection.Entity);
+                        listCopy.Add((WorldEntity)l.connection.Entity.Clone());
+                        foreach (Link l2 in l.connection.Entity.Links)
+                            ;
+                        //GetConnectedEntities(l.connection.Entity, foundEntities);
+                    }
+            return listCopy;
         }
 
         public override void Update(GameTime gameTime)

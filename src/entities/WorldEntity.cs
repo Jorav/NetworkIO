@@ -249,7 +249,8 @@ namespace NetworkIO.src
             public WorldEntity Entity { get; private set; }
             public Link connection; //links to other entities
             public Vector2 RelativePosition { get; private set; } //position in relation to the entity it belongs to in an unrotated state
-            public Vector2 AbsolutePosition { get { return Entity.Position + RelativePosition.Length() * Scale * new Vector2((float)Math.Cos(MathHelper.WrapAngle(LinkRotation+Entity.Rotation)), (float)Math.Sin(MathHelper.WrapAngle(LinkRotation + Entity.Rotation))); } }
+            public Vector2 RelativePositionRotated { get { return RelativePosition.Length() * Scale * new Vector2((float)Math.Cos(MathHelper.WrapAngle(LinkRotation + Entity.Rotation)), (float)Math.Sin(MathHelper.WrapAngle(LinkRotation + Entity.Rotation))); } }
+            public Vector2 AbsolutePosition { get { return Entity.Position + RelativePositionRotated; } }
             public Vector2 ConnectionPosition { get { Vector2 dir = new Vector2((float)Math.Cos(MathHelper.WrapAngle(LinkRotation + Entity.Rotation)), (float)Math.Sin(MathHelper.WrapAngle(LinkRotation + Entity.Rotation))); if (!ConnectionAvailable) return Entity.Position + DistanceFromConnection * dir; else return Entity.Position + dir *RelativePosition.Length() * Scale* 2; } }
             public float Scale { get; set; }
             public float LinkRotation { get; set; } //rotation of link in relation to center of entity
