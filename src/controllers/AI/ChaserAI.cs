@@ -29,7 +29,7 @@ namespace NetworkIO.src.controllers
         }
         protected void Accelerate()
         {
-            foreach (WorldEntity e in entities)
+            foreach (WorldEntity e in Entities)
             {
                 Vector2 accelerationVector;
                 if(enemy.controllables[0] is WorldEntity)

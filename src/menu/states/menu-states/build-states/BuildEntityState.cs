@@ -174,6 +174,19 @@ namespace NetworkIO.src.menu.states.menu_states
                 }
                 menuController.addEntity = false;
             }
+            if (menuController.removeEntity)
+            {
+                IControllable clickedC = menuController.controllableClicked;
+                if (clickedC is WorldEntity clickedE && !clickedE.IsFiller)
+                {
+                    menuController.RemoveEntity(clickedE);
+                    menuController.ClearOpenLinks();
+                    menuController.AddOpenLinks();
+                }
+                menuController.removeEntity = false;
+                menuController.requireNewClick = true;
+                menuController.clickedOutside = true;
+            }
             if (menuController.clickedOutside)
             {
                 bool switchState = true;
@@ -184,7 +197,14 @@ namespace NetworkIO.src.menu.states.menu_states
                 {
                     menuController.ClearOpenLinks();
                     previousState.menuController.controllables.Remove(entityEdited);
-                    previousState.menuController.AddControllable(menuController.controllables[0]);
+                    foreach(IControllable c in menuController.controllables)
+                    {
+                        
+                        previousState.menuController.AddControllable(c);
+
+                    }
+                    
+                    
                     previousState.menuController.MoveTo(previousState.menuController.Position);
                     previousState.menuController.Camera.InBuildScreen = true;
                     menuController.Reset();
@@ -194,6 +214,7 @@ namespace NetworkIO.src.menu.states.menu_states
             }
             if (input.BuildClicked)
             {
+                menuController.ClearOpenLinks();
                 previousState.menuController.controllables.Remove(entityEdited);
                 previousState.menuController.AddControllable(menuController.controllables[0]);
                 menuController.Reset();

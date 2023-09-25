@@ -68,5 +68,12 @@ namespace NetworkIO.src
                 return Mouse.GetState().LeftButton == ButtonState.Pressed;
             }
         }
+        public bool RightMBDown
+        {
+            get
+            {
+                return Mouse.GetState().RightButton == ButtonState.Pressed;
+            }
+        }
     }
 }

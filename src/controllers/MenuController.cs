@@ -15,10 +15,11 @@ namespace NetworkIO.src.controllers
         public List<IControllable> oldControllables;
         Input input;
         public bool clickedOutside;
-        private bool previouslyLeftMBDOwn;
+        private bool previouslyMBDown;
         public IControllable controllableClicked;
         public bool requireNewClick;
         public bool addEntity;
+        public bool removeEntity;
         public MenuController(List<IControllable> collidables, Input input) : base(collidables)
         {
             oldControllables = controllables;
@@ -29,18 +30,16 @@ namespace NetworkIO.src.controllers
 
         public void AddOpenLinks()
         {
-            if (controllables.Count == 1 && controllables[0] is EntityController ec)
-            {
-                ec.AddAvailableLinkDisplays();
-            }
+            foreach (IControllable c in controllables)
+                if (c is EntityController ec)
+                    ec.AddAvailableLinkDisplays();
         }
 
         public void ClearOpenLinks()
         {
-            if (controllables.Count == 1 && controllables[0] is EntityController ec)
-            {
-                ec.ClearAvailableLinks();
-            }
+            foreach (IControllable c in controllables)
+                if (c is EntityController ec)
+                    ec.ClearAvailableLinks();
         }
 
         public override void Update(GameTime gameTime)
@@ -49,23 +48,26 @@ namespace NetworkIO.src.controllers
             Camera.Update();
             if (!requireNewClick)
             {
-                if (input.LeftMBDown)
+                if (input.LeftMBDown || input.RightMBDown)
                 {
                     if (controllables[0] is Controller)
                         controllableClicked = ControllableClicked();
                     else if (controllables[0] is EntityController)
                         controllableClicked = EntityClicked();
-                    if (!previouslyLeftMBDOwn && controllableClicked == null)
+                    if (!previouslyMBDown && controllableClicked == null)
                         clickedOutside = true;
-                    else if (previouslyLeftMBDOwn && controllableClicked != null)
+                    else if (previouslyMBDown && controllableClicked != null)
                     {
-                        addEntity = true;
+                        if (input.LeftMBDown)
+                            addEntity = true;
+                        else if (input.RightMBDown)
+                            removeEntity = true;
                     }
                 }
-                previouslyLeftMBDOwn = input.LeftMBDown;
+                previouslyMBDown = input.LeftMBDown || input.RightMBDown;
             }
             else
-                requireNewClick = input.LeftMBDown;
+                requireNewClick = input.LeftMBDown || input.RightMBDown;
         }
 
         public void FocusOn(IControllable c)
@@ -73,7 +75,7 @@ namespace NetworkIO.src.controllers
             if (c is Controller cc)
                 controllables = cc.controllables;
             else if (c is EntityController ec)
-                SetControllables(new List<IControllable>(ec.entities));
+                SetControllables(new List<IControllable>(ec.Entities));
             else if (c is WorldEntity we)
                 SetControllables(new List<IControllable>{ we });
         }
@@ -116,6 +118,15 @@ namespace NetworkIO.src.controllers
                     return ec.ReplaceEntity(oldEntity, newEntity);
             }
             return false;
+        }
+
+        public void RemoveEntity(WorldEntity clickedE)
+        {
+            foreach (IControllable c in controllables)
+            {
+                if (c is EntityController ec)
+                    ec.RemoveEntity(clickedE);
+            }
         }
     }
 }

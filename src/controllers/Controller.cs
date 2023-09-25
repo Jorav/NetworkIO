@@ -88,12 +88,31 @@ namespace NetworkIO.src
 
         public virtual void Update(GameTime gameTime)
         {
+            AddSeperatedEntities();
             UpdateControllable(gameTime);
             UpdatePosition();
             UpdateRadius();
             ApplyInternalGravity();
             ApplyInternalRepulsion();
             InternalCollission();
+        }
+
+        private void AddSeperatedEntities()
+        {
+            List<EntityController> seperatedEntities = new List<EntityController>();
+            foreach (IControllable c in controllables)
+                if (c is EntityController ec)
+                    foreach (EntityController ecSeperated in ec.SeperatedEntities)
+                    {
+                        seperatedEntities.Add(ecSeperated);
+                    }
+            foreach(EntityController ec in seperatedEntities)
+            {
+                AddControllable(ec);
+            }
+            foreach (IControllable c in controllables)
+                if (c is EntityController ec)
+                    ec.SeperatedEntities.Clear();
         }
 
         protected void InternalCollission()
