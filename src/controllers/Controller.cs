@@ -89,6 +89,7 @@ namespace NetworkIO.src
         public virtual void Update(GameTime gameTime)
         {
             AddSeperatedEntities();
+            RemoveEmptyControllers();
             UpdateControllable(gameTime);
             UpdatePosition();
             UpdateRadius();
@@ -97,7 +98,22 @@ namespace NetworkIO.src
             InternalCollission();
         }
 
-        private void AddSeperatedEntities()
+        private void RemoveEmptyControllers()
+        {
+            List<IControllable> toBeRemoved = new List<IControllable>();
+            foreach (IControllable c in controllables)
+                if (c is WorldEntity we && !we.IsAlive)
+                    toBeRemoved.Add(we);
+                else if (c is EntityController ec && ec.Entities.Count == 0)
+                    toBeRemoved.Add(ec);
+                else if (c is Controller cc && controllables.Count == 0)
+                    toBeRemoved.Add(cc);
+            foreach (IControllable c in toBeRemoved)
+                controllables.Remove(c);
+
+        }
+
+        protected virtual void AddSeperatedEntities()
         {
             List<EntityController> seperatedEntities = new List<EntityController>();
             foreach (IControllable c in controllables)

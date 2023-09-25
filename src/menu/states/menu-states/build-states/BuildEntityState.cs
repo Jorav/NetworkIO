@@ -102,55 +102,55 @@ namespace NetworkIO.src.menu.states.menu_states
         private void AddEngineButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.ENGINE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddTriangular90AngleHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.TRIANGULAR_90ANGLE_COMPOSITE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddTriangularEqualLeggedHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.TRIANGULAR_EQUAL_COMPOSITE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddLinkHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.LINK_COMPOSITE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddCircularHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.CIRCULAR_COMPOSITE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddSpikeButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SPIKE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddRectangularHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.COMPOSITE;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
         private void AddShooterButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SHOOTER;
-            menuController.requireNewClick = true;
+            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
         public override void Update(GameTime gameTime)
@@ -169,8 +169,6 @@ namespace NetworkIO.src.menu.states.menu_states
                 if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
                 {
                     menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
-                    menuController.ClearOpenLinks();
-                    menuController.AddOpenLinks();
                 }
                 menuController.addEntity = false;
             }
@@ -180,12 +178,10 @@ namespace NetworkIO.src.menu.states.menu_states
                 if (clickedC is WorldEntity clickedE && !clickedE.IsFiller)
                 {
                     menuController.RemoveEntity(clickedE);
-                    menuController.ClearOpenLinks();
-                    menuController.AddOpenLinks();
                 }
                 menuController.removeEntity = false;
-                menuController.requireNewClick = true;
-                menuController.clickedOutside = true;
+                //menuController.requireNewClick = true;
+                //menuController.clickedOutside = true;
             }
             if (menuController.clickedOutside)
             {
@@ -216,7 +212,12 @@ namespace NetworkIO.src.menu.states.menu_states
             {
                 menuController.ClearOpenLinks();
                 previousState.menuController.controllables.Remove(entityEdited);
-                previousState.menuController.AddControllable(menuController.controllables[0]);
+                foreach (IControllable c in menuController.controllables)
+                {
+
+                    previousState.menuController.AddControllable(c);
+
+                }
                 menuController.Reset();
                 gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
                 gameState.Player.MoveTo(gameState.Player.Position);

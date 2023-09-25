@@ -186,7 +186,9 @@ namespace NetworkIO.src.controllers
                         containsEntity = true;
                 if (!containsEntity)
                 {
-                    HashSet<WorldEntity> set = GetConnectedEntities(e, new HashSet<WorldEntity>());
+                    HashSet<WorldEntity> set = new HashSet<WorldEntity>();
+                    set.Add(e);
+                    GetConnectedEntities(e, set);
                     sets.Add(set);
                 }
                 
@@ -264,7 +266,8 @@ namespace NetworkIO.src.controllers
                 {
                     foreach (WorldEntity e in Entities)
                         foreach (WorldEntity eCE in eC.Entities)
-                            Collide(e, eCE);
+                            if(!e.IsFiller && !eCE.IsFiller)
+                                Collide(e, eCE);
                 }/*
                 foreach (Queue<Projectile> pList in projectiles)
                     foreach (Projectile p in pList)
@@ -274,7 +277,8 @@ namespace NetworkIO.src.controllers
             else if (controllable is WorldEntity wE)
             {
                     foreach (WorldEntity e in Entities)
-                        Collide(e, wE);
+                        if (!e.IsFiller && !wE.IsFiller)
+                            Collide(e, wE);
                     /*
                 foreach (Queue<Projectile> pList in projectiles)
                     foreach (Projectile p in pList)
@@ -332,21 +336,25 @@ namespace NetworkIO.src.controllers
 
         public override void ApplyRepulsion(Entity otherEntity)
         {
-            if (Radius + otherEntity.Radius + REPULSIONDISTANCE > Vector2.Distance(Position, otherEntity.Position))
+            if (Entities.Count > 0)
             {
-                if (otherEntity is EntityController otherEC)
+                if (Radius + otherEntity.Radius + REPULSIONDISTANCE > Vector2.Distance(Position, otherEntity.Position))
                 {
-                    foreach (Entity e1 in Entities)
-                        foreach (Entity e2 in otherEC.Entities)
-                        {
-                            TotalExteriorForce += Mass/Entities.Count*CalculateGravitationalRepulsion(e1, e2);
-                        }
-                }
-                else if (otherEntity is WorldEntity otherWE)
-                {
-                    foreach (Entity e in Entities)
+                    if (otherEntity is EntityController otherEC)
                     {
-                        TotalExteriorForce += Mass / Entities.Count*CalculateGravitationalRepulsion(e, otherWE);
+                        foreach (WorldEntity e1 in Entities)
+                            foreach (WorldEntity e2 in otherEC.Entities)
+                            {
+                                if (!e1.IsFiller && !e2.IsFiller)
+                                    TotalExteriorForce += Mass / Entities.Count * CalculateGravitationalRepulsion(e1, e2);
+                            }
+                    }
+                    else if (otherEntity is WorldEntity otherWE)
+                    {
+                        foreach (Entity e in Entities)
+                        {
+                            TotalExteriorForce += Mass / Entities.Count * CalculateGravitationalRepulsion(e, otherWE);
+                        }
                     }
                 }
             }

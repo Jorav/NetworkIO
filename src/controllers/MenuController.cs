@@ -15,9 +15,10 @@ namespace NetworkIO.src.controllers
         public List<IControllable> oldControllables;
         Input input;
         public bool clickedOutside;
-        private bool previouslyMBDown;
+        private bool previouslyLeftMBDown;
+        private bool previouslyRightMBDown;
         public IControllable controllableClicked;
-        public bool requireNewClick;
+        public bool newClickRequired;
         public bool addEntity;
         public bool removeEntity;
         public MenuController(List<IControllable> collidables, Input input) : base(collidables)
@@ -25,7 +26,7 @@ namespace NetworkIO.src.controllers
             oldControllables = controllables;
             Camera = new Camera(this, true);
             this.input = input;
-            requireNewClick = true;
+            newClickRequired = true;
         }
 
         public void AddOpenLinks()
@@ -46,28 +47,40 @@ namespace NetworkIO.src.controllers
         {
             base.Update(gameTime);
             Camera.Update();
-            if (!requireNewClick)
+            if (!newClickRequired)
             {
                 if (input.LeftMBDown || input.RightMBDown)
                 {
-                    if (controllables[0] is Controller)
-                        controllableClicked = ControllableClicked();
-                    else if (controllables[0] is EntityController)
-                        controllableClicked = EntityClicked();
-                    if (!previouslyMBDown && controllableClicked == null)
-                        clickedOutside = true;
-                    else if (previouslyMBDown && controllableClicked != null)
+                    foreach (IControllable c in controllables)
                     {
-                        if (input.LeftMBDown)
-                            addEntity = true;
-                        else if (input.RightMBDown)
-                            removeEntity = true;
+                        if (c is Controller)
+                            controllableClicked = ControllableClicked();
+                        else if (c is EntityController)
+                            controllableClicked = EntityClicked();
+
+                        if (!previouslyLeftMBDown &&!previouslyRightMBDown && controllableClicked == null)
+                            clickedOutside = true;
+                        else if ((previouslyLeftMBDown || previouslyRightMBDown) && controllableClicked != null)
+                        {
+                            if (input.LeftMBDown)
+                                addEntity = true;
+                            else if (input.RightMBDown)
+                                removeEntity = true;
+                        }
                     }
                 }
-                previouslyMBDown = input.LeftMBDown || input.RightMBDown;
+                else
+                {
+                    controllableClicked = null;
+                    if (previouslyRightMBDown)
+                        clickedOutside = true;
+                }
+                
+                previouslyLeftMBDown = input.LeftMBDown;
+                previouslyRightMBDown = input.RightMBDown;
             }
             else
-                requireNewClick = input.LeftMBDown || input.RightMBDown;
+                newClickRequired = input.LeftMBDown || input.RightMBDown;
         }
 
         public void FocusOn(IControllable c)
@@ -115,18 +128,30 @@ namespace NetworkIO.src.controllers
             foreach (IControllable c in controllables)
             {
                 if(c is EntityController ec)
-                    return ec.ReplaceEntity(oldEntity, newEntity);
+                {
+                    bool replaced = ec.ReplaceEntity(oldEntity, newEntity);
+                    if (replaced)
+                    {
+                        ClearOpenLinks();
+                        AddOpenLinks();
+                        return replaced;
+                    }
+                }
+                
             }
             return false;
         }
 
         public void RemoveEntity(WorldEntity clickedE)
         {
+            ClearOpenLinks();
             foreach (IControllable c in controllables)
             {
                 if (c is EntityController ec)
                     ec.RemoveEntity(clickedE);
             }
+            AddSeperatedEntities();
+            //AddOpenLinks();
         }
     }
 }
