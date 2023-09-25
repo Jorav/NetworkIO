@@ -399,12 +399,13 @@ namespace NetworkIO.src.controllers
 
         public void MoveTo(Vector2 newPosition)
         {
-            //UpdatePosition();
+            UpdatePosition();
             Vector2 posChange = newPosition - Position;
             foreach (WorldEntity e in Entities)
                 e.Position += posChange;
             position = position + posChange;
             collisionDetector.Position = position;
+            UpdatePosition();
         }
         public override bool CollidesWith(IIntersectable c) //NO CHECK DONE, JUST COPY PASTE
         {
@@ -484,6 +485,7 @@ namespace NetworkIO.src.controllers
                 Entities.Remove(e);
             foreach (EntityController ec in SeperatedEntities)
                 ec.ClearAvailableLinks();
+            UpdateRadius();
         }
         public bool ReplaceEntity(WorldEntity eOld, WorldEntity eNew)
         {
