@@ -169,7 +169,7 @@ namespace NetworkIO.src.controllers
                                         l1.ConnectTo(l2);
                                     }*/
                                 foreach (Link lEntity in entity.Links)
-                                    if (lEntity.ConnectionAvailable && lE.LinkRotation+lEntity.LinkRotation == 0 && e.Contains(lEntity.AbsolutePosition-lE.RelativePositionRotated) && entity.Contains(lE.AbsolutePosition-lEntity.RelativePositionRotated))
+                                    if (lEntity.ConnectionAvailable && e.Contains(lEntity.AbsolutePosition-lE.RelativePositionRotated/2) && entity.Contains(lE.AbsolutePosition-lEntity.RelativePositionRotated/2)) //divided by 2 because of edges of links connecting to others
                                     {
                                         lE.ConnectTo(lEntity);
                                     }
