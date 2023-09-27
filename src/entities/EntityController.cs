@@ -160,18 +160,18 @@ namespace NetworkIO.src.controllers
                 {
                     if (entity != e && !e.IsFiller)
                     {
-                        foreach (Link l1 in e.Links)
-                            if (l1.ConnectionAvailable)
+                        foreach (Link lE in e.Links)
+                            if (lE.ConnectionAvailable)
                             {/*
                                 foreach (Link l2 in entity.Links)
                                     if (l2.ConnectionAvailable && (e.Contains(l2.AbsolutePosition-l1.RelativePositionRotated) && entity.Contains(l1.AbsolutePosition - l2.RelativePositionRotated)))
                                     {
                                         l1.ConnectTo(l2);
                                     }*/
-                                foreach (Link l2 in entity.Links)
-                                    if (l2.ConnectionAvailable && (e.Contains(l2.ConnectionPosition) || entity.Contains(l1.ConnectionPosition)))
+                                foreach (Link lEntity in entity.Links)
+                                    if (lEntity.ConnectionAvailable && lE.LinkRotation+lEntity.LinkRotation == 0 && e.Contains(lEntity.AbsolutePosition-lE.RelativePositionRotated) && entity.Contains(lE.AbsolutePosition-lEntity.RelativePositionRotated))
                                     {
-                                        l1.ConnectTo(l2);
+                                        lE.ConnectTo(lEntity);
                                     }
                             }
                     }
