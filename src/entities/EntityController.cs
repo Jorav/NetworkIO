@@ -120,7 +120,7 @@ namespace NetworkIO.src.controllers
             {
                 foreach (Link l in e.Links)
                     if (!l.ConnectionAvailable && l.connection.Entity.Links.Count == 1)
-                        RemoveEntity(l.connection.Entity);
+                        ;// RemoveEntity(l.connection.Entity);
                 if (e is Shooter s)
                     projectiles.Remove(s.Projectiles);
                 
@@ -162,9 +162,14 @@ namespace NetworkIO.src.controllers
                     {
                         foreach (Link l1 in e.Links)
                             if (l1.ConnectionAvailable)
-                            {
+                            {/*
                                 foreach (Link l2 in entity.Links)
                                     if (l2.ConnectionAvailable && (e.Contains(l2.AbsolutePosition-l1.RelativePositionRotated) && entity.Contains(l1.AbsolutePosition - l2.RelativePositionRotated)))
+                                    {
+                                        l1.ConnectTo(l2);
+                                    }*/
+                                foreach (Link l2 in entity.Links)
+                                    if (l2.ConnectionAvailable && (e.Contains(l2.ConnectionPosition) || entity.Contains(l1.ConnectionPosition)))
                                     {
                                         l1.ConnectTo(l2);
                                     }
@@ -367,19 +372,19 @@ namespace NetworkIO.src.controllers
         public override object Clone()
         {
             EntityController cNew = (EntityController)this.MemberwiseClone();
+            cNew.collisionDetector = new CollidableCircle(Position, radius);
             cNew.projectiles = new List<Queue<Projectile>>();
             cNew.Entities = new List<WorldEntity>();
+            cNew.Velocity = Vector2.Zero;
             HashSet<WorldEntity> entitiesAdded = new HashSet<WorldEntity>();
             foreach (WorldEntity e in Entities)
                 cNew.AddEntity((WorldEntity)e.Clone());
-            cNew.UpdatePosition();
-            cNew.UpdateRadius();
-            cNew.MoveAndRotateEntities();
-            foreach (WorldEntity e in cNew.Entities)
-                cNew.ConnectToOthers(e);
             cNew.SeperatedEntities = new List<EntityController>();
             foreach (EntityController ec in SeperatedEntities)
                 cNew.SeperatedEntities.Add((EntityController)ec.Clone());
+            cNew.UpdatePosition();
+            cNew.UpdateRadius();
+            cNew.MoveAndRotateEntities();
             foreach (EntityController ec in cNew.SeperatedEntities)
             {
                 ec.UpdatePosition();
@@ -388,7 +393,7 @@ namespace NetworkIO.src.controllers
                 foreach (WorldEntity w in ec.Entities)
                     ec.ConnectToOthers(w);
             }
-            cNew.collisionDetector = new CollidableCircle(Position, radius);
+            
             return cNew;
         }
         private List<WorldEntity> CloneEntitiesAndLinks(WorldEntity e, HashSet<WorldEntity> foundEntities, List<WorldEntity> listCopy)

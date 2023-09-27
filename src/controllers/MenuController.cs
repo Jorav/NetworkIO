@@ -19,7 +19,7 @@ namespace NetworkIO.src.controllers
         private bool previouslyRightMBDown;
         public IControllable controllableClicked;
         public bool newClickRequired;
-        public bool addEntity;
+        public bool addControllable;
         public bool removeEntity;
         public MenuController(List<IControllable> collidables, Input input) : base(collidables)
         {
@@ -58,14 +58,14 @@ namespace NetworkIO.src.controllers
                         else if (c is EntityController)
                             controllableClicked = EntityClicked();
 
-                        if (!previouslyLeftMBDown &&!previouslyRightMBDown && controllableClicked == null)
+                        if (!previouslyLeftMBDown && !previouslyRightMBDown && controllableClicked == null)
                             clickedOutside = true;
-                        else if ((previouslyLeftMBDown || previouslyRightMBDown) && controllableClicked != null)
+                        else if (controllableClicked != null)
                         {
-                            if (input.LeftMBDown)
-                                addEntity = true;
-                            else if (input.RightMBDown)
+                            if (input.RightMBDown && previouslyRightMBDown)
                                 removeEntity = true;
+                            else
+                                addControllable = true;
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace NetworkIO.src.controllers
                     if (previouslyRightMBDown)
                         clickedOutside = true;
                 }
-                
+
                 previouslyLeftMBDown = input.LeftMBDown;
                 previouslyRightMBDown = input.RightMBDown;
             }
@@ -90,7 +90,7 @@ namespace NetworkIO.src.controllers
             else if (c is EntityController ec)
                 SetControllables(new List<IControllable>(ec.Entities));
             else if (c is WorldEntity we)
-                SetControllables(new List<IControllable>{ we });
+                SetControllables(new List<IControllable> { we });
         }
 
         public void Reset()
@@ -127,7 +127,7 @@ namespace NetworkIO.src.controllers
         {
             foreach (IControllable c in controllables)
             {
-                if(c is EntityController ec)
+                if (c is EntityController ec)
                 {
                     bool replaced = ec.ReplaceEntity(oldEntity, newEntity);
                     if (replaced)
@@ -137,7 +137,7 @@ namespace NetworkIO.src.controllers
                         return replaced;
                     }
                 }
-                
+
             }
             return false;
         }

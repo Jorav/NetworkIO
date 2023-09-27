@@ -42,7 +42,7 @@ namespace NetworkIO.src.menu.states.menu_states
             EntityButton addCircularHullButton = new EntityButton(new Sprite(EntityFactory.circularHull), new Sprite(EntityFactory.entityButton), true)
             {
                 Scale = scale,
-                Position = new Vector2(addRectangularHullButton.Position.X- EntityFactory.circularHull.Width* scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+                Position = new Vector2(addRectangularHullButton.Position.X - EntityFactory.circularHull.Width * scale, 20 /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
             };
 
             addCircularHullButton.Click += AddCircularHullButton_Click;
@@ -74,14 +74,15 @@ namespace NetworkIO.src.menu.states.menu_states
             EntityButton addShooterButton = new EntityButton(new Sprite(EntityFactory.gun), new Sprite(EntityFactory.entityButton))
             {
                 Scale = scale,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5+ addEngineButton.Position.Y+ addEngineButton.Rectangle.Height),
-                
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5 + addEngineButton.Position.Y + addEngineButton.Rectangle.Height),
+
             };
             addShooterButton.Click += AddShooterButton_Click;
             EntityButton addSpikeButton = new EntityButton(new Sprite(EntityFactory.spike), new Sprite(EntityFactory.entityButton))
-            {Scale = scale,
-                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5+addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
-                
+            {
+                Scale = scale,
+                Position = new Vector2(Game1.ScreenWidth - EntityFactory.rectangularHull.Width - 100, 5 + addShooterButton.Position.Y + addShooterButton.Rectangle.Height /*Game1.ScreenHeight - EntityFactory.hull.Height - 150*/),
+
             };
             addSpikeButton.Click += AddSpikeButton_Click;
 
@@ -156,21 +157,21 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if(clicked != previouslyClicked)
+            if (clicked != previouslyClicked)
             {
-                if(previouslyClicked != null)
+                if (previouslyClicked != null)
                     previouslyClicked.IsClicked = false;
                 previouslyClicked = clicked;
                 clicked.IsClicked = true;
             }
-            if (menuController.addEntity)
+            if (menuController.addControllable)
             {
                 IControllable clickedC = menuController.controllableClicked;
                 if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
                 {
                     menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
                 }
-                menuController.addEntity = false;
+                menuController.addControllable = false;
             }
             if (menuController.removeEntity)
             {
@@ -193,14 +194,14 @@ namespace NetworkIO.src.menu.states.menu_states
                 {
                     menuController.ClearOpenLinks();
                     previousState.menuController.controllables.Remove(entityEdited);
-                    foreach(IControllable c in menuController.controllables)
+                    foreach (IControllable c in menuController.controllables)
                     {
-                        
+
                         previousState.menuController.AddControllable(c);
 
                     }
-                    
-                    
+
+
                     previousState.menuController.MoveTo(previousState.menuController.Position);
                     previousState.menuController.Camera.InBuildScreen = true;
                     menuController.Reset();

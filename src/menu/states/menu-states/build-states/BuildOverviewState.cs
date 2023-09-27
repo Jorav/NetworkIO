@@ -24,7 +24,7 @@ namespace NetworkIO.src.menu.states
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
             Button addEntityButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
-                Position = new Vector2(Game1.ScreenWidth-buttonTexture.Width-100, Game1.ScreenHeight - buttonTexture.Height-150), //make this vary with Zoom
+                Position = new Vector2(Game1.ScreenWidth - buttonTexture.Width - 100, Game1.ScreenHeight - buttonTexture.Height - 150), //make this vary with Zoom
                 Text = "Add Hull",
             };
             Button resetEntityButton = new Button(new Sprite(buttonTexture), buttonFont)
@@ -36,7 +36,7 @@ namespace NetworkIO.src.menu.states
             resetEntityButton.Click += ResetEntityButton_Click;
 
             components = new List<IComponent>()
-            {                
+            {
                 background,
                 //controller,
                 addEntityButton,
@@ -49,7 +49,7 @@ namespace NetworkIO.src.menu.states
             Random r = new Random();
             EntityController ec = new EntityController(menuController.Position + new Vector2((float)r.NextDouble() - 0.5f, (float)r.NextDouble() - 0.5f));
             //while (menuController.CollidesWith(ec))
-                //ec.MoveTo(ec.Position + 10* new Vector2((float)r.NextDouble() - 0.5f, (float)r.NextDouble() - 0.5f));
+            //ec.MoveTo(ec.Position + 10* new Vector2((float)r.NextDouble() - 0.5f, (float)r.NextDouble() - 0.5f));
             menuController.AddControllable(ec);
         }
         private void ResetEntityButton_Click(object sender, EventArgs e)
@@ -60,8 +60,9 @@ namespace NetworkIO.src.menu.states
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (input.LeftMBClicked) { //OBS will have to be adapted after controllers of controllers
+            base.Update(gameTime);/*
+            if (input.LeftMBClicked)
+            { //OBS will have to be adapted after controllers of controllers
                 IControllable clickedE = menuController.ControllableClicked();
                 if (clickedE != null)
                 {
@@ -71,6 +72,18 @@ namespace NetworkIO.src.menu.states
                         game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedE }))); //obs, save build states?
                     //game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>(ec.entities)))); //obs, save build states?
                 }
+            }/**/
+            if (menuController.addControllable)
+            {
+                IControllable clickedC = menuController.controllableClicked;
+                if (clickedC is Controller c)
+                    menuController.FocusOn(clickedC);
+                else if (clickedC is EntityController ec)
+                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
+                else if (clickedC is WorldEntity w)
+                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
+
+                menuController.addControllable = false;
             }
             //playerCopy.Update(gameTime);
             //if(gameState.Player.)
