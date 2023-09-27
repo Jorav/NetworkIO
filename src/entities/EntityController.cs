@@ -17,6 +17,7 @@ namespace NetworkIO.src.controllers
 {
     public class EntityController : Entity, IControllable
     {
+        #region Properties
         public List<WorldEntity> Entities { get; protected set; }
         public List<EntityController> SeperatedEntities { get; set; }
         public CollidableCircle collisionDetector;
@@ -46,6 +47,8 @@ namespace NetworkIO.src.controllers
         public override float Thrust { get { float sum = 0; foreach (WorldEntity e in Entities) if (!e.IsFiller && e.IsAlive) sum += e.Thrust; return sum; } }
 
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
+        #endregion
+
         public EntityController([OptionalAttribute] Vector2 position, [OptionalAttribute] WorldEntity e) : base(position)
         {//only allow composite for now
             SeperatedEntities = new List<EntityController>();
@@ -82,7 +85,7 @@ namespace NetworkIO.src.controllers
 
             MoveAndRotateEntities();
         }
-
+        #region Methods
         /**
          * returns whether an entity was succesfully added
          */
@@ -96,10 +99,6 @@ namespace NetworkIO.src.controllers
                 Entities.Add(e);
                 if (e is Shooter s)
                     projectiles.Add(s.Projectiles);
-                /*
-                foreach(WorldEntity ee in entities)
-                    foreach(Link le in e.Links)
-                        if(l.ConnectionAvailable && ee.Contains)*/
                 e.Friction = 0;
                 e.EntityController = this;
                 UpdatePosition();
@@ -162,12 +161,7 @@ namespace NetworkIO.src.controllers
                     {
                         foreach (Link lE in e.Links)
                             if (lE.ConnectionAvailable)
-                            {/*
-                                foreach (Link l2 in entity.Links)
-                                    if (l2.ConnectionAvailable && (e.Contains(l2.AbsolutePosition-l1.RelativePositionRotated) && entity.Contains(l1.AbsolutePosition - l2.RelativePositionRotated)))
-                                    {
-                                        l1.ConnectTo(l2);
-                                    }*/
+                            {
                                 foreach (Link lEntity in entity.Links)
                                     if (lEntity.ConnectionAvailable && e.Contains(lEntity.AbsolutePosition-lE.RelativePositionRotated/2) && entity.Contains(lE.AbsolutePosition-lEntity.RelativePositionRotated/2)) //divided by 2 because of edges of links connecting to others
                                     {
@@ -376,7 +370,6 @@ namespace NetworkIO.src.controllers
             cNew.projectiles = new List<Queue<Projectile>>();
             cNew.Entities = new List<WorldEntity>();
             cNew.Velocity = Vector2.Zero;
-            HashSet<WorldEntity> entitiesAdded = new HashSet<WorldEntity>();
             foreach (WorldEntity e in Entities)
                 cNew.AddEntity((WorldEntity)e.Clone());
             cNew.SeperatedEntities = new List<EntityController>();
@@ -395,20 +388,6 @@ namespace NetworkIO.src.controllers
             }
             
             return cNew;
-        }
-        private List<WorldEntity> CloneEntitiesAndLinks(WorldEntity e, HashSet<WorldEntity> foundEntities, List<WorldEntity> listCopy)
-        {
-            foreach (Link l in e.Links)
-                if (!l.ConnectionAvailable)
-                    if (!foundEntities.Contains(l.connection.Entity))
-                    {
-                        foundEntities.Add(l.connection.Entity);
-                        listCopy.Add((WorldEntity)l.connection.Entity.Clone());
-                        foreach (Link l2 in l.connection.Entity.Links)
-                            ;
-                        //GetConnectedEntities(l.connection.Entity, foundEntities);
-                    }
-            return listCopy;
         }
 
         public override void Update(GameTime gameTime)
@@ -549,5 +528,6 @@ namespace NetworkIO.src.controllers
                     return e;
             return null;
         }
+        #endregion
     }
 }

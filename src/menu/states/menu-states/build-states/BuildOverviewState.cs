@@ -60,19 +60,7 @@ namespace NetworkIO.src.menu.states
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);/*
-            if (input.LeftMBClicked)
-            { //OBS will have to be adapted after controllers of controllers
-                IControllable clickedE = menuController.ControllableClicked();
-                if (clickedE != null)
-                {
-                    if (clickedE is Controller c)
-                        menuController.FocusOn(clickedE);
-                    else if (clickedE is EntityController ec)
-                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedE }))); //obs, save build states?
-                    //game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>(ec.entities)))); //obs, save build states?
-                }
-            }/**/
+            base.Update(gameTime);
             if (menuController.addControllable)
             {
                 IControllable clickedC = menuController.controllableClicked;
@@ -97,8 +85,6 @@ namespace NetworkIO.src.menu.states
 
                 menuController.removeEntity = false;
             }
-            //playerCopy.Update(gameTime);
-            //if(gameState.Player.)
             if (input.BuildClicked)
             {
                 gameState.Player.SetControllables(menuController.controllables); // OBS this needs edit in the future to handle stacked controllers

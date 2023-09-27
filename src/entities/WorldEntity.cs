@@ -14,6 +14,7 @@ namespace NetworkIO.src
 {
     public class WorldEntity : Entity, IComponent, IIntersectable
     {
+        #region Properties
         protected Sprite sprite = null;
         public bool IsVisible { get { return sprite.isVisible; } set { sprite.isVisible = value; } }
         public CollidableRectangle collisionDetector;
@@ -65,15 +66,8 @@ namespace NetworkIO.src
         public List<Link> Links { get; private set; }
         private float internalRotation;
         public bool IsFiller { get; set; }
-        public List<WorldEntity> FillerEntities { get {
-                List<WorldEntity> fillerEntities = new List<WorldEntity>();
-                foreach (Link l in Links)
-                    if (!l.ConnectionAvailable && l.connection.Entity.IsFiller)
-                        fillerEntities.Add(l.connection.Entity);
-                return fillerEntities;
-            } 
-        }
         public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; collisionDetector.Scale = value; oldCollisionDetector.Scale = value; foreach (Link l in Links) l.Scale = value;/*add collisionDetector scale in the future*/ } }
+        #endregion
         public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 1000, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;
@@ -92,7 +86,7 @@ namespace NetworkIO.src
             else
                 this.EntityController = entityController;
         }
-
+        #region Methods
         protected virtual void AddLinks()
         {
             if (Links.Count > 0)
@@ -243,6 +237,7 @@ namespace NetworkIO.src
                     l.SeverConnection();
                 }
         }
+        #endregion
 
         public class Link
         {
