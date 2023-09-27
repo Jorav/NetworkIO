@@ -85,6 +85,18 @@ namespace NetworkIO.src.menu.states
 
                 menuController.addControllable = false;
             }
+            else if (menuController.removeEntity)
+            {
+                IControllable clickedC = menuController.controllableClicked;
+                if (clickedC is Controller c)
+                    menuController.controllables.Remove(clickedC);
+                else if (clickedC is EntityController ec)
+                    menuController.controllables.Remove(ec);
+                else if (clickedC is WorldEntity w)
+                    menuController.controllables.Remove(w.EntityController);
+
+                menuController.removeEntity = false;
+            }
             //playerCopy.Update(gameTime);
             //if(gameState.Player.)
             if (input.BuildClicked)

@@ -62,7 +62,7 @@ namespace NetworkIO.src.controllers
                             clickedOutside = true;
                         else if (controllableClicked != null)
                         {
-                            if (input.RightMBDown && previouslyRightMBDown)
+                            if (input.RightMBDown)
                                 removeEntity = true;
                             else
                                 addControllable = true;
