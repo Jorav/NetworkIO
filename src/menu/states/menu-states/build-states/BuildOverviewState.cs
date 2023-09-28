@@ -57,30 +57,37 @@ namespace NetworkIO.src.menu.states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (menuController.addControllable)
+            bool interactWithMenuController = true;
+            foreach (IComponent c in components)
+                if (c is Button b && b.MouseIntersects())
+                    interactWithMenuController = false;
+            if (interactWithMenuController)
             {
-                IControllable clickedC = menuController.controllableClicked;
-                if (clickedC is Controller c)
-                    menuController.FocusOn(clickedC);
-                else if (clickedC is EntityController ec)
-                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
-                else if (clickedC is WorldEntity w)
-                    game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
-                //menuController.Camera.AutoAdjustZoom = true;
-                menuController.newClickRequired = true;
-                menuController.addControllable = false;
-            }
-            else if (menuController.removeEntity)
-            {
-                IControllable clickedC = menuController.controllableClicked;
-                if (clickedC is Controller c)
-                    menuController.controllables.Remove(clickedC);
-                else if (clickedC is EntityController ec)
-                    menuController.controllables.Remove(ec);
-                else if (clickedC is WorldEntity w)
-                    menuController.controllables.Remove(w.EntityController);
+                if (menuController.addControllable)
+                {
+                    IControllable clickedC = menuController.controllableClicked;
+                    if (clickedC is Controller c)
+                        menuController.FocusOn(clickedC);
+                    else if (clickedC is EntityController ec)
+                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
+                    else if (clickedC is WorldEntity w)
+                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
+                                                                                                                                                                                         //menuController.Camera.AutoAdjustZoom = true;
+                    menuController.newClickRequired = true;
+                    menuController.addControllable = false;
+                }
+                else if (menuController.removeEntity)
+                {
+                    IControllable clickedC = menuController.controllableClicked;
+                    if (clickedC is Controller c)
+                        menuController.controllables.Remove(clickedC);
+                    else if (clickedC is EntityController ec)
+                        menuController.controllables.Remove(ec);
+                    else if (clickedC is WorldEntity w)
+                        menuController.controllables.Remove(w.EntityController);
 
-                menuController.removeEntity = false;
+                    menuController.removeEntity = false;
+                }
             }
             if (input.BuildClicked)
             {

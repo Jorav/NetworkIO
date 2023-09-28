@@ -100,55 +100,47 @@ namespace NetworkIO.src.menu.states.menu_states
         private void AddEngineButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.ENGINE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddTriangular90AngleHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.TRIANGULAR_90ANGLE_COMPOSITE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddTriangularEqualLeggedHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.TRIANGULAR_EQUAL_COMPOSITE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddLinkHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.LINK_COMPOSITE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddCircularHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.CIRCULAR_COMPOSITE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddSpikeButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SPIKE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
 
         private void AddRectangularHullButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.COMPOSITE;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
         private void AddShooterButton_Click(object sender, EventArgs e)
         {
             idToBeAddded = IDs.SHOOTER;
-            menuController.newClickRequired = true;
             clicked = (EntityButton)sender;
         }
         public override void Update(GameTime gameTime)
@@ -161,33 +153,33 @@ namespace NetworkIO.src.menu.states.menu_states
                 previouslyClicked = clicked;
                 clicked.IsClicked = true;
             }
-            if (menuController.addControllable)
+            bool interactWithMenuController = true;
+            foreach (IComponent c in components)
+                if (c is Button b && b.MouseIntersects())
+                    interactWithMenuController = false;
+            if (interactWithMenuController)
             {
-                IControllable clickedC = menuController.controllableClicked;
-                if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
+                if (menuController.addControllable)
                 {
-                    menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
+                    IControllable clickedC = menuController.controllableClicked;
+                    if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
+                    {
+                        menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
+                    }
+                    menuController.addControllable = false;
                 }
-                menuController.addControllable = false;
-            }
-            if (menuController.removeEntity)
-            {
-                IControllable clickedC = menuController.controllableClicked;
-                if (clickedC is WorldEntity clickedE && !clickedE.IsFiller)
+                if (menuController.removeEntity)
                 {
-                    menuController.RemoveEntity(clickedE);
+                    IControllable clickedC = menuController.controllableClicked;
+                    if (clickedC is WorldEntity clickedE && !clickedE.IsFiller)
+                    {
+                        menuController.RemoveEntity(clickedE);
+                    }
+                    menuController.removeEntity = false;
+                    //menuController.requireNewClick = true;
+                    //menuController.clickedOutside = true;
                 }
-                menuController.removeEntity = false;
-                //menuController.requireNewClick = true;
-                //menuController.clickedOutside = true;
-            }
-            if (menuController.clickedOutside)
-            {
-                bool switchState = true;
-                foreach (IComponent c in components)
-                    if (c is Button b && b.MouseIntersects())
-                        switchState = false;
-                if (switchState)
+                if (menuController.clickedOutside)
                 {
                     menuController.ClearOpenLinks();
                     previousState.menuController.controllables.Remove(entityEdited);
@@ -207,8 +199,15 @@ namespace NetworkIO.src.menu.states.menu_states
                     previousState.menuController.newClickRequired = true;
                     menuController.Reset();
                     game.ChangeState(previousState);
+                    menuController.clickedOutside = false;
                 }
+            }
+            else
+            {
+                menuController.newClickRequired = true;
                 menuController.clickedOutside = false;
+                menuController.removeEntity = false;
+                menuController.addControllable = false;
             }
             if (input.BuildClicked)
             {
