@@ -26,16 +26,23 @@ namespace NetworkIO.src.menu.states.menu_states
             };
             newGameButton.Click += NewGameButton_Click;
 
-            Button loadGameButton = new Button(new Sprite(buttonTexture), buttonFont)
+            Button buildModeButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(300, 250), //or preferably center
+                Text = "Build Mode",
+            };
+            buildModeButton.Click += BuildModeButton_Click;
+
+            Button loadGameButton = new Button(new Sprite(buttonTexture), buttonFont)
+            {
+                Position = new Vector2(300, 300), //or preferably center
                 Text = "Load Game",
             };
             loadGameButton.Click += LoadGameButton_Click;
 
             Button quitGameButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
-                Position = new Vector2(300, 300), //or preferably center
+                Position = new Vector2(300, 350), //or preferably center
                 Text = "Quit Game",
             };
             quitGameButton.Click += QuitGameButton_Click;
@@ -44,13 +51,21 @@ namespace NetworkIO.src.menu.states.menu_states
             {
                 background,
                 newGameButton,
+                buildModeButton,
                 loadGameButton,
                 quitGameButton,
             };
         }
+
+
         private void NewGameButton_Click(object sender, EventArgs e)
         {
             game.ChangeState(new TestState(game, graphicsDevice, content, input));
+        }
+
+        private void BuildModeButton_Click(object sender, EventArgs e)
+        {
+            //game.ChangeState(new WorldEditor(game, graphicsDevice, content, input));
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)

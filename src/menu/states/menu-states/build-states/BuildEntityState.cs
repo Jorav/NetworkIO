@@ -25,6 +25,7 @@ namespace NetworkIO.src.menu.states.menu_states
             this.previousState = previousState;
             components = new List<IComponent>();
             menuController.AddOpenLinks();
+            menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
             Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
             background.Scale = background.Height / Game1.ScreenHeight;
             background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
@@ -203,7 +204,11 @@ namespace NetworkIO.src.menu.states.menu_states
 
 
                     previousState.menuController.MoveTo(previousState.menuController.Position);
-                    previousState.menuController.Camera.InBuildScreen = true;
+                    previousState.menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
+                    previousState.menuController.Camera.AutoAdjustZoom = true;
+                    previousState.previousScrollValue = previousScrollValue;
+                    previousState.currentScrollValue = currentScrollValue;
+                    previousState.menuController.newClickRequired = true;
                     menuController.Reset();
                     game.ChangeState(previousState);
                 }
@@ -225,6 +230,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 game.ChangeState(gameState);
                 gameState.Player.Camera.InBuildScreen = false;
                 gameState.Player.actionsLocked = false;
+                previousState.menuController.Camera.AutoAdjustZoom = true;
             }
         }
     }

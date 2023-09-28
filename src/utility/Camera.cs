@@ -26,13 +26,14 @@ namespace NetworkIO.src
                 inBuildScreen = value;
             } 
         }
+        public bool AutoAdjustZoom { get; set; }
         public float BuildMenuZoom { get { return (Game1.ScreenHeight) / (2 * controller.Radius + Game1.ScreenHeight / 8); } }
         public float GameZoom { get { return Game1.ScreenHeight / (Game1.ScreenHeight + 1 * controller.Radius); } }
         private CollidableRectangle frame;
         private IControllable controller;
         private float zoomSpeed;
 
-        public Camera(IControllable controller, bool inBuildScreen = false, float zoomSpeed = 0.05f)
+        public Camera(IControllable controller, bool inBuildScreen = false, float zoomSpeed = 0.02f)
         {
             
             this.controller = controller;
@@ -41,6 +42,7 @@ namespace NetworkIO.src
             Rotation = 0;
             InBuildScreen = inBuildScreen;
             this.zoomSpeed = zoomSpeed;
+            AutoAdjustZoom = true;
             UpdateTransformMatrix();
         }
 
@@ -48,20 +50,23 @@ namespace NetworkIO.src
         {
             PreviousPosition = Position;
             Position = controller.Position;
-            if (InBuildScreen)
+            if (AutoAdjustZoom)
             {
-                AdjustZoom(BuildMenuZoom);
-            }
-            else
-            {
-                AdjustZoom(GameZoom);
+                if (InBuildScreen)
+                {
+                    AdjustZoom(BuildMenuZoom);
+                }
+                else
+                {
+                    AdjustZoom(GameZoom);
+                }
             }
                 
             Rotation = 0;
             UpdateTransformMatrix();
         }
         private void AdjustZoom(float optimalZoom)
-        {
+        {/*
             if (optimalZoom > Zoom)
             {
                 if (optimalZoom - Zoom > zoomSpeed)
@@ -75,8 +80,22 @@ namespace NetworkIO.src
                     Zoom -= zoomSpeed;
                 else
                     Zoom = optimalZoom;
+            }*/
+
+            if (optimalZoom > Zoom)
+            {
+                if (optimalZoom/Zoom > 1+zoomSpeed)
+                    Zoom *= 1+zoomSpeed;
+                else
+                    Zoom = optimalZoom;
             }
-                
+            else if (optimalZoom < Zoom)
+            {
+                if (Zoom/optimalZoom > 1+zoomSpeed)
+                    Zoom /= 1+zoomSpeed;
+                else
+                    Zoom = optimalZoom;
+            }
 
 
         }

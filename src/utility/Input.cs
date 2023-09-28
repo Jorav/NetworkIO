@@ -75,5 +75,13 @@ namespace NetworkIO.src
                 return Mouse.GetState().RightButton == ButtonState.Pressed;
             }
         }
+
+        public int ScrollValue
+        {
+            get
+            {
+                return Mouse.GetState().ScrollWheelValue;
+            }
+        }
     }
 }

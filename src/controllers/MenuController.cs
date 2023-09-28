@@ -34,6 +34,8 @@ namespace NetworkIO.src.controllers
             foreach (IControllable c in controllables)
                 if (c is EntityController ec)
                     ec.AddAvailableLinkDisplays();
+            UpdatePosition();
+            UpdateRadius();
         }
 
         public void ClearOpenLinks()
@@ -41,6 +43,8 @@ namespace NetworkIO.src.controllers
             foreach (IControllable c in controllables)
                 if (c is EntityController ec)
                     ec.ClearAvailableLinks();
+            UpdatePosition();
+            UpdateRadius();
         }
 
         public override void Update(GameTime gameTime)

@@ -13,12 +13,18 @@ namespace NetworkIO.src.menu.states.menu_states
         protected GameState gameState;
         public MenuController menuController;
         protected Controller controllerEdited;
+        protected bool buildMode;
+        public int previousScrollValue;
+        public int currentScrollValue;
         public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
             this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
             this.gameState = gameState;
             gameState.Player.actionsLocked = true;
+            menuController.Camera.InBuildScreen = true;
+            menuController.Camera.AutoAdjustZoom = true;
+            currentScrollValue = input.ScrollValue;
         }
 
         protected List<IControllable> CopyEntitiesFromController(Controller controller)
@@ -31,6 +37,13 @@ namespace NetworkIO.src.menu.states.menu_states
 
         public override void Update(GameTime gameTime)
         {
+            previousScrollValue = currentScrollValue;
+            currentScrollValue = input.ScrollValue;
+            if (previousScrollValue - currentScrollValue != 0)
+            {
+                menuController.Camera.Zoom /= (float)Math.Pow(0.999, (currentScrollValue - previousScrollValue));
+                menuController.Camera.AutoAdjustZoom = false;
+            }
             base.Update(gameTime);
             gameState.RunGame(gameTime);
             menuController.Update(gameTime);

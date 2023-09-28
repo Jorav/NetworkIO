@@ -70,7 +70,7 @@ namespace NetworkIO.src.menu.states
                     game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
                 else if (clickedC is WorldEntity w)
                     game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
-
+                //menuController.Camera.AutoAdjustZoom = true;
                 menuController.addControllable = false;
             }
             else if (menuController.removeEntity)
@@ -92,6 +92,7 @@ namespace NetworkIO.src.menu.states
                 game.ChangeState(gameState);
                 gameState.Player.actionsLocked = false;
                 gameState.Player.Camera.InBuildScreen = false;
+                //menuController.Camera.AutoAdjustZoom = true;
             }
         }
     }
