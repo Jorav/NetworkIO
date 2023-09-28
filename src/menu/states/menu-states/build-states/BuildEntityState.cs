@@ -26,9 +26,6 @@ namespace NetworkIO.src.menu.states.menu_states
             components = new List<IComponent>();
             menuController.AddOpenLinks();
             menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
-            Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
-            background.Scale = background.Height / Game1.ScreenHeight;
-            background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
             this.entityEdited = controllerEdited.controllables[0];
             idToBeAddded = IDs.COMPOSITE;
             float scale = 3;
@@ -89,7 +86,6 @@ namespace NetworkIO.src.menu.states.menu_states
 
             components = new List<IComponent>()
             {
-                background,
                 addRectangularHullButton,
                 addCircularHullButton,
                 addLinkHullButton,

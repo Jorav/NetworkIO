@@ -65,7 +65,7 @@ namespace NetworkIO.src.menu.states.menu_states
 
         private void BuildModeButton_Click(object sender, EventArgs e)
         {
-            //game.ChangeState(new WorldEditor(game, graphicsDevice, content, input));
+            game.ChangeState(new WorldEditor(game, graphicsDevice, content, input));
         }
 
         private void LoadGameButton_Click(object sender, EventArgs e)

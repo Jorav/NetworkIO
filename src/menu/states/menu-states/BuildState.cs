@@ -16,6 +16,7 @@ namespace NetworkIO.src.menu.states.menu_states
         protected bool buildMode;
         public int previousScrollValue;
         public int currentScrollValue;
+        private Sprite overlay;
         public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
@@ -25,6 +26,9 @@ namespace NetworkIO.src.menu.states.menu_states
             menuController.Camera.InBuildScreen = true;
             menuController.Camera.AutoAdjustZoom = true;
             currentScrollValue = input.ScrollValue;
+            overlay = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
+            overlay.Scale = overlay.Height / Game1.ScreenHeight;
+            overlay.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
         }
 
         protected List<IControllable> CopyEntitiesFromController(Controller controller)
@@ -54,10 +58,13 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             gameState.Draw(gameTime, spriteBatch);
-            base.Draw(gameTime, spriteBatch);
+            spriteBatch.Begin();
+            overlay.Draw(spriteBatch);
+            spriteBatch.End();
             spriteBatch.Begin(transformMatrix: menuController.Camera.Transform, samplerState: SamplerState.PointClamp);
             menuController.Draw(spriteBatch);
             spriteBatch.End();
+            base.Draw(gameTime, spriteBatch);
         }
     }
 }

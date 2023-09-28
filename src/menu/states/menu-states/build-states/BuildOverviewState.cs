@@ -17,9 +17,6 @@ namespace NetworkIO.src.menu.states
     {
         public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
         {
-            Sprite background = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
-            background.Scale = background.Height / Game1.ScreenHeight;
-            background.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
             Button addEntityButton = new Button(new Sprite(buttonTexture), buttonFont)
@@ -37,7 +34,6 @@ namespace NetworkIO.src.menu.states
 
             components = new List<IComponent>()
             {
-                background,
                 //controller,
                 addEntityButton,
                 resetEntityButton,

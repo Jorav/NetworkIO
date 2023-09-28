@@ -5,6 +5,7 @@ using NetworkIO.src.controllers;
 using NetworkIO.src.menu.controls;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NetworkIO.src.menu.states.menu_states
@@ -12,7 +13,7 @@ namespace NetworkIO.src.menu.states.menu_states
     public class WorldEditor : MenuState
     {
         Camera c;
-        public WorldEditor(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input) : base(game, graphicsDevice, content, input)
+        public WorldEditor(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] GameState gameState) : base(game, graphicsDevice, content, input)
         {
 
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
