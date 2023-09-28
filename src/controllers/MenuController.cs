@@ -25,6 +25,7 @@ namespace NetworkIO.src.controllers
         {
             oldControllables = controllables;
             Camera = new Camera(this, true);
+            Camera.Position = Position;
             this.input = input;
             newClickRequired = true;
             previouslyLeftMBDown = input.LeftMBDown;
@@ -52,6 +53,7 @@ namespace NetworkIO.src.controllers
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            Camera.Position = Position;
             Camera.Update();
 
             bool newClick = ((input.LeftMBDown && !previouslyLeftMBDown) || (input.RightMBDown && !previouslyRightMBDown));
@@ -106,8 +108,8 @@ namespace NetworkIO.src.controllers
                     newClickRequired = true;
 
                 }
-                else if (!input.RightMBDown && previouslyRightMBDown && controllables.Count == 1)
-                    AddOpenLinks();
+                //else if (!input.RightMBDown && previouslyRightMBDown && controllables.Count == 1)
+                    //AddOpenLinks();
             }
 
             //new click required
@@ -185,6 +187,7 @@ namespace NetworkIO.src.controllers
                 if (c is EntityController ec)
                     ec.RemoveEntity(clickedE);
             }
+            ClearOpenLinks();
             AddSeperatedEntities();
             RemoveEmptyControllers();
             //AddOpenLinks();
