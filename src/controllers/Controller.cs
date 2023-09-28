@@ -88,7 +88,6 @@ namespace NetworkIO.src
 
         public virtual void Update(GameTime gameTime)
         {
-            AddSeperatedEntities();
             RemoveEmptyControllers();
             UpdateControllable(gameTime);
             UpdatePosition();

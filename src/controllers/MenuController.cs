@@ -27,7 +27,9 @@ namespace NetworkIO.src.controllers
             Camera = new Camera(this, true);
             this.input = input;
             newClickRequired = true;
-        }
+            previouslyLeftMBDown = input.LeftMBDown;
+            previouslyRightMBDown = input.RightMBDown;
+    }
 
         public void AddOpenLinks()
         {
@@ -51,40 +53,69 @@ namespace NetworkIO.src.controllers
         {
             base.Update(gameTime);
             Camera.Update();
-            if (!newClickRequired)
+
+            bool newClick = ((input.LeftMBDown && !previouslyLeftMBDown) || (input.RightMBDown && !previouslyRightMBDown));
+
+            //get entity affected
+            if (input.LeftMBDown || input.RightMBDown)
             {
-                if (input.LeftMBDown || input.RightMBDown)
+                foreach (IControllable c in controllables)
                 {
-                    foreach (IControllable c in controllables)
-                    {
-                        if (c is Controller)
-                            controllableClicked = ControllableClicked();
-                        else if (c is EntityController)
-                            controllableClicked = EntityClicked();
-
-                        if (!previouslyLeftMBDown && !previouslyRightMBDown && controllableClicked == null)
-                            clickedOutside = true;
-                        else if (controllableClicked != null)
-                        {
-                            if (input.RightMBDown)
-                                removeEntity = true;
-                            else
-                                addControllable = true;
-                        }
-                    }
+                    if (c is Controller)
+                        controllableClicked = ControllableClicked();
+                    else if (c is EntityController)
+                        controllableClicked = EntityClicked();
                 }
-                else
-                {
-                    controllableClicked = null;
-                    if (previouslyRightMBDown)
-                        clickedOutside = true;
-                }
-
-                previouslyLeftMBDown = input.LeftMBDown;
-                previouslyRightMBDown = input.RightMBDown;
             }
             else
-                newClickRequired = input.LeftMBDown || input.RightMBDown;
+            {
+                controllableClicked = null;
+            }
+
+            //left click
+            if (input.LeftMBDown)
+            {
+                if (controllableClicked == null && newClick)
+                {
+                    clickedOutside = true;
+                    newClickRequired = true;
+                }
+                    
+                else if (controllableClicked != null && !newClickRequired)
+                {
+                    addControllable = true; 
+                }
+            }
+
+
+            //right click
+            else
+            {
+                if (input.RightMBDown && controllableClicked != null)
+                {
+                    removeEntity = true;
+                    
+                }
+                if (!input.RightMBDown && previouslyRightMBDown && controllables.Count != 1)
+                {
+                    /*AddSeperatedEntities();
+                    RemoveEmptyControllers();
+                    UpdatePosition();
+                    UpdateRadius();*/
+                    clickedOutside = true;
+                    newClickRequired = true;
+
+                }
+                else if (!input.RightMBDown && previouslyRightMBDown && controllables.Count == 1)
+                    AddOpenLinks();
+            }
+
+            //new click required
+            if (newClickRequired && newClick)
+                newClickRequired = false;
+            
+            previouslyLeftMBDown = input.LeftMBDown;
+            previouslyRightMBDown = input.RightMBDown;
         }
 
         public void FocusOn(IControllable c)

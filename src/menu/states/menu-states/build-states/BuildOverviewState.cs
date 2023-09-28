@@ -71,6 +71,7 @@ namespace NetworkIO.src.menu.states
                 else if (clickedC is WorldEntity w)
                     game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
                 //menuController.Camera.AutoAdjustZoom = true;
+                menuController.newClickRequired = true;
                 menuController.addControllable = false;
             }
             else if (menuController.removeEntity)

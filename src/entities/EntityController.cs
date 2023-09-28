@@ -145,7 +145,14 @@ namespace NetworkIO.src.controllers
                 UpdateRadius();
                 return true;
             }
-            return false;
+            else
+            {
+                bool removed = false;
+                foreach (EntityController ec in SeperatedEntities)
+                    if (ec.RemoveEntity(e))
+                        removed = true;
+                return removed;
+            }
         }
 
         /**
@@ -216,12 +223,12 @@ namespace NetworkIO.src.controllers
 
         protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
-            if (Entities.Count == 1)
+            if (Entities.Count == 1/* && SeperatedEntities.Count == 0*/)
             {
                 if (Entities[0] != null)
                     Radius = Entities[0].Radius;
             }
-            else if (Entities.Count > 1)
+            else if (Entities.Count > 1 /*|| SeperatedEntities.Count>0*/)
             {
                 float largestDistance = 0;
                 foreach (WorldEntity e in Entities)
@@ -231,26 +238,41 @@ namespace NetworkIO.src.controllers
                         if (distance > largestDistance)
                             largestDistance = distance;
                     }
+                }/*
+                foreach(EntityController ec in SeperatedEntities)
+                {
+                    float distance = Vector2.Distance(ec.Position, Position) + ec.Radius;
+                    if (distance > largestDistance)
+                        largestDistance = distance;
                 }
+                */
                 Radius = largestDistance;
             }
         }
         protected void UpdatePosition()
         {
             Vector2 sum = Vector2.Zero;
-            int nrOfLiving = 0;
+            float weight = 0;
             foreach (WorldEntity e in Entities)
             {
-                if (e.IsVisible && !e.IsFiller)
+                if (e.IsAlive && !e.IsFiller)
                 {
-                    sum += e.Position;
-                    nrOfLiving++;
+                    sum += e.Position * e.Mass;
+                    weight += e.Mass;
                 }
             }
-            if (nrOfLiving > 0)
-                sum /= nrOfLiving;
-            position = sum;
+            position = sum/weight;
             collisionDetector.Position = position;
+            /*
+            foreach (EntityController e in SeperatedEntities)
+            {
+                sum += e.Position * e.Mass;
+                weight += e.Mass;
+            }
+            if (weight > 0)
+                sum /= weight;
+            position = sum;
+            collisionDetector.Position = position;*/
         }
         public override void Shoot(GameTime gameTime)
         {
@@ -397,6 +419,18 @@ namespace NetworkIO.src.controllers
             base.Update(gameTime);
             foreach (WorldEntity e in Entities)
                 e.Update(gameTime);
+            foreach (EntityController ec in SeperatedEntities)
+                ec.Update(gameTime);
+        }
+
+        protected void RemoveEmptyControllers()
+        {
+            List<EntityController> toBeRemoved = new List<EntityController>();
+            foreach (EntityController ec in SeperatedEntities)
+                if (ec.Entities.Count == 0)
+                    toBeRemoved.Add(ec);
+            foreach (EntityController ec in toBeRemoved)
+                SeperatedEntities.Remove(ec);
         }
 
         private void MoveAndRotateEntities()
@@ -440,6 +474,8 @@ namespace NetworkIO.src.controllers
         {
             foreach (WorldEntity e in Entities)
                 e.Draw(spritebatch);
+            foreach (EntityController e in SeperatedEntities)
+                e.Draw(spritebatch);
         }
 
         public override bool Contains(Vector2 point)
@@ -447,6 +483,9 @@ namespace NetworkIO.src.controllers
             foreach (WorldEntity e in Entities)
                 if (e.Contains(point))
                     return true;
+            /*foreach (EntityController ec in SeperatedEntities)
+                if (ec.Contains(point))
+                    return true;*/
             return false;
         }
 
@@ -526,6 +565,8 @@ namespace NetworkIO.src.controllers
             foreach (WorldEntity e in Entities)
                 if (e.ControllableContainingInSpace(position, transform) != null)
                     return e;
+            foreach (EntityController ec in SeperatedEntities)
+                return ec.ControllableContainingInSpace(position, transform);
             return null;
         }
         #endregion
