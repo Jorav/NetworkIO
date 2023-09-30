@@ -21,6 +21,7 @@ namespace NetworkIO.src.controllers
         public bool newClickRequired;
         public bool addControllable;
         public bool removeEntity;
+        //public override Vector2 Position { get { return base.Position; } set { base.Position = value; Camera.Position = value; } }
         public MenuController(List<IControllable> collidables, Input input) : base(collidables)
         {
             oldControllables = controllables;
@@ -53,7 +54,6 @@ namespace NetworkIO.src.controllers
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Camera.Position = Position;
             Camera.Update();
 
             bool newClick = ((input.LeftMBDown && !previouslyLeftMBDown) || (input.RightMBDown && !previouslyRightMBDown));

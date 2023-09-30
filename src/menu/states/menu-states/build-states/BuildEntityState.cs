@@ -14,15 +14,15 @@ namespace NetworkIO.src.menu.states.menu_states
 {
     public class BuildEntityState : BuildState
     {
-        BuildOverviewState previousState;
+        BuildOverviewState buildOverviewState;
         IControllable entityEdited;
         IDs idToBeAddded;
         EntityButton clicked;
         EntityButton previouslyClicked;
 
-        public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, BuildOverviewState previousState, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
+        public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, BuildOverviewState buildOverviewState, Controller controllerEdited) : base(game, graphicsDevice, content, previousState, input, controllerEdited)
         {
-            this.previousState = previousState;
+            this.buildOverviewState = buildOverviewState;
             components = new List<IComponent>();
             menuController.AddOpenLinks();
             menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
@@ -182,23 +182,19 @@ namespace NetworkIO.src.menu.states.menu_states
                 if (menuController.clickedOutside)
                 {
                     menuController.ClearOpenLinks();
-                    previousState.menuController.controllables.Remove(entityEdited);
+                    buildOverviewState.menuController.controllables.Remove(entityEdited);
                     foreach (IControllable c in menuController.controllables)
                     {
 
-                        previousState.menuController.AddControllable(c);
+                        buildOverviewState.menuController.AddControllable(c);
 
                     }
-
-
-                    previousState.menuController.MoveTo(previousState.menuController.Position);
-                    previousState.menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
-                    previousState.menuController.Camera.AutoAdjustZoom = true;
-                    previousState.previousScrollValue = previousScrollValue;
-                    previousState.currentScrollValue = currentScrollValue;
-                    previousState.menuController.newClickRequired = true;
-                    menuController.Reset();
-                    game.ChangeState(previousState);
+                    buildOverviewState.menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
+                    buildOverviewState.menuController.Camera.AutoAdjustZoom = true;
+                    buildOverviewState.previousScrollValue = previousScrollValue;
+                    buildOverviewState.currentScrollValue = currentScrollValue;
+                    buildOverviewState.menuController.newClickRequired = true;
+                    game.ChangeState(buildOverviewState);
                     menuController.clickedOutside = false;
                 }
             }
@@ -212,20 +208,14 @@ namespace NetworkIO.src.menu.states.menu_states
             if (input.BuildClicked)
             {
                 menuController.ClearOpenLinks();
-                previousState.menuController.controllables.Remove(entityEdited);
+                buildOverviewState.menuController.controllables.Remove(entityEdited);
                 foreach (IControllable c in menuController.controllables)
                 {
 
-                    previousState.menuController.AddControllable(c);
+                    buildOverviewState.menuController.AddControllable(c);
 
                 }
-                menuController.Reset();
-                gameState.Player.SetControllables(previousState.menuController.controllables); //OBS this needs edit in the future to handle stacked controllers
-                gameState.Player.MoveTo(gameState.Player.Position);
-                game.ChangeState(gameState);
-                gameState.Player.Camera.InBuildScreen = false;
-                gameState.Player.actionsLocked = false;
-                previousState.menuController.Camera.AutoAdjustZoom = true;
+                buildOverviewState.BuildClicked();
             }
         }
     }

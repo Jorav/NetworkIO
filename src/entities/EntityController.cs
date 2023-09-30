@@ -29,7 +29,7 @@ namespace NetworkIO.src.controllers
         public override Vector2 Position { get { return position; } set {
                 Vector2 posChange = value - Position;
                 foreach (WorldEntity e in Entities)
-                    e.Velocity += posChange;
+                    e.Position += posChange;
                 position = value; collisionDetector.Position = value; } }
         private float oldRotation;
         public override float Rotation
@@ -415,10 +415,15 @@ namespace NetworkIO.src.controllers
         public override void Update(GameTime gameTime)
         {
             MoveAndRotateEntities();
-            //UpdatePosition();
+            Vector2 previousPosition = Position;
             base.Update(gameTime);
             foreach (WorldEntity e in Entities)
+            {
+                e.Position -= Position - previousPosition;
+                e.Velocity += Position - previousPosition;
                 e.Update(gameTime);
+            }
+                
             foreach (EntityController ec in SeperatedEntities)
                 ec.Update(gameTime);
         }
@@ -445,17 +450,6 @@ namespace NetworkIO.src.controllers
 
             }
             oldRotation = rotation;
-        }
-
-        public void MoveTo(Vector2 newPosition)
-        {
-            UpdatePosition();
-            Vector2 posChange = newPosition - Position;
-            foreach (WorldEntity e in Entities)
-                e.Position += posChange;
-            position = position + posChange;
-            collisionDetector.Position = position;
-            UpdatePosition();
         }
         public override bool CollidesWith(IIntersectable c) //NO CHECK DONE, JUST COPY PASTE
         {
@@ -565,8 +559,8 @@ namespace NetworkIO.src.controllers
             foreach (WorldEntity e in Entities)
                 if (e.ControllableContainingInSpace(position, transform) != null)
                     return e;
-            foreach (EntityController ec in SeperatedEntities)
-                return ec.ControllableContainingInSpace(position, transform);
+            /*foreach (EntityController ec in SeperatedEntities)
+                return ec.ControllableContainingInSpace(position, transform);*/
             return null;
         }
         #endregion

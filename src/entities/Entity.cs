@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetworkIO.src.menu;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +23,11 @@ namespace NetworkIO.src.movable
         public abstract void Collide(IControllable c);
         public virtual void Shoot(GameTime gameTime)
         {
-        }
+        }/*
+        public virtual void MoveTo(Vector2 position)
+        {
+            Position = position;
+        }*/
         public virtual void ApplyRepulsion(Entity otherEntity)
         {
             TotalExteriorForce+=Mass*CalculateGravitationalRepulsion(this, otherEntity);

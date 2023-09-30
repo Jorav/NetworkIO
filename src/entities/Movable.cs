@@ -31,7 +31,7 @@ namespace NetworkIO.src
 
         public virtual void Update(GameTime gameTime) //OBS Ska vara en funktion i thruster
         {
-            Velocity = Physics.CalculateVelocity(Position, Velocity, TotalExteriorForce, Mass, Friction);
+            Velocity = Physics.CalculateVelocity(Velocity, TotalExteriorForce, Mass, Friction);
             Position += Velocity;
             TotalExteriorForce = Vector2.Zero;
         }

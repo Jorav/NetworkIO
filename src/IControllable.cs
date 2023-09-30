@@ -12,7 +12,7 @@ namespace NetworkIO.src
         public void Shoot(GameTime gameTime);
         public object Clone();
         /**
-         * returns the IControllable that contains 'position' in space 'transform', null if none does
+         * returns the sub-IControllable that contains 'position' in space 'transform', null if none does
          */
         public IControllable ControllableContainingInSpace(Vector2 position, Matrix transform);
         //public void ApplyInternalRepulsion(IControllable controllable);

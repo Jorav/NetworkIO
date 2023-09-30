@@ -16,12 +16,14 @@ namespace NetworkIO.src.menu.states
     public abstract class GameState : State
     {
         public Player Player { get; protected set; }
+        public Camera Camera { get; protected set; }
         protected List<IControllable> controllers;
         protected List<Background> backgrounds;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
             Player = new Player(new List<IControllable>(), input);
+            Camera = Player.Camera;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

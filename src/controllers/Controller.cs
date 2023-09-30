@@ -19,7 +19,16 @@ namespace NetworkIO.src
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
-        public Vector2 Position { get { return position; } set { position = value; collisionDetector.Position = value; } }
+        public virtual Vector2 Position { get { return position; }
+            set 
+            {
+                Vector2 posChange = value - Position;
+                foreach (IControllable c in controllables)
+                    c.Position += posChange;
+                position = value;
+                collisionDetector.Position = value; 
+            } 
+        }
 
         public float Mass
         {
@@ -77,15 +86,6 @@ namespace NetworkIO.src
                 c.RotateTo(position);
         }
 
-        public void MoveTo(Vector2 newPosition) //OBS needs rework
-        {
-            Vector2 posChange = newPosition - Position;
-            foreach (IControllable c in controllables)
-                c.Position += posChange;
-            Position = position + posChange;
-            UpdatePosition();
-        }
-
         public virtual void Update(GameTime gameTime)
         {
             RemoveEmptyControllers();
@@ -109,7 +109,6 @@ namespace NetworkIO.src
                     toBeRemoved.Add(cc);
             foreach (IControllable c in toBeRemoved)
                 controllables.Remove(c);
-
         }
 
         protected virtual void AddSeperatedEntities()
@@ -211,7 +210,11 @@ namespace NetworkIO.src
                 sum += c.Position*c.Mass;
             }
             if(weight > 0)
-                Position = sum / (weight);
+            {
+                position = sum / (weight);
+                collisionDetector.Position = position;
+            }
+                
                 
         }
 

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
-    public class WorldEntity : Entity, IComponent, IIntersectable
+    public class WorldEntity : Entity, IIntersectable, IComponent
     {
         #region Properties
         protected Sprite sprite = null;
@@ -114,9 +114,7 @@ namespace NetworkIO.src
 
         public override void Update(GameTime gameTime) //OBS Ska vara en funktion i thruster
         {
-            Velocity = Physics.CalculateVelocity(Position, Velocity, TotalExteriorForce, Mass, Friction);
-            Position += Velocity;
-            TotalExteriorForce = Vector2.Zero;
+            base.Update(gameTime);
             if (Health < 0)
                 Die();
         }

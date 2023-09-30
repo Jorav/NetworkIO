@@ -15,7 +15,7 @@ namespace NetworkIO.src.menu.states
 {
     public class BuildOverviewState : BuildState
     {
-        public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, gameState, input, controllerEdited)
+        public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, previousState, input, controllerEdited)
         {
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
@@ -69,9 +69,9 @@ namespace NetworkIO.src.menu.states
                     if (clickedC is Controller c)
                         menuController.FocusOn(clickedC);
                     else if (clickedC is EntityController ec)
-                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
+                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, previousState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
                     else if (clickedC is WorldEntity w)
-                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, gameState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
+                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, previousState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
                                                                                                                                                                                          //menuController.Camera.AutoAdjustZoom = true;
                     menuController.newClickRequired = true;
                     menuController.addControllable = false;
@@ -91,13 +91,26 @@ namespace NetworkIO.src.menu.states
             }
             if (input.BuildClicked)
             {
-                gameState.Player.SetControllables(menuController.controllables); // OBS this needs edit in the future to handle stacked controllers
-                gameState.Player.MoveTo(gameState.Player.Position);
-                game.ChangeState(gameState);
+                BuildClicked();
+            }
+        }
+
+        public void BuildClicked()
+        {
+            Vector2 position = controllerEdited.Position;
+            controllerEdited.SetControllables(menuController.controllables);
+            controllerEdited.Position = position;
+            if (previousState is GameState gameState)
+            {
                 gameState.Player.actionsLocked = false;
                 gameState.Player.Camera.InBuildScreen = false;
-                //menuController.Camera.AutoAdjustZoom = true;
             }
+            if (previousState is WorldEditor editor)
+            {
+                editor.Camera.InBuildScreen = false;
+            }
+            game.ChangeState(previousState);
+            //menuController.Camera.AutoAdjustZoom = true;
         }
     }
 }

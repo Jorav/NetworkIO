@@ -15,7 +15,7 @@ namespace NetworkIO.src
         private static Vector2 Acceleration(Vector2 velocity, Vector2 totalExteriorForce, float mass, float frictionPercent) {
             return (totalExteriorForce - FrictionForce(velocity, totalExteriorForce, mass, frictionPercent)) / mass;
         }
-        public static Vector2 CalculateVelocity(Vector2 position, Vector2 velocity, Vector2 totalExteriorForce, float mass, float frictionPercent)
+        public static Vector2 CalculateVelocity(Vector2 velocity, Vector2 totalExteriorForce, float mass, float frictionPercent)
         {
                 return velocity + Acceleration(velocity, totalExteriorForce, mass, frictionPercent);
         }

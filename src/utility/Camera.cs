@@ -3,6 +3,7 @@ using NetworkIO.src.collidables;
 using NetworkIO.src.factories;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NetworkIO.src
@@ -27,17 +28,21 @@ namespace NetworkIO.src
             } 
         }
         public bool AutoAdjustZoom { get; set; }
-        public float BuildMenuZoom { get { return (Game1.ScreenHeight) / (2 * controller.Radius + Game1.ScreenHeight / 8); } }
-        public float GameZoom { get { return Game1.ScreenHeight / (Game1.ScreenHeight + 1 * controller.Radius); } }
+        public float BuildMenuZoom { get { if (Controller != null) return (Game1.ScreenHeight) / (2 * Controller.Radius + Game1.ScreenHeight / 8); else return 1; } }
+        public float GameZoom { get { if (Controller != null) return Game1.ScreenHeight / (Game1.ScreenHeight + 1 * Controller.Radius); else return 1; } }
         private CollidableRectangle frame;
-        private IControllable controller;
+        public IControllable Controller { get; set; }
         private float zoomSpeed;
 
-        public Camera(IControllable controller, bool inBuildScreen = false, float zoomSpeed = 0.02f)
+        public Camera([OptionalAttribute] IControllable controller, bool inBuildScreen = false, float zoomSpeed = 0.02f)
         {
-            
-            this.controller = controller;
-            Position = controller.Position;
+            if (controller != null)
+            {
+                Position = controller.Position;
+                this.Controller = controller;
+            }
+            else
+                Position = Vector2.Zero;
             PreviousPosition = Position;
             Rotation = 0;
             InBuildScreen = inBuildScreen;
@@ -49,7 +54,8 @@ namespace NetworkIO.src
         public void Update()
         {
             PreviousPosition = Position;
-            Position = controller.Position;
+            if (Controller != null)
+                Position = Controller.Position;
             if (AutoAdjustZoom)
             {
                 if (InBuildScreen)
@@ -66,22 +72,7 @@ namespace NetworkIO.src
             UpdateTransformMatrix();
         }
         private void AdjustZoom(float optimalZoom)
-        {/*
-            if (optimalZoom > Zoom)
-            {
-                if (optimalZoom - Zoom > zoomSpeed)
-                    Zoom += zoomSpeed;
-                else
-                    Zoom = optimalZoom;
-            }
-            else if (optimalZoom < Zoom)
-            {
-                if (Zoom - optimalZoom > zoomSpeed)
-                    Zoom -= zoomSpeed;
-                else
-                    Zoom = optimalZoom;
-            }*/
-
+        {
             if (optimalZoom > Zoom)
             {
                 if (optimalZoom/Zoom > 1+zoomSpeed)
@@ -96,15 +87,13 @@ namespace NetworkIO.src
                 else
                     Zoom = optimalZoom;
             }
-
-
         }
 
         public void UpdateTransformMatrix()
         {
             Matrix position = Matrix.CreateTranslation(
-                -controller.Position.X,
-                -controller.Position.Y,
+                -Position.X,
+                -Position.Y,
                 0);
             Matrix rotation = Matrix.CreateRotationZ(Rotation);
             Matrix origin = Matrix.CreateTranslation(

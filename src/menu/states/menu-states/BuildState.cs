@@ -10,19 +10,20 @@ namespace NetworkIO.src.menu.states.menu_states
 {
     public abstract class BuildState : MenuState
     {
-        protected GameState gameState;
+        protected State previousState;
         public MenuController menuController;
         protected Controller controllerEdited;
         protected bool buildMode;
         public int previousScrollValue;
         public int currentScrollValue;
-        private Sprite overlay;
-        public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
+        private readonly Sprite overlay;
+        public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
             this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
-            this.gameState = gameState;
-            gameState.Player.actionsLocked = true;
+            this.previousState = previousState;
+            if(previousState is GameState gameState)
+                gameState.Player.actionsLocked = true;
             menuController.Camera.InBuildScreen = true;
             menuController.Camera.AutoAdjustZoom = true;
             currentScrollValue = input.ScrollValue;
@@ -49,15 +50,16 @@ namespace NetworkIO.src.menu.states.menu_states
                 menuController.Camera.AutoAdjustZoom = false;
             }
             base.Update(gameTime);
-            gameState.RunGame(gameTime);
             menuController.Update(gameTime);
+            if(previousState is GameState gameS)
+                gameS.RunGame(gameTime);
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            gameState.Draw(gameTime, spriteBatch);
+            previousState.Draw(gameTime, spriteBatch);
             spriteBatch.Begin();
             overlay.Draw(spriteBatch);
             spriteBatch.End();
