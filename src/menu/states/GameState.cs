@@ -9,21 +9,29 @@ using NetworkIO.src.menu.states.menu_states;
 using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace NetworkIO.src.menu.states
 {
-    public abstract class GameState : State
+    public class GameState : State
     {
         public Player Player { get; protected set; }
         public Camera Camera { get; protected set; }
         protected List<IControllable> controllers;
         protected List<Background> backgrounds;
 
-        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
+        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] List<IControllable> controllers) : base(game, graphicsDevice, content, input)
         {
             Player = new Player(new List<IControllable>(), input);
             Camera = Player.Camera;
+            this.controllers = new List<IControllable>();
+            this.backgrounds = new List<Background>();
+            if(controllers!= null)
+                foreach (IControllable c in controllers)
+                    this.controllers.Add((IControllable)c.Clone());
+
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

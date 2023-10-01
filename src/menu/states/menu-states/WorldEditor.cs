@@ -68,8 +68,11 @@ namespace NetworkIO.src.menu.states.menu_states
             previousLeftMBDown = input.LeftMBDown;
             previousRightMBDown = input.RightMBDown;
 
-            if (input.BuildClicked && clicked != null && clicked is Controller controller)
-                game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
+            if (input.BuildClicked)
+                if (clicked != null && clicked is Controller controller)
+                    game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
+                else
+                    game.ChangeState(new GameState(game, graphicsDevice, content, input, controllers));
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
         }
