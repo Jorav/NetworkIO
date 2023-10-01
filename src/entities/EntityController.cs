@@ -64,6 +64,7 @@ namespace NetworkIO.src.controllers
             else
             {
                 e = EntityFactory.Create(position, IDs.COMPOSITE);
+                e.Position = position;
                 AddEntity(e);
             }
         }

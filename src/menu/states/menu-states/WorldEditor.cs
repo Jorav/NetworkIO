@@ -47,31 +47,62 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            
+            HandleWASD();
             Camera.Update();
             Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
 
-            //handle left click
-            if (input.LeftMBDown && !previousLeftMBDown)
+            
+            HandleLeftClick(mousePosition);
+            HandleRightClick(mousePosition);
+            
+
+            //drag controller
+            if (clicked != null && dragging && input.LeftMBDown)
+                clicked.Position = input.MousePositionGameCoords + draggingRelativePosition;
+            //disable drag if clicked outside
+            if (!input.LeftMBDown && previousLeftMBDown)
+                dragging = false;
+
+            previousLeftMBDown = input.LeftMBDown;
+            previousRightMBDown = input.RightMBDown;
+
+            if (input.BuildClicked && clicked != null && clicked is Controller controller)
+                game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
+            if (input.PauseClicked)
+                game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
+        }
+
+        private void HandleWASD()
+        {
+            float moveConstant = 5;
+            if (Keyboard.GetState().IsKeyDown(input.Up) ^ Keyboard.GetState().IsKeyDown(input.Down))
             {
-                foreach (IControllable c in controllers)
+                if (Keyboard.GetState().IsKeyDown(input.Up))
                 {
-                    IControllable clicked = c.ControllableContainingInSpace(mousePosition, Camera.Transform);
-                    if (clicked != null)
-                    {
-                        this.clicked = c;
-                        dragging = true;
-                        draggingRelativePosition = c.Position - input.MousePositionGameCoords;
-                    }
-                    else
-                    {
-                        dragging = false;
-                    }
+                    Camera.Position += new Vector2(0, -moveConstant);
                 }
-                if (!dragging)
-                    this.clicked = null;
+                else if (Keyboard.GetState().IsKeyDown(input.Down))
+                {
+                    Camera.Position += new Vector2(0, moveConstant);
+                }
             }
-            //handle right click
-            else if (input.RightMBDown && !previousRightMBDown)
+            if (Keyboard.GetState().IsKeyDown(input.Left) ^ Keyboard.GetState().IsKeyDown(input.Right))
+            {
+                if (Keyboard.GetState().IsKeyDown(input.Left))
+                {
+                    Camera.Position += new Vector2(-moveConstant, 0);
+                }
+                else if (Keyboard.GetState().IsKeyDown(input.Right))
+                {
+                    Camera.Position += new Vector2(moveConstant, 0);
+                }
+            }
+        }
+
+        private void HandleRightClick(Vector2 mousePosition)
+        {
+            if (input.RightMBDown && !previousRightMBDown)
             {
                 List<IControllable> temp = new List<IControllable>();
                 foreach (IControllable c in controllers)
@@ -85,26 +116,43 @@ namespace NetworkIO.src.menu.states.menu_states
                 foreach (IControllable c in temp)
                     controllers.Remove(c);
             }
+        }
 
-                    //drag controller
-                    if (clicked != null && dragging && input.LeftMBDown)
-                clicked.Position = input.MousePositionGameCoords+draggingRelativePosition;
-            //disable drag if clicked outside
-            if (!input.LeftMBDown && previousLeftMBDown)
-                dragging = false;
-            
-            previousLeftMBDown = input.LeftMBDown;
-            previousRightMBDown = input.RightMBDown;
-
-            if (input.BuildClicked && clicked != null && clicked is Controller controller)
-                game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
-            if (input.PauseClicked)
-                game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
+        private void HandleLeftClick(Vector2 mousePosition)
+        {
+            if (input.LeftMBDown && !previousLeftMBDown)
+            {
+                bool deselect = true;
+                foreach (IControllable c in controllers)
+                {
+                    IControllable clicked = c.ControllableContainingInSpace(mousePosition, Camera.Transform);
+                    if (clicked != null)
+                    {
+                        this.clicked = c;
+                        dragging = true;
+                        draggingRelativePosition = c.Position - input.MousePositionGameCoords;
+                        deselect = false;
+                    }
+                }
+                if(deselect)
+                {
+                    dragging = false;
+                    this.clicked = null;
+                }
+                if (!dragging)
+                    this.clicked = null;
+            }
         }
 
         private void AddControllerButton_Click(object sender, EventArgs e)
         {
-            controllers.Add(new Controller(Camera.Position));
+            Vector2 spawnPosition = Camera.Position;
+            bool add = true;
+            foreach (IControllable c in controllers)
+                if (c.Position == spawnPosition)
+                    add = false;
+            if(add)
+                controllers.Add(new Controller(Camera.Position));
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
