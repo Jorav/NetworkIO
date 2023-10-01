@@ -17,6 +17,7 @@ namespace NetworkIO.src.menu.states.menu_states
         List<Background> backgrounds;
         List<IControllable> controllers;
         bool previousLeftMBDown;
+        bool previousRightMBDown;
         bool dragging = true;
         Vector2 draggingRelativePosition;
         Input input;
@@ -49,8 +50,7 @@ namespace NetworkIO.src.menu.states.menu_states
             Camera.Update();
             Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
 
-
-
+            //handle left click
             if (input.LeftMBDown && !previousLeftMBDown)
             {
                 foreach (IControllable c in controllers)
@@ -62,18 +62,39 @@ namespace NetworkIO.src.menu.states.menu_states
                         dragging = true;
                         draggingRelativePosition = c.Position - input.MousePositionGameCoords;
                     }
+                    else
+                    {
+                        dragging = false;
+                    }
                 }
                 if (!dragging)
                     this.clicked = null;
             }
+            //handle right click
+            else if (input.RightMBDown && !previousRightMBDown)
+            {
+                List<IControllable> temp = new List<IControllable>();
+                foreach (IControllable c in controllers)
+                {
+                    IControllable clicked = c.ControllableContainingInSpace(mousePosition, Camera.Transform);
+                    if (clicked != null)
+                    {
+                        temp.Add(c);
+                    }
+                }
+                foreach (IControllable c in temp)
+                    controllers.Remove(c);
+            }
 
-            if (clicked != null && dragging && input.LeftMBDown)
+                    //drag controller
+                    if (clicked != null && dragging && input.LeftMBDown)
                 clicked.Position = input.MousePositionGameCoords+draggingRelativePosition;
+            //disable drag if clicked outside
             if (!input.LeftMBDown && previousLeftMBDown)
                 dragging = false;
-            //if (previousLeftMBDown && !input.LeftMBDown && clicked != null && mousePosition != mousePositionClicked)
-                //clicked = null;        
+            
             previousLeftMBDown = input.LeftMBDown;
+            previousRightMBDown = input.RightMBDown;
 
             if (input.BuildClicked && clicked != null && clicked is Controller controller)
                 game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
