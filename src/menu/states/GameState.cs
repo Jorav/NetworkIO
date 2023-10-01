@@ -20,9 +20,11 @@ namespace NetworkIO.src.menu.states
         public Camera Camera { get; protected set; }
         protected List<IControllable> controllers;
         protected List<Background> backgrounds;
+        protected State previousState;
 
-        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] List<IControllable> controllers) : base(game, graphicsDevice, content, input)
+        public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState, [OptionalAttribute] List<IControllable> controllers) : base(game, graphicsDevice, content, input)
         {
+            this.previousState = previousState;
             Player = new Player(new List<IControllable>(), input);
             Camera = Player.Camera;
             this.controllers = new List<IControllable>();
@@ -65,7 +67,10 @@ namespace NetworkIO.src.menu.states
             if (Player.Input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
             else if (Player.Input.BuildClicked)
-                game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
+                if (Player.controllables != null && Player.controllables.Count>0)
+                    game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
+            if (Keyboard.GetState().IsKeyDown(Keys.Back) && previousState != null)
+                game.ChangeState(previousState);
             RunGame(gameTime);
         }
 

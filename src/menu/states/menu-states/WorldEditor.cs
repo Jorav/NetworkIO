@@ -20,7 +20,6 @@ namespace NetworkIO.src.menu.states.menu_states
         bool previousRightMBDown;
         bool dragging = true;
         Vector2 draggingRelativePosition;
-        Input input;
         IControllable clicked;
         int currentScrollValue;
         int previousScrollValue;
@@ -28,7 +27,6 @@ namespace NetworkIO.src.menu.states.menu_states
         public WorldEditor(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] GameState gameState) : base(game, graphicsDevice, content, input)
         {
             Camera = new Camera();
-            this.input = input;
             input.Camera = Camera;
             backgrounds = new List<Background>();
             controllers = new List<IControllable>();
@@ -72,7 +70,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 if (clicked != null && clicked is Controller controller)
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
                 else
-                    game.ChangeState(new GameState(game, graphicsDevice, content, input, controllers));
+                    game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
         }
