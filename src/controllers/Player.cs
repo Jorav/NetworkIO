@@ -20,12 +20,14 @@ namespace NetworkIO.src
         {
             this.Input = input;
             Camera = new Camera(this);
+            Camera.AutoAdjustZoom = true;
             Input.Camera = Camera;
         }
         public Player(Input input, [OptionalAttribute]Vector2 position) : base()
         {
             this.Input = input;
             Camera = new Camera(this);
+            Camera.AutoAdjustZoom = true;
             Input.Camera = Camera;
         }
 

@@ -26,6 +26,7 @@ namespace NetworkIO.src.controllers
         {
             oldControllables = controllables;
             Camera = new Camera(this, true);
+            Camera.AutoAdjustZoom = true;
             Camera.Position = Position;
             this.input = input;
             newClickRequired = true;

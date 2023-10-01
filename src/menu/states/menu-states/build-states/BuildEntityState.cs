@@ -191,6 +191,7 @@ namespace NetworkIO.src.menu.states.menu_states
                     }
                     buildOverviewState.menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
                     buildOverviewState.menuController.Camera.AutoAdjustZoom = true;
+                    buildOverviewState.menuController.Camera.InBuildScreen = true;
                     buildOverviewState.previousScrollValue = previousScrollValue;
                     buildOverviewState.currentScrollValue = currentScrollValue;
                     buildOverviewState.menuController.newClickRequired = true;

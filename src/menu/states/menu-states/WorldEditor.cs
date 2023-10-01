@@ -22,6 +22,8 @@ namespace NetworkIO.src.menu.states.menu_states
         Vector2 draggingRelativePosition;
         Input input;
         IControllable clicked;
+        int currentScrollValue;
+        int previousScrollValue;
 
         public WorldEditor(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] GameState gameState) : base(game, graphicsDevice, content, input)
         {
@@ -47,12 +49,11 @@ namespace NetworkIO.src.menu.states.menu_states
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            
             HandleWASD();
+            HandleScroll();
             Camera.Update();
-            Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
 
-            
+            Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
             HandleLeftClick(mousePosition);
             HandleRightClick(mousePosition);
             
@@ -73,9 +74,19 @@ namespace NetworkIO.src.menu.states.menu_states
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
         }
 
+        private void HandleScroll()
+        {
+            previousScrollValue = currentScrollValue;
+            currentScrollValue = input.ScrollValue;
+            if (previousScrollValue - currentScrollValue != 0)
+            {
+                Camera.Zoom /= (float)Math.Pow(0.999, (currentScrollValue - previousScrollValue));
+            }
+        }
+
         private void HandleWASD()
         {
-            float moveConstant = 5;
+            float moveConstant = 5/Camera.Zoom;
             if (Keyboard.GetState().IsKeyDown(input.Up) ^ Keyboard.GetState().IsKeyDown(input.Down))
             {
                 if (Keyboard.GetState().IsKeyDown(input.Up))

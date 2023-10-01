@@ -47,7 +47,7 @@ namespace NetworkIO.src
             Rotation = 0;
             InBuildScreen = inBuildScreen;
             this.zoomSpeed = zoomSpeed;
-            AutoAdjustZoom = true;
+            AutoAdjustZoom = false;
             UpdateTransformMatrix();
         }
 
