@@ -6,14 +6,14 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    class ChaserAI : EntityController
+    public class ChaserAI : Controller
     {
         private Controller enemy;
         /*public ChaserAI(List<IControllable> collidables, Controller enemy) : base(collidables) //TODO: Change enemy targeting to something smarter
         {
             this.enemy = enemy;
         }*/
-        public ChaserAI([OptionalAttribute] Vector2 position, Controller enemy) : base(position) //TODO: Change enemy targeting to something smarter
+        public ChaserAI([OptionalAttribute] Vector2 position, [OptionalAttribute] Controller enemy) : base(position) //TODO: Change enemy targeting to something smarter
         {
             this.enemy = enemy;
         }
@@ -26,20 +26,32 @@ namespace NetworkIO.src.controllers
         protected void Rotate()
         {
             //RotateTo(enemy.controllables[0].Position);
+            RotateTo(enemy.Position);
         }
         protected void Accelerate()
         {
-            foreach (WorldEntity e in Entities)
+            if (enemy != null)
             {
-                Vector2 accelerationVector;
-                if(enemy.controllables[0] is WorldEntity)
-                    accelerationVector = enemy.controllables[0].Position + ((WorldEntity)(enemy.controllables[0])).Velocity - (e.Position + e.Velocity);
-                else
-                    accelerationVector = enemy.controllables[0].Position - (e.Position + e.Velocity);
+                foreach (IControllable c in controllables)
+                {
+                    Vector2 accelerationVector;
+                    /*if(enemy.controllables[0] is WorldEntity)
+                        accelerationVector = enemy.controllables[0].Position + ((WorldEntity)(enemy.controllables[0])).Velocity - (c.Position/* + c.Velocity);
+                    //accelerationVector = enemy.controllables[0].Position + ((WorldEntity)(enemy.controllables[0])).Velocity - (c.Position/* + c.Velocity);
+                    else
+                        accelerationVector = enemy.controllables[0].Position - (c.Position/* + c.Velocity);*/
 
-                accelerationVector.Normalize();
-                //(base.Accelerate(accelerationVector);
+                    accelerationVector = enemy.Position - (c.Position/* + c.Velocity*/);
+
+
+                    accelerationVector.Normalize();
+                    c.Accelerate(accelerationVector);
+                }
             }
+        }
+        public new static String GetName()
+        {
+            return "Chasing AI";
         }
     }
 }

@@ -100,10 +100,10 @@ namespace NetworkIO.src.menu.states
             Vector2 position = controllerEdited.Position;
             controllerEdited.SetControllables(menuController.controllables);
             controllerEdited.Position = position;
-            if (previousState is GameState gameState)
+            if (previousState is IPlayable p)
             {
-                gameState.Player.actionsLocked = false;
-                gameState.Player.Camera.InBuildScreen = false;
+                p.Player.actionsLocked = false;
+                p.Player.Camera.InBuildScreen = false;
             }
             if (previousState is WorldEditor editor)
             {

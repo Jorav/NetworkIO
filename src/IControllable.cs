@@ -9,6 +9,7 @@ namespace NetworkIO.src
         public void Collide(IControllable c);
         public void RotateTo(Vector2 position);
         public void Accelerate(Vector2 directionalVector, float thrust);
+        public void Accelerate(Vector2 directionalVector);
         public void Shoot(GameTime gameTime);
         public object Clone();
         /**

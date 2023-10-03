@@ -12,7 +12,7 @@ namespace NetworkIO.src.menu.controls
         #region Fields
         protected MouseState currentMouse;
         protected SpriteFont font;
-        protected bool isHovering;
+        protected internal bool isHovering;
         protected MouseState previousMouse;
         protected Sprite sprite;
         #endregion
@@ -49,20 +49,31 @@ namespace NetworkIO.src.menu.controls
             Rectangle mouseRectangle = new Rectangle(currentMouse.X, currentMouse.Y, 1, 1);
             return mouseRectangle.Intersects(Rectangle);
         }
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
             isHovering = false;
-            if (MouseIntersects()) { 
+            HandleMouse();
+        }
+
+        protected virtual void HandleMouse()
+        {
+            if (MouseIntersects())
+            {
                 isHovering = true;
                 //if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
                 if (currentMouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed)
                 {
-                    Click?.Invoke(this, new EventArgs());
+                    InvokeEvent(new EventArgs());
                 }
             }
         }
+        protected void InvokeEvent(EventArgs e)
+        {
+            Click?.Invoke(this, e);
+        }
+
         public virtual void Draw(SpriteBatch spritebatch)
         {
             Color color = Color.White;

@@ -99,14 +99,21 @@ namespace NetworkIO.src.controllers
                     removeEntity = true;
                     
                 }
-                if (!input.RightMBDown && previouslyRightMBDown && controllables.Count != 1)
+                if (!input.RightMBDown && previouslyRightMBDown)
                 {
+                    if(controllables.Count != 1)
+                    {
+                        clickedOutside = true;
+                        newClickRequired = true;
+                    }
+                    else
+                    {
+                        AddOpenLinks();
+                    }
                     /*AddSeperatedEntities();
                     RemoveEmptyControllers();
                     UpdatePosition();
                     UpdateRadius();*/
-                    clickedOutside = true;
-                    newClickRequired = true;
 
                 }
                 //else if (!input.RightMBDown && previouslyRightMBDown && controllables.Count == 1)

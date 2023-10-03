@@ -73,7 +73,7 @@ namespace NetworkIO.src
             this.sprite = sprite;
             collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
             oldCollisionDetector = (CollidableRectangle)CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
-            
+            Position = position;
             Elasticity = elasticity;
             Health = health;
             IsVisible = isVisible;

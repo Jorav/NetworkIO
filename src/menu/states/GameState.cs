@@ -14,26 +14,39 @@ using System.Text;
 
 namespace NetworkIO.src.menu.states
 {
-    public class GameState : State
+    public class GameState : State, IPlayable
     {
-        public Player Player { get; protected set; }
-        public Camera Camera { get; protected set; }
         protected List<IControllable> controllers;
         protected List<Background> backgrounds;
         protected State previousState;
+        public Player Player { get; set; } 
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState, [OptionalAttribute] List<IControllable> controllers) : base(game, graphicsDevice, content, input)
         {
-            this.previousState = previousState;
-            Player = new Player(new List<IControllable>(), input);
-            Camera = Player.Camera;
             this.controllers = new List<IControllable>();
             this.backgrounds = new List<Background>();
-            if(controllers!= null)
+            this.previousState = previousState;
+            //this.controllers.Add(Game1.Player);
+
+            List<IControllable> temp = new List<IControllable>();
+            if (controllers!= null)
                 foreach (IControllable c in controllers)
-                    this.controllers.Add((IControllable)c.Clone());
+                {
+                    IControllable clone = (IControllable)c.Clone();
+                    if (clone is Player p)
+                        Player = p;
+                    temp.Add(clone);
 
-
+                }
+            foreach (IControllable c in temp)
+                this.controllers.Add(c);
+            if(Player == null)
+            {
+                Player = new Player(input);
+                this.controllers.Add(Player);
+                input.Camera = Player.Camera;
+            }
+            input.Camera = Player.Camera;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -70,7 +83,11 @@ namespace NetworkIO.src.menu.states
                 if (Player.controllables != null && Player.controllables.Count>0)
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
             if (Keyboard.GetState().IsKeyDown(Keys.Back) && previousState != null)
+            {
                 game.ChangeState(previousState);
+                if (previousState is IPlayable p)
+                    input.Camera = p.Player.Camera;
+            }
             RunGame(gameTime);
         }
 

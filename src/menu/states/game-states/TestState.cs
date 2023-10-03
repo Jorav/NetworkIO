@@ -15,7 +15,7 @@ namespace NetworkIO.src.menu.states.game_states
     {
         public TestState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input) : base(game, graphicsDevice, content, input)
         {
-            Player = new Player(input);
+            //Game1.Player = new Player(input);
             /**Player = new Player(
             new List<ICollidable>()
             {
@@ -44,11 +44,8 @@ namespace NetworkIO.src.menu.states.game_states
                 EntityFactory.Create(new Vector2(20,20), IDs.SHOOTER),
 
             }, input);*/
-
-            controllers = new List<IControllable>();
             Random r = new Random();
-            controllers.Add(Player);
-            ChaserAI chaser = new ChaserAI(new Vector2(500,500),Player);
+            ChaserAI chaser = new ChaserAI(new Vector2(500,500), Player);
             controllers.Add(chaser);
             /*
             controllers.Add(new ChaserAI(
@@ -99,7 +96,7 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
                     },
-                    0.3f, base.Player.Camera)
+                    0.3f, Player.Camera)
             };
             backgrounds.Add(new WrappingBackground(
                     new List<IControllable>()
@@ -115,7 +112,7 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD)
-                    }, 0.6f, base.Player.Camera, new Vector2(0.1f,0.1f))
+                    }, 0.6f, Player.Camera, new Vector2(0.1f,0.1f))
             );
         }
     }

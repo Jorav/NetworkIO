@@ -22,8 +22,8 @@ namespace NetworkIO.src.menu.states.menu_states
             this.controllerEdited = controllerEdited;
             this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
             this.previousState = previousState;
-            if(previousState is GameState gameState)
-                gameState.Player.actionsLocked = true;
+            if(previousState is IPlayable p)
+                p.Player.actionsLocked = true;
             menuController.Camera.InBuildScreen = true;
             menuController.Camera.AutoAdjustZoom = true;
             currentScrollValue = input.ScrollValue;

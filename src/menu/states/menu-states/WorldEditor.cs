@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NetworkIO.src.controllers;
+using NetworkIO.src.factories;
 using NetworkIO.src.menu.controls;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -11,7 +13,7 @@ using System.Text;
 
 namespace NetworkIO.src.menu.states.menu_states
 {
-    public class WorldEditor : MenuState
+    public class WorldEditor : MenuState, IPlayable
     {
         public Camera Camera { get; set; }
         List<Background> backgrounds;
@@ -23,6 +25,8 @@ namespace NetworkIO.src.menu.states.menu_states
         IControllable clicked;
         int currentScrollValue;
         int previousScrollValue;
+        public Player Player { get; set; }
+        IDs IDSelected;
 
         public WorldEditor(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] GameState gameState) : base(game, graphicsDevice, content, input)
         {
@@ -30,6 +34,8 @@ namespace NetworkIO.src.menu.states.menu_states
             input.Camera = Camera;
             backgrounds = new List<Background>();
             controllers = new List<IControllable>();
+            Player = new Player(input);
+            controllers.Add(Player);
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
             Button addControllerButton = new Button(new Sprite(buttonTexture), buttonFont)
@@ -38,10 +44,45 @@ namespace NetworkIO.src.menu.states.menu_states
                 Text = "Add Controller",
             };
             addControllerButton.Click += AddControllerButton_Click;
+            IDs[] ids = new IDs[]
+                {
+                    IDs.CONTROLLER_DEFAULT,
+                    IDs.CHASER_AI,
+                    IDs.Player
+                };
+            this.IDSelected = ids[0];
+            DropDownButton setControllerButton = new DropDownButton(new Sprite(buttonTexture), buttonFont, ids)
+            {
+                Position = new Vector2(Game1.ScreenWidth - buttonTexture.Width - 100, 20),
+            };
+            setControllerButton.Click += SetControllerButton_Click;
+
             components = new List<IComponent>()
             {
                 addControllerButton,
+                setControllerButton,
             };
+        }
+
+        private void SetControllerButton_Click(object sender, EventArgs e)
+        {
+            if(sender is DropDownButton button)
+            {
+                IDs id = button.currentSelection.Item2;
+                if(clicked != null)
+                {
+                    if(clicked is Player p)
+                    {
+                        //p.controllables.Remove()
+                    }
+                }
+                else
+                {
+                    IDSelected = id;
+                }
+            }
+                
+            //throw new NotImplementedException();
         }
 
         public override void Update(GameTime gameTime)
@@ -163,8 +204,18 @@ namespace NetworkIO.src.menu.states.menu_states
             foreach (IControllable c in controllers)
                 if (c.Position == spawnPosition)
                     add = false;
-            if(add)
-                controllers.Add(new Controller(Camera.Position));
+            if (add)
+            {
+                Controller c = ControllerFactory.Create(Camera.Position, IDSelected);
+                if (IDSelected == IDs.Player)
+                {
+                    Player.AddControllable(c);
+                }
+                else
+                    controllers.Add(c);
+                this.clicked = c;
+            }
+                
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

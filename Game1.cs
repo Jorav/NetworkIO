@@ -65,6 +65,7 @@ namespace NetworkIO
                 Pause = Keys.Escape,
                 Build = Keys.Enter,
             };
+
             currentState = new MainMenu(this, GraphicsDevice, Content, Input);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _graphics.ApplyChanges();
@@ -97,7 +98,6 @@ namespace NetworkIO
             EntityFactory.triangularEqualLeggedHull = textureTriangularEqualLeggedHull;
             EntityFactory.triangular90AngleHull = textureTriangular90AngleHull;
             EntityFactory.engine = textureEngine;
-
         }
 
 

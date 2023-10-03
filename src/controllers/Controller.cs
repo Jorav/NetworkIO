@@ -72,6 +72,12 @@ namespace NetworkIO.src
         }
         public void AddControllable(IControllable c)
         {
+            if (controllables == null)
+            {
+                controllables = new List<IControllable>();
+                c.Position = Position;
+            }
+                
             if (c != null)
             {
                 controllables.Add(c);
@@ -259,6 +265,12 @@ namespace NetworkIO.src
             foreach (IControllable c in controllables)
                 c.Accelerate(directionalVector, thrust);
         }
+        public void Accelerate(Vector2 directionalVector)
+        {
+            foreach (IControllable c in controllables)
+                c.Accelerate(directionalVector);
+        }
+
 
         public virtual object Clone()
         {
@@ -288,7 +300,10 @@ namespace NetworkIO.src
                     return controllable;
             }
             return null;
-
+        }
+        public static String GetName()
+        {
+            return "No controller";
         }
     }
 }

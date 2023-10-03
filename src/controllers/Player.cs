@@ -82,8 +82,8 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (Entity e in controllables)
-                    e.Accelerate(accelerationVector);
+                foreach (IControllable c in controllables)
+                    c.Accelerate(accelerationVector);
             }
         }
 
@@ -91,8 +91,13 @@ namespace NetworkIO.src
         public override object Clone()
         {
             Player pNew = (Player)base.Clone();
-            pNew.Camera = new Camera(this);
+            pNew.Camera = new Camera(pNew);
+            Input.Camera = pNew.Camera;
             return pNew;
+        }
+        public new static String GetName()
+        {
+            return "Player";
         }
     }
 }

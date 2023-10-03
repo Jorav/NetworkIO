@@ -56,6 +56,7 @@ namespace NetworkIO.src.controllers
                 position = Vector2.Zero;
             Entities = new List<WorldEntity>();
             this.collisionDetector = new CollidableCircle(Position, Radius);
+            Position = position;
             if (e != null)
             {
                 AddEntity(e);
@@ -76,6 +77,7 @@ namespace NetworkIO.src.controllers
             if (position == null)
                 position = Vector2.Zero;
             this.collisionDetector = new CollidableCircle(Position, Radius);
+            Position = position;
             if (entities != null && entities.Length > 0)
                 foreach (WorldEntity e in entities)
                     AddEntity(e);
