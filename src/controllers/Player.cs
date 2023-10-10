@@ -82,7 +82,7 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (IControllable c in controllables)
+                foreach (IControllable c in Controllables)
                     c.Accelerate(accelerationVector);
             }
         }

@@ -98,7 +98,7 @@ namespace NetworkIO.src.menu.states
         public void BuildClicked()
         {
             Vector2 position = controllerEdited.Position;
-            controllerEdited.SetControllables(menuController.controllables);
+            controllerEdited.SetControllables(menuController.Controllables);
             controllerEdited.Position = position;
             if (previousState is IPlayable p)
             {

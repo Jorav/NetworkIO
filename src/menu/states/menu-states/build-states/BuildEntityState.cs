@@ -26,7 +26,7 @@ namespace NetworkIO.src.menu.states.menu_states
             components = new List<IComponent>();
             this.menuController.AddOpenLinks();
             this.menuController.Camera.Zoom = this.menuController.Camera.BuildMenuZoom;
-            this.entityEdited = controllerEdited.controllables[0];
+            this.entityEdited = controllerEdited.Controllables[0];
             idToBeAddded = IDs.COMPOSITE;
             float scale = 3;
             EntityButton addRectangularHullButton = new EntityButton(new Sprite(EntityFactory.rectangularHull), new Sprite(EntityFactory.entityButton), true)
@@ -183,7 +183,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 {
                     menuController.ClearOpenLinks();
                     buildOverviewState.menuController.Remove(entityEdited);
-                    foreach (IControllable c in menuController.controllables)
+                    foreach (IControllable c in menuController.Controllables)
                     {
 
                         buildOverviewState.menuController.AddControllable(c);
@@ -210,7 +210,7 @@ namespace NetworkIO.src.menu.states.menu_states
             {
                 menuController.ClearOpenLinks();
                 buildOverviewState.menuController.Remove(entityEdited);
-                foreach (IControllable c in menuController.controllables)
+                foreach (IControllable c in menuController.Controllables)
                 {
 
                     buildOverviewState.menuController.AddControllable(c);

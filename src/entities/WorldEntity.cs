@@ -174,10 +174,10 @@ namespace NetworkIO.src
                 }
             }
             else if (c is Controller)
-                foreach (IControllable cc in ((Controller)c).controllables)
+                foreach (IControllable cc in ((Controller)c).Controllables)
                     Collide(cc);
             else if (c is EntityController)
-                foreach (IControllable cc in ((EntityController)c).Entities)
+                foreach (IControllable cc in ((EntityController)c).Controllables)
                     Collide(cc);
         }
 

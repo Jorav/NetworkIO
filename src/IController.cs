@@ -7,5 +7,6 @@ namespace NetworkIO.src
     public interface IController : IControllable
     {
         public bool Remove(IControllable c);
+        public List<IControllable> Controllables { get; set; }
     }
 }

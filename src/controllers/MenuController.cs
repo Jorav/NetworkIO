@@ -24,7 +24,7 @@ namespace NetworkIO.src.controllers
         //public override Vector2 Position { get { return base.Position; } set { base.Position = value; Camera.Position = value; } }
         public MenuController(List<IControllable> collidables, Input input) : base(collidables)
         {
-            oldControllables = controllables;
+            oldControllables = Controllables;
             Camera = new Camera(this, true);
             Camera.AutoAdjustZoom = true;
             Camera.Position = Position;
@@ -36,7 +36,7 @@ namespace NetworkIO.src.controllers
 
         public void AddOpenLinks()
         {
-            foreach (IControllable c in controllables)
+            foreach (IControllable c in Controllables)
                 if (c is EntityController ec)
                     ec.AddAvailableLinkDisplays();
             UpdatePosition();
@@ -45,7 +45,7 @@ namespace NetworkIO.src.controllers
 
         public void ClearOpenLinks()
         {
-            foreach (IControllable c in controllables)
+            foreach (IControllable c in Controllables)
                 if (c is EntityController ec)
                     ec.ClearAvailableLinks();
             UpdatePosition();
@@ -79,7 +79,7 @@ namespace NetworkIO.src.controllers
             }
             if (!input.RightMBDown && previouslyRightMBDown)
             {
-                if (controllables.Count != 1)
+                if (Controllables.Count != 1)
                 {
                     clickedOutside = true;
                     newClickRequired = true;
@@ -117,7 +117,7 @@ namespace NetworkIO.src.controllers
         {
             if (input.LeftMBDown || input.RightMBDown)
             {
-                foreach (IControllable c in controllables)
+                foreach (IControllable c in Controllables)
                 {
                     if (c is Controller)
                         controllableClicked = ControllableClicked();
@@ -136,8 +136,7 @@ namespace NetworkIO.src.controllers
             ClearOpenLinks();
             if (c is Controller cc)
             {
-                oldControllables.Push(controllables);
-                SetControllables(cc.controllables);
+                SetControllables(cc.GetControllables());
                 controllerEdited = cc;
             }
             else if (c is EntityController ec)
@@ -161,10 +160,10 @@ namespace NetworkIO.src.controllers
                 maxZoom = true;
             }
             Camera.InBuildScreen = true;
-            newClickRequired = true;
+            newClickRequired = true;*/
         }
         public void DeFocus()
-        {
+        {/*
             ClearOpenLinks();
             if (oldControllables.Count != 0)
             {
@@ -179,8 +178,7 @@ namespace NetworkIO.src.controllers
                             AddControllable(c);
                 maxZoom = false;
             }
-            Camera.InBuildScreen = true;
-        }*/
+            Camera.InBuildScreen = true;*/
         }
 
         /**
@@ -188,7 +186,7 @@ namespace NetworkIO.src.controllers
          */
         public IControllable ControllableClicked()
         {
-            foreach (IControllable c in controllables)
+            foreach (IControllable c in Controllables)
             {
                 IControllable clicked = c.ControllableContainingInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform); //if (c is EntityController ec && ec.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
                 if (clicked != null)
@@ -198,7 +196,7 @@ namespace NetworkIO.src.controllers
         }
         public WorldEntity EntityClicked()
         {
-            foreach (IControllable c in controllables)
+            foreach (IControllable c in Controllables)
             {
                 IControllable clicked = c.ControllableContainingInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform); //if (c is EntityController ec && ec.ContainsInSpace(Mouse.GetState().Position.ToVector2(), Camera.Transform))
                 if (clicked != null && clicked is WorldEntity clickedE)
@@ -209,7 +207,7 @@ namespace NetworkIO.src.controllers
 
         public bool ReplaceEntity(WorldEntity oldEntity, WorldEntity newEntity)
         {
-            foreach (IControllable c in controllables)
+            foreach (IControllable c in Controllables)
             {
                 if (c is EntityController ec)
                 {
@@ -229,7 +227,7 @@ namespace NetworkIO.src.controllers
         public void RemoveEntity(WorldEntity clickedE)
         {
             ClearOpenLinks();
-            foreach (IControllable c in controllables)
+            foreach (IControllable c in Controllables)
             {
                 if (c is EntityController ec)
                     ec.Remove(clickedE);
