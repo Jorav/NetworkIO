@@ -17,15 +17,18 @@ namespace NetworkIO.src.menu.states.menu_states
         public int previousScrollValue;
         public int currentScrollValue;
         private readonly Sprite overlay;
-        public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
+        public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited, MenuController menuController = null) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
-            this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
+            if (menuController == null)
+                this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
+            else
+                this.menuController = menuController;
             this.previousState = previousState;
             if(previousState is IPlayable p)
                 p.Player.actionsLocked = true;
-            menuController.Camera.InBuildScreen = true;
-            menuController.Camera.AutoAdjustZoom = true;
+            this.menuController.Camera.InBuildScreen = true;
+            this.menuController.Camera.AutoAdjustZoom = true;
             currentScrollValue = input.ScrollValue;
             overlay = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
             overlay.Scale = overlay.Height / Game1.ScreenHeight;

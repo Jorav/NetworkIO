@@ -5,6 +5,7 @@ namespace NetworkIO.src
 {
     public interface IControllable : IIntersectable, IComponent //should be renamed
     {
+        public IController Manager {get; set;}
         public float Mass { get;}
         public void Collide(IControllable c);
         public void RotateTo(Vector2 position);

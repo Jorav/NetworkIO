@@ -12,7 +12,7 @@ using System.Text;
 
 namespace NetworkIO.src
 {
-    public class Controller : IComponent, IControllable
+    public class Controller : IComponent, IController
     {
         public List<IControllable> controllables { get; protected set; }
         public CollidableCircle collisionDetector;
@@ -40,6 +40,8 @@ namespace NetworkIO.src
                 return sum;
             }
         }
+
+        public IController Manager { get; set; }
 
         protected Vector2 position;
 
@@ -83,6 +85,7 @@ namespace NetworkIO.src
                 controllables.Add(c);
                 UpdatePosition();
                 UpdateRadius();
+                c.Manager = this;
             }
         }
 
@@ -114,7 +117,7 @@ namespace NetworkIO.src
                 else if (c is Controller cc && controllables.Count == 0)
                     toBeRemoved.Add(cc);
             foreach (IControllable c in toBeRemoved)
-                controllables.Remove(c);
+                Remove(c);
         }
 
         protected virtual void AddSeperatedEntities()
@@ -304,6 +307,12 @@ namespace NetworkIO.src
         public static String GetName()
         {
             return "No controller";
+        }
+
+        public bool Remove(IControllable c)
+        {
+            c.Manager = null;
+            return controllables.Remove(c);
         }
     }
 }

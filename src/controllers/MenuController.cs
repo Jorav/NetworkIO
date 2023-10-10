@@ -57,9 +57,64 @@ namespace NetworkIO.src.controllers
             base.Update(gameTime);
             Camera.Update();
 
-            bool newClick = ((input.LeftMBDown && !previouslyLeftMBDown) || (input.RightMBDown && !previouslyRightMBDown));
-
             //get entity affected
+            UpdateControllableClicked();
+            HandleLeftClick();
+            HandleRightClick();
+
+            //new click required
+            if (newClickRequired && ((input.LeftMBDown && !previouslyLeftMBDown) || (input.RightMBDown && !previouslyRightMBDown)))
+                newClickRequired = false;
+
+            previouslyLeftMBDown = input.LeftMBDown;
+            previouslyRightMBDown = input.RightMBDown;
+        }
+
+        private void HandleRightClick()
+        {
+            if (input.RightMBDown && controllableClicked != null)
+            {
+                removeEntity = true;
+
+            }
+            if (!input.RightMBDown && previouslyRightMBDown)
+            {
+                if (controllables.Count != 1)
+                {
+                    clickedOutside = true;
+                    newClickRequired = true;
+                }
+                else
+                {
+                    AddOpenLinks();
+                }
+                /*AddSeperatedEntities();
+                RemoveEmptyControllers();
+                UpdatePosition();
+                UpdateRadius();*/
+
+            }
+        }
+
+        private void HandleLeftClick()
+        {
+            if (input.LeftMBDown)
+            {
+                if (controllableClicked == null && input.LeftMBDown && !previouslyLeftMBDown)
+                {
+                    clickedOutside = true;
+                    newClickRequired = true;
+                }
+
+                else if (controllableClicked != null && !newClickRequired)
+                {
+                    addControllable = true;
+                }
+            }
+        }
+
+        private void UpdateControllableClicked()
+        {
             if (input.LeftMBDown || input.RightMBDown)
             {
                 foreach (IControllable c in controllables)
@@ -74,74 +129,58 @@ namespace NetworkIO.src.controllers
             {
                 controllableClicked = null;
             }
-
-            //left click
-            if (input.LeftMBDown)
-            {
-                if (controllableClicked == null && newClick)
-                {
-                    clickedOutside = true;
-                    newClickRequired = true;
-                }
-                    
-                else if (controllableClicked != null && !newClickRequired)
-                {
-                    addControllable = true; 
-                }
-            }
-
-
-            //right click
-            else
-            {
-                if (input.RightMBDown && controllableClicked != null)
-                {
-                    removeEntity = true;
-                    
-                }
-                if (!input.RightMBDown && previouslyRightMBDown)
-                {
-                    if(controllables.Count != 1)
-                    {
-                        clickedOutside = true;
-                        newClickRequired = true;
-                    }
-                    else
-                    {
-                        AddOpenLinks();
-                    }
-                    /*AddSeperatedEntities();
-                    RemoveEmptyControllers();
-                    UpdatePosition();
-                    UpdateRadius();*/
-
-                }
-                //else if (!input.RightMBDown && previouslyRightMBDown && controllables.Count == 1)
-                    //AddOpenLinks();
-            }
-
-            //new click required
-            if (newClickRequired && newClick)
-                newClickRequired = false;
-            
-            previouslyLeftMBDown = input.LeftMBDown;
-            previouslyRightMBDown = input.RightMBDown;
         }
 
         public void FocusOn(IControllable c)
-        {
+        {/*
+            ClearOpenLinks();
             if (c is Controller cc)
-                controllables = cc.controllables;
+            {
+                oldControllables.Push(controllables);
+                SetControllables(cc.controllables);
+                controllerEdited = cc;
+            }
             else if (c is EntityController ec)
-                SetControllables(new List<IControllable>(ec.Entities));
-            else if (c is WorldEntity we)
-                SetControllables(new List<IControllable> { we });
-        }
+            {
+                oldControllables.Push(controllables);
+                //oldControllables.Push(controllables);
+                SetControllables(new List<IControllable>() { ec });
+                //SetControllables((List<IControllable>)(ec.Entities));
+                AddOpenLinks();
+                maxZoom = true;
+            }
 
-        public void Reset()
+            else if (c is WorldEntity we)
+            {
+                oldControllables.Push(controllables);
+                if (we.EntityController != null)
+                    SetControllables(new List<IControllable> { we.EntityController });
+                else
+                    SetControllables(new List<IControllable> { we });
+                AddOpenLinks();
+                maxZoom = true;
+            }
+            Camera.InBuildScreen = true;
+            newClickRequired = true;
+        }
+        public void DeFocus()
         {
             ClearOpenLinks();
-            controllables = oldControllables;
+            if (oldControllables.Count != 0)
+            {
+                List<IControllable> controllables = this.controllables;
+                SetControllables(oldControllables.Pop());
+                if (controllerEdited != null)
+                    controllerEdited.SetControllables(controllables);
+                else
+                    //AddControllable(c);
+                    foreach (IControllable c in controllables)
+                        if (!this.controllables.Contains(c))
+                            AddControllable(c);
+                maxZoom = false;
+            }
+            Camera.InBuildScreen = true;
+        }*/
         }
 
         /**
@@ -193,7 +232,7 @@ namespace NetworkIO.src.controllers
             foreach (IControllable c in controllables)
             {
                 if (c is EntityController ec)
-                    ec.RemoveEntity(clickedE);
+                    ec.Remove(clickedE);
             }
             ClearOpenLinks();
             AddSeperatedEntities();

@@ -12,6 +12,8 @@ namespace NetworkIO.src.movable
         public float Elasticity;
         public bool IsCollidable { get; set; }
         public virtual float Radius { get; }
+        public IController Manager { get; set; }
+
         public static float REPULSIONDISTANCE = 100;
 
         public Entity(Vector2 position, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float elasticity = 1) : base(position, rotation, mass, thrust, friction) { Elasticity = elasticity; }

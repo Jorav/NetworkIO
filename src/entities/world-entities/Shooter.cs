@@ -53,7 +53,7 @@ namespace NetworkIO.src.entities
                 p.Position = Position;
                 p.Rotation = Rotation;
                 Vector2 directionalVector = new Vector2((float)Math.Cos(p.Rotation), (float)Math.Sin(p.Rotation));
-                p.Velocity = EntityController.Velocity; //give velocity to projectile corresponding to shooter movement
+                p.Velocity = Velocity; //give velocity to projectile corresponding to shooter movement
                 p.Accelerate(p.Rotation, FiringStrength);
                 lastTimeFired = currentTime;
             }

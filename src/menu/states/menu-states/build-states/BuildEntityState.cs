@@ -20,12 +20,12 @@ namespace NetworkIO.src.menu.states.menu_states
         EntityButton clicked;
         EntityButton previouslyClicked;
 
-        public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, BuildOverviewState buildOverviewState, Controller controllerEdited) : base(game, graphicsDevice, content, previousState, input, controllerEdited)
+        public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, BuildOverviewState buildOverviewState, Controller controllerEdited, MenuController menuController = null) : base(game, graphicsDevice, content, previousState, input, controllerEdited, menuController)
         {
             this.buildOverviewState = buildOverviewState;
             components = new List<IComponent>();
-            menuController.AddOpenLinks();
-            menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
+            this.menuController.AddOpenLinks();
+            this.menuController.Camera.Zoom = this.menuController.Camera.BuildMenuZoom;
             this.entityEdited = controllerEdited.controllables[0];
             idToBeAddded = IDs.COMPOSITE;
             float scale = 3;
@@ -182,7 +182,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 if (menuController.clickedOutside)
                 {
                     menuController.ClearOpenLinks();
-                    buildOverviewState.menuController.controllables.Remove(entityEdited);
+                    buildOverviewState.menuController.Remove(entityEdited);
                     foreach (IControllable c in menuController.controllables)
                     {
 
@@ -209,7 +209,7 @@ namespace NetworkIO.src.menu.states.menu_states
             if (input.BuildClicked)
             {
                 menuController.ClearOpenLinks();
-                buildOverviewState.menuController.controllables.Remove(entityEdited);
+                buildOverviewState.menuController.Remove(entityEdited);
                 foreach (IControllable c in menuController.controllables)
                 {
 

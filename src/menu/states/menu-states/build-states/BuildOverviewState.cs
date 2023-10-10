@@ -15,7 +15,7 @@ namespace NetworkIO.src.menu.states
 {
     public class BuildOverviewState : BuildState
     {
-        public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, previousState, input, controllerEdited)
+        public BuildOverviewState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited, MenuController menuController = null) : base(game, graphicsDevice, content, previousState, input, controllerEdited, menuController)
         {
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
@@ -71,7 +71,7 @@ namespace NetworkIO.src.menu.states
                     else if (clickedC is EntityController ec)
                         game.ChangeState(new BuildEntityState(game, graphicsDevice, content, previousState, input, this, new Controller(new List<IControllable>() { clickedC }))); //obs, save build states?
                     else if (clickedC is WorldEntity w)
-                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, previousState, input, this, new Controller(new List<IControllable>() { w.EntityController }))); //obs, save build states?
+                        game.ChangeState(new BuildEntityState(game, graphicsDevice, content, previousState, input, this, new Controller(new List<IControllable>() { w.Manager }))); //obs, save build states?
                                                                                                                                                                                          //menuController.Camera.AutoAdjustZoom = true;
                     menuController.newClickRequired = true;
                     menuController.addControllable = false;
@@ -80,11 +80,11 @@ namespace NetworkIO.src.menu.states
                 {
                     IControllable clickedC = menuController.controllableClicked;
                     if (clickedC is Controller c)
-                        menuController.controllables.Remove(clickedC);
+                        menuController.Remove(clickedC);
                     else if (clickedC is EntityController ec)
-                        menuController.controllables.Remove(ec);
+                        menuController.Remove(ec);
                     else if (clickedC is WorldEntity w)
-                        menuController.controllables.Remove(w.EntityController);
+                        menuController.Remove(w.Manager);
 
                     menuController.removeEntity = false;
                 }

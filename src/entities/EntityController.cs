@@ -15,7 +15,7 @@ using static NetworkIO.src.WorldEntity;
 
 namespace NetworkIO.src.controllers
 {
-    public class EntityController : Entity, IControllable
+    public class EntityController : Entity, IController
     {
         #region Properties
         public List<WorldEntity> Entities { get; protected set; }
@@ -103,7 +103,7 @@ namespace NetworkIO.src.controllers
                 if (e is Shooter s)
                     projectiles.Add(s.Projectiles);
                 e.Friction = 0;
-                e.EntityController = this;
+                e.Manager = this;
                 UpdatePosition();
                 UpdateRadius();
                 e.Rotation = Rotation;
@@ -116,46 +116,51 @@ namespace NetworkIO.src.controllers
         /**
          * returns whether an entity was succesfully removed
          */
-        public bool RemoveEntity(WorldEntity e)
+        public bool Remove(IControllable c)
         {
-            if (e != null && Entities.Remove(e))
+            if (c is WorldEntity we)
             {
-                foreach (Link l in e.Links)
-                    if (!l.ConnectionAvailable && l.connection.Entity.Links.Count == 1)
-                        ;// RemoveEntity(l.connection.Entity);
-                if (e is Shooter s)
-                    projectiles.Remove(s.Projectiles);
-                
-                foreach (Link l in e.Links) //remove filler links
-                    if (!l.ConnectionAvailable)
-                    {
-                        if(l.connection.Entity.IsFiller)
-                            Entities.Remove(l.connection.Entity);
-                        l.SeverConnection();
-                    }
-                List<HashSet<WorldEntity>> connectedEntities = GetSetsOfEntities();
-                for (int i = 1; i < connectedEntities.Count; i++)
+                if (we != null && Entities.Remove(we))
                 {
-                    WorldEntity[] tempEntities = new WorldEntity[connectedEntities[i].Count];
-                    connectedEntities[i].CopyTo(tempEntities);
-                    foreach (WorldEntity eSeperated in tempEntities)
-                        Entities.Remove(eSeperated);
-                    EntityController ec = new EntityController(tempEntities, Rotation);
-                    
-                    SeperatedEntities.Add(ec);
+                    foreach (Link l in we.Links)
+                        if (!l.ConnectionAvailable && l.connection.Entity.Links.Count == 1)
+                            ;// RemoveEntity(l.connection.Entity);
+                    if (we is Shooter s)
+                        projectiles.Remove(s.Projectiles);
+
+                    foreach (Link l in we.Links) //remove filler links
+                        if (!l.ConnectionAvailable)
+                        {
+                            if (l.connection.Entity.IsFiller)
+                                Entities.Remove(l.connection.Entity);
+                            l.SeverConnection();
+                        }
+                    List<HashSet<WorldEntity>> connectedEntities = GetSetsOfEntities();
+                    for (int i = 1; i < connectedEntities.Count; i++)
+                    {
+                        WorldEntity[] tempEntities = new WorldEntity[connectedEntities[i].Count];
+                        connectedEntities[i].CopyTo(tempEntities);
+                        foreach (WorldEntity eSeperated in tempEntities)
+                            Entities.Remove(eSeperated);
+                        EntityController ec = new EntityController(tempEntities, Rotation);
+
+                        SeperatedEntities.Add(ec);
+                    }
+                    UpdatePosition();
+                    UpdateRadius();
+                    return true;
                 }
-                UpdatePosition();
-                UpdateRadius();
-                return true;
+                else
+                {
+                    bool removed = false;
+                    foreach (EntityController ec in SeperatedEntities)
+                        if (ec.Remove(we))
+                            removed = true;
+                    return removed;
+                }
             }
             else
-            {
-                bool removed = false;
-                foreach (EntityController ec in SeperatedEntities)
-                    if (ec.RemoveEntity(e))
-                        removed = true;
-                return removed;
-            }
+                return false;
         }
 
         /**
