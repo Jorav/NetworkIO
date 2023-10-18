@@ -206,13 +206,18 @@ namespace NetworkIO.src.menu.states.menu_states
                     add = false;
             if (add)
             {
-                Controller c = ControllerFactory.Create(Camera.Position, IDSelected);
+                IControllable c;
                 if (IDSelected == IDs.Player)
                 {
+                    c = new EntityController(Camera.Position);
                     Player.AddControllable(c);
                 }
                 else
+                {
+                    c = ControllerFactory.Create(Camera.Position, IDSelected);
                     controllers.Add(c);
+                }
+                    
                 this.clicked = c;
             }
                 

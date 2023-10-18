@@ -80,7 +80,7 @@ namespace NetworkIO.src.menu.states
             if (Player.Input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
             else if (Player.Input.BuildClicked)
-                if (Player.controllables != null && Player.controllables.Count>0)
+                if (Player.Controllables != null && Player.Controllables.Count>0)
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
             if (Keyboard.GetState().IsKeyDown(Keys.Back) && previousState != null)
             {

@@ -14,7 +14,7 @@ namespace NetworkIO
         public override void Update(GameTime gameTime) //OBS: assumes background sprites not rotated
         {
             base.Update(gameTime);
-            foreach (WorldEntity e in controllables)
+            foreach (WorldEntity e in Controllables)
             {
                 float positionX = e.Position.X;
                 float positionY = e.Position.Y;

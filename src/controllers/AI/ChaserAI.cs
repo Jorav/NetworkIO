@@ -32,7 +32,7 @@ namespace NetworkIO.src.controllers
         {
             if (enemy != null)
             {
-                foreach (IControllable c in controllables)
+                foreach (IControllable c in Controllables)
                 {
                     Vector2 accelerationVector;
                     /*if(enemy.controllables[0] is WorldEntity)

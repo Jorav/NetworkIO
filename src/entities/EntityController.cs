@@ -15,10 +15,10 @@ using static NetworkIO.src.WorldEntity;
 
 namespace NetworkIO.src.controllers
 {
-    public class EntityController : Entity, IControllable
+    public class EntityController : Entity, IController
     {
         #region Properties
-        public List<WorldEntity> Entities { get; protected set; }
+        public List<IControllable> Controllables { get; set; }
         public List<EntityController> SeperatedEntities { get; set; }
         public CollidableCircle collisionDetector;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
@@ -28,7 +28,7 @@ namespace NetworkIO.src.controllers
         public override Vector2 Velocity { get { return velocity; } set { if (value.Length() > 100) value = value / value.Length() * 100; velocity = value; } }
         public override Vector2 Position { get { return position; } set {
                 Vector2 posChange = value - Position;
-                foreach (WorldEntity e in Entities)
+                foreach (WorldEntity e in Controllables)
                     e.Position += posChange;
                 position = value; collisionDetector.Position = value; } }
         private float oldRotation;
@@ -43,8 +43,8 @@ namespace NetworkIO.src.controllers
                 rotation = value;
             }
         }
-        public override float Mass { get { float sum = 0; foreach (WorldEntity e in Entities) if (!e.IsFiller && e.IsAlive) sum += e.Mass; return sum; } }
-        public override float Thrust { get { float sum = 0; foreach (WorldEntity e in Entities) if (!e.IsFiller && e.IsAlive) sum += e.Thrust; return sum; } }
+        public override float Mass { get { float sum = 0; foreach (WorldEntity e in Controllables) if (!e.IsFiller && e.IsAlive) sum += e.Mass; return sum; } }
+        public override float Thrust { get { float sum = 0; foreach (WorldEntity e in Controllables) if (!e.IsFiller && e.IsAlive) sum += e.Thrust; return sum; } }
 
         private List<Queue<Projectile>> projectiles = new List<Queue<Projectile>>();
         #endregion
@@ -54,7 +54,7 @@ namespace NetworkIO.src.controllers
             SeperatedEntities = new List<EntityController>();
             if (position == null)
                 position = Vector2.Zero;
-            Entities = new List<WorldEntity>();
+            Controllables = new List<IControllable>();
             this.collisionDetector = new CollidableCircle(Position, Radius);
             Position = position;
             if (e != null)
@@ -73,7 +73,7 @@ namespace NetworkIO.src.controllers
         {//only allow composite for now
             this.Rotation = rotation;
             SeperatedEntities = new List<EntityController>();
-            this.Entities = new List<WorldEntity>();
+            this.Controllables = new List<IControllable>();
             if (position == null)
                 position = Vector2.Zero;
             this.collisionDetector = new CollidableCircle(Position, Radius);
@@ -96,14 +96,14 @@ namespace NetworkIO.src.controllers
         {
             if (e != null)
             {
-                foreach (WorldEntity ee in Entities)
+                foreach (WorldEntity ee in Controllables)
                     if (!ee.IsFiller && ee.CollidesWith(e))
                         return false;
-                Entities.Add(e);
+                Controllables.Add(e);
                 if (e is Shooter s)
                     projectiles.Add(s.Projectiles);
                 e.Friction = 0;
-                e.EntityController = this;
+                e.Manager = this;
                 UpdatePosition();
                 UpdateRadius();
                 e.Rotation = Rotation;
@@ -116,46 +116,52 @@ namespace NetworkIO.src.controllers
         /**
          * returns whether an entity was succesfully removed
          */
-        public bool RemoveEntity(WorldEntity e)
+        public bool Remove(IControllable c)
         {
-            if (e != null && Entities.Remove(e))
+            if (c is WorldEntity we)
             {
-                foreach (Link l in e.Links)
-                    if (!l.ConnectionAvailable && l.connection.Entity.Links.Count == 1)
-                        ;// RemoveEntity(l.connection.Entity);
-                if (e is Shooter s)
-                    projectiles.Remove(s.Projectiles);
-                
-                foreach (Link l in e.Links) //remove filler links
-                    if (!l.ConnectionAvailable)
-                    {
-                        if(l.connection.Entity.IsFiller)
-                            Entities.Remove(l.connection.Entity);
-                        l.SeverConnection();
-                    }
-                List<HashSet<WorldEntity>> connectedEntities = GetSetsOfEntities();
-                for (int i = 1; i < connectedEntities.Count; i++)
+                if (we != null && Controllables.Remove(we))
                 {
-                    WorldEntity[] tempEntities = new WorldEntity[connectedEntities[i].Count];
-                    connectedEntities[i].CopyTo(tempEntities);
-                    foreach (WorldEntity eSeperated in tempEntities)
-                        Entities.Remove(eSeperated);
-                    EntityController ec = new EntityController(tempEntities, Rotation);
-                    
-                    SeperatedEntities.Add(ec);
+                    foreach (Link l in we.Links)
+                        if (!l.ConnectionAvailable && l.connection.Entity.Links.Count == 1)
+                            ;// RemoveEntity(l.connection.Entity);
+                    if (we is Shooter s)
+                        projectiles.Remove(s.Projectiles);
+
+                    foreach (Link l in we.Links) //remove filler links
+                        if (!l.ConnectionAvailable)
+                        {
+                            if (l.connection.Entity.IsFiller)
+                                Controllables.Remove(l.connection.Entity);
+                            l.SeverConnection();
+                        }
+                    List<HashSet<WorldEntity>> connectedEntities = GetSetsOfEntities();
+                    for (int i = 1; i < connectedEntities.Count; i++)
+                    {
+                        WorldEntity[] tempEntities = new WorldEntity[connectedEntities[i].Count];
+                        connectedEntities[i].CopyTo(tempEntities);
+                        foreach (WorldEntity eSeperated in tempEntities)
+                            Controllables.Remove(eSeperated);
+                        EntityController ec = new EntityController(tempEntities, Rotation);
+
+                        SeperatedEntities.Add(ec);
+                    }
+                    UpdatePosition();
+                    UpdateRadius();
+                    we.Manager = null;
+                    return true;
                 }
-                UpdatePosition();
-                UpdateRadius();
-                return true;
+                else
+                {
+                    bool removed = false;
+                    foreach (EntityController ec in SeperatedEntities)
+                        if (ec.Remove(we))
+                            removed = true;
+                    return removed;
+                }
             }
             else
-            {
-                bool removed = false;
-                foreach (EntityController ec in SeperatedEntities)
-                    if (ec.RemoveEntity(e))
-                        removed = true;
-                return removed;
-            }
+                return false;
         }
 
         /**
@@ -163,9 +169,9 @@ namespace NetworkIO.src.controllers
          */
         protected void ConnectToOthers(WorldEntity entity)
         {
-            if (Entities.Count > 0 && !entity.IsFiller)
+            if (Controllables.Count > 0 && !entity.IsFiller)
             {
-                foreach (WorldEntity e in Entities)
+                foreach (WorldEntity e in Controllables)
                 {
                     if (entity != e && !e.IsFiller)
                     {
@@ -191,7 +197,7 @@ namespace NetworkIO.src.controllers
         {
             List<HashSet<WorldEntity>> sets = new List<HashSet<WorldEntity>>();
             //Entities.Sort((a, b) => a.Links.Count.CompareTo(a.Links.Count));
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
             {
                 bool containsEntity = false;
                 foreach (HashSet<WorldEntity> s in sets)
@@ -226,15 +232,15 @@ namespace NetworkIO.src.controllers
 
         protected void UpdateRadius() //TODO: Update this to make it more efficient, e.g. by having sorted list
         {
-            if (Entities.Count == 1/* && SeperatedEntities.Count == 0*/)
+            if (Controllables.Count == 1/* && SeperatedEntities.Count == 0*/)
             {
-                if (Entities[0] != null)
-                    Radius = Entities[0].Radius;
+                if (Controllables[0] != null)
+                    Radius = Controllables[0].Radius;
             }
-            else if (Entities.Count > 1 /*|| SeperatedEntities.Count>0*/)
+            else if (Controllables.Count > 1 /*|| SeperatedEntities.Count>0*/)
             {
                 float largestDistance = 0;
-                foreach (WorldEntity e in Entities)
+                foreach (WorldEntity e in Controllables)
                 {
                     if (e.IsAlive) { 
                         float distance = Vector2.Distance(e.Position, Position) + e.Radius;
@@ -256,7 +262,7 @@ namespace NetworkIO.src.controllers
         {
             Vector2 sum = Vector2.Zero;
             float weight = 0;
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
             {
                 if (e.IsAlive && !e.IsFiller)
                 {
@@ -279,21 +285,21 @@ namespace NetworkIO.src.controllers
         }
         public override void Shoot(GameTime gameTime)
         {
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
                 if (e is Shooter gun)
                     gun.Shoot(gameTime);
         }
         public override void Collide(IControllable controllable) //OBS: ADD COLLISSION HANDLING SUPPORT FOR WORLDENTITIES NOT BELONGING TO ENTITY CONTROLLER
         {
             if (controllable is Controller c)
-                foreach (IControllable iC in c.controllables)
+                foreach (IControllable iC in c.Controllables)
                         Collide(iC);
             else if (controllable is EntityController eC)
             {
                 if (CollidesWith(controllable))
                 {
-                    foreach (WorldEntity e in Entities)
-                        foreach (WorldEntity eCE in eC.Entities)
+                    foreach (WorldEntity e in Controllables)
+                        foreach (WorldEntity eCE in eC.Controllables)
                             if(!e.IsFiller && !eCE.IsFiller)
                                 Collide(e, eCE);
                 }/*
@@ -304,7 +310,7 @@ namespace NetworkIO.src.controllers
             }
             else if (controllable is WorldEntity wE)
             {
-                    foreach (WorldEntity e in Entities)
+                    foreach (WorldEntity e in Controllables)
                         if (!e.IsFiller && !wE.IsFiller)
                             Collide(e, wE);
                     /*
@@ -353,35 +359,35 @@ namespace NetworkIO.src.controllers
         public void CollideProjectiles(IControllable collidable)
         {
             if (collidable is Controller c)
-                foreach (IControllable cc in c.controllables)
+                foreach (IControllable cc in c.Controllables)
                     CollideProjectiles(cc);
             else if(collidable is EntityController ec)
                 foreach (Queue<Projectile> pList in projectiles)
                     foreach (Projectile p in pList)
-                        foreach(WorldEntity e in ec.Entities)
+                        foreach(WorldEntity e in ec.Controllables)
                             p.Collide(e);
         }
 
         public override void ApplyRepulsion(Entity otherEntity)
         {
-            if (Entities.Count > 0)
+            if (Controllables.Count > 0)
             {
                 if (Radius + otherEntity.Radius + REPULSIONDISTANCE > Vector2.Distance(Position, otherEntity.Position))
                 {
                     if (otherEntity is EntityController otherEC)
                     {
-                        foreach (WorldEntity e1 in Entities)
-                            foreach (WorldEntity e2 in otherEC.Entities)
+                        foreach (WorldEntity e1 in Controllables)
+                            foreach (WorldEntity e2 in otherEC.Controllables)
                             {
                                 if (!e1.IsFiller && !e2.IsFiller)
-                                    TotalExteriorForce += Mass / Entities.Count * CalculateGravitationalRepulsion(e1, e2);
+                                    TotalExteriorForce += Mass / Controllables.Count * CalculateGravitationalRepulsion(e1, e2);
                             }
                     }
                     else if (otherEntity is WorldEntity otherWE)
                     {
-                        foreach (Entity e in Entities)
+                        foreach (Entity e in Controllables)
                         {
-                            TotalExteriorForce += Mass / Entities.Count * CalculateGravitationalRepulsion(e, otherWE);
+                            TotalExteriorForce += Mass / Controllables.Count * CalculateGravitationalRepulsion(e, otherWE);
                         }
                     }
                 }
@@ -393,9 +399,9 @@ namespace NetworkIO.src.controllers
             EntityController cNew = (EntityController)this.MemberwiseClone();
             cNew.collisionDetector = new CollidableCircle(Position, radius);
             cNew.projectiles = new List<Queue<Projectile>>();
-            cNew.Entities = new List<WorldEntity>();
+            cNew.Controllables = new List<IControllable>();
             cNew.Velocity = Vector2.Zero;
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
                 cNew.AddEntity((WorldEntity)e.Clone());
             cNew.SeperatedEntities = new List<EntityController>();
             foreach (EntityController ec in SeperatedEntities)
@@ -408,7 +414,7 @@ namespace NetworkIO.src.controllers
                 ec.UpdatePosition();
                 ec.UpdateRadius();
                 ec.MoveAndRotateEntities();
-                foreach (WorldEntity w in ec.Entities)
+                foreach (WorldEntity w in ec.Controllables)
                     ec.ConnectToOthers(w);
             }
             
@@ -420,7 +426,7 @@ namespace NetworkIO.src.controllers
             MoveAndRotateEntities();
             Vector2 previousPosition = Position;
             base.Update(gameTime);
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
             {
                 e.Position -= Position - previousPosition;
                 e.Velocity += Position - previousPosition;
@@ -435,7 +441,7 @@ namespace NetworkIO.src.controllers
         {
             List<EntityController> toBeRemoved = new List<EntityController>();
             foreach (EntityController ec in SeperatedEntities)
-                if (ec.Entities.Count == 0)
+                if (ec.Controllables.Count == 0)
                     toBeRemoved.Add(ec);
             foreach (EntityController ec in toBeRemoved)
                 SeperatedEntities.Remove(ec);
@@ -444,7 +450,7 @@ namespace NetworkIO.src.controllers
         private void MoveAndRotateEntities()
         {
             float dRotation = oldRotation - Rotation;
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
             {
                 Vector2 relativePosition = e.Position - Position;
                 Vector2 newRelativePosition = Vector2.Transform(relativePosition, Matrix.CreateRotationZ(-dRotation));
@@ -461,7 +467,7 @@ namespace NetworkIO.src.controllers
             else if (c is EntityController)
                 return collisionDetector.CollidesWith(((EntityController)c).collisionDetector);
             if (c is WorldEntity && Vector2.Distance(c.Position, Position) < Radius/*collisionDetector.CollidesWith(((WorldEntity)c).collisionDetector*/)
-                foreach (WorldEntity e in Entities)
+                foreach (WorldEntity e in Controllables)
                     if (e.CollidesWith((WorldEntity)c))
                         return true;
             return false;
@@ -469,7 +475,7 @@ namespace NetworkIO.src.controllers
 
         public override void Draw(SpriteBatch spritebatch)
         {
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
                 e.Draw(spritebatch);
             foreach (EntityController e in SeperatedEntities)
                 e.Draw(spritebatch);
@@ -477,7 +483,7 @@ namespace NetworkIO.src.controllers
 
         public override bool Contains(Vector2 point)
         {
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
                 if (e.Contains(point))
                     return true;
             /*foreach (EntityController ec in SeperatedEntities)
@@ -489,19 +495,19 @@ namespace NetworkIO.src.controllers
         public void AddAvailableLinkDisplays()
         {
             List<WorldEntity> tempEntities = new List<WorldEntity>();
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
             {
                 if (!e.IsFiller) { 
                     List<WorldEntity> fillers = e.FillEmptyLinks();
                     foreach (WorldEntity ee in fillers)
-                        if(!Entities.Contains(ee))
+                        if(!Controllables.Contains(ee))
                             tempEntities.Add(ee);
                 }
             }
             foreach (WorldEntity eT in tempEntities)
             {
                 bool overlaps = false;
-                foreach (WorldEntity eE in Entities)
+                foreach (WorldEntity eE in Controllables)
                     if (eT.CollidesWith(eE))//eT.Contains(eE.Position) || eE.Contains(eT.Position))
                         overlaps = true;
                 if (!overlaps)
@@ -524,7 +530,7 @@ namespace NetworkIO.src.controllers
                 entities.Remove(e);
             foreach(WorldEntity e in entities)
                 e.ClearEmptyLinks();*/
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
             {
                 if (e.IsFiller)
                 {
@@ -534,17 +540,17 @@ namespace NetworkIO.src.controllers
                 }
             }
             foreach (WorldEntity e in tempEntities)
-                Entities.Remove(e);
+                Controllables.Remove(e);
             foreach (EntityController ec in SeperatedEntities)
                 ec.ClearAvailableLinks();
             UpdateRadius();
         }
         public bool ReplaceEntity(WorldEntity eOld, WorldEntity eNew)
         {
-            if (Entities.Contains(eOld))
+            if (Controllables.Contains(eOld))
             {
                 eNew.ConnectTo(eOld.Links[0].connection.Entity, eOld.Links[0].connection);
-                Entities.Remove(eOld);
+                Controllables.Remove(eOld);
                 eOld.Links[0].SeverConnection();
                 if (!AddEntity(eNew))
                 {
@@ -559,7 +565,7 @@ namespace NetworkIO.src.controllers
         }
         public override IControllable ControllableContainingInSpace(Vector2 position, Matrix transform)
         {
-            foreach (WorldEntity e in Entities)
+            foreach (WorldEntity e in Controllables)
                 if (e.ControllableContainingInSpace(position, transform) != null)
                     return e;
             /*foreach (EntityController ec in SeperatedEntities)

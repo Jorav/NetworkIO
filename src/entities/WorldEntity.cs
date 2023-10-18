@@ -19,7 +19,6 @@ namespace NetworkIO.src
         public bool IsVisible { get { return sprite.isVisible; } set { sprite.isVisible = value; } }
         public CollidableRectangle collisionDetector;
         public CollidableRectangle oldCollisionDetector;
-        public EntityController EntityController { get; set; }
         public override Vector2 Position { get { return position; } 
             set
             { 
@@ -82,9 +81,9 @@ namespace NetworkIO.src
             Links = new List<Link>();
             AddLinks();
             if (entityController == null)
-                this.EntityController = new EntityController(position, this);
+                this.Manager = new EntityController(position, this);
             else
-                this.EntityController = entityController;
+                this.Manager = entityController;
         }
         #region Methods
         protected virtual void AddLinks()
@@ -104,8 +103,8 @@ namespace NetworkIO.src
             Velocity = Vector2.Zero;
             IsVisible = false;
             IsCollidable = false;
-            if (EntityController != null)
-                EntityController.RemoveEntity(this);
+            if (Manager != null)
+                Manager.Remove(this);
             foreach(Link l in Links)
             {
                 l.SeverConnection();
@@ -175,10 +174,10 @@ namespace NetworkIO.src
                 }
             }
             else if (c is Controller)
-                foreach (IControllable cc in ((Controller)c).controllables)
+                foreach (IControllable cc in ((Controller)c).Controllables)
                     Collide(cc);
             else if (c is EntityController)
-                foreach (IControllable cc in ((EntityController)c).Entities)
+                foreach (IControllable cc in ((EntityController)c).Controllables)
                     Collide(cc);
         }
 

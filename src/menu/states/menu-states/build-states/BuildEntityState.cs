@@ -20,13 +20,13 @@ namespace NetworkIO.src.menu.states.menu_states
         EntityButton clicked;
         EntityButton previouslyClicked;
 
-        public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, BuildOverviewState buildOverviewState, Controller controllerEdited) : base(game, graphicsDevice, content, previousState, input, controllerEdited)
+        public BuildEntityState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, BuildOverviewState buildOverviewState, Controller controllerEdited, MenuController menuController = null) : base(game, graphicsDevice, content, previousState, input, controllerEdited, menuController)
         {
             this.buildOverviewState = buildOverviewState;
             components = new List<IComponent>();
-            menuController.AddOpenLinks();
-            menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
-            this.entityEdited = controllerEdited.controllables[0];
+            this.menuController.AddOpenLinks();
+            this.menuController.Camera.Zoom = this.menuController.Camera.BuildMenuZoom;
+            this.entityEdited = controllerEdited.Controllables[0];
             idToBeAddded = IDs.COMPOSITE;
             float scale = 3;
             EntityButton addRectangularHullButton = new EntityButton(new Sprite(EntityFactory.rectangularHull), new Sprite(EntityFactory.entityButton), true)
@@ -159,14 +159,14 @@ namespace NetworkIO.src.menu.states.menu_states
                     interactWithMenuController = false;
             if (interactWithMenuController)
             {
-                if (menuController.addControllable)
+                if (menuController.clickedOnControllable)
                 {
                     IControllable clickedC = menuController.controllableClicked;
                     if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
                     {
                         menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
                     }
-                    menuController.addControllable = false;
+                    menuController.clickedOnControllable = false;
                 }
                 if (menuController.removeEntity)
                 {
@@ -181,20 +181,9 @@ namespace NetworkIO.src.menu.states.menu_states
                 }
                 if (menuController.clickedOutside)
                 {
-                    menuController.ClearOpenLinks();
-                    buildOverviewState.menuController.controllables.Remove(entityEdited);
-                    foreach (IControllable c in menuController.controllables)
-                    {
-
-                        buildOverviewState.menuController.AddControllable(c);
-
-                    }
-                    buildOverviewState.menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
-                    buildOverviewState.menuController.Camera.AutoAdjustZoom = true;
-                    buildOverviewState.menuController.Camera.InBuildScreen = true;
+                    menuController.DeFocus();
                     buildOverviewState.previousScrollValue = previousScrollValue;
                     buildOverviewState.currentScrollValue = currentScrollValue;
-                    buildOverviewState.menuController.newClickRequired = true;
                     game.ChangeState(buildOverviewState);
                     menuController.clickedOutside = false;
                 }
@@ -204,18 +193,19 @@ namespace NetworkIO.src.menu.states.menu_states
                 menuController.newClickRequired = true;
                 menuController.clickedOutside = false;
                 menuController.removeEntity = false;
-                menuController.addControllable = false;
+                menuController.clickedOnControllable = false;
             }
             if (input.BuildClicked)
             {
-                menuController.ClearOpenLinks();
-                buildOverviewState.menuController.controllables.Remove(entityEdited);
-                foreach (IControllable c in menuController.controllables)
+                /*menuController.ClearOpenLinks();
+                buildOverviewState.menuController.Remove(entityEdited);
+                foreach (IControllable c in menuController.Controllables)
                 {
 
                     buildOverviewState.menuController.AddControllable(c);
 
-                }
+                }*/
+                menuController.DeFocus();
                 buildOverviewState.BuildClicked();
             }
         }

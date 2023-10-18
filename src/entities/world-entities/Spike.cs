@@ -15,7 +15,7 @@ namespace NetworkIO.src.movable.entities
         public void Collide(WorldEntity e)
         {
             e.Health -= 10;
-            e.EntityController.Collide(this); ;
+            e.Manager.Collide(this); ;
         }
     }
 }

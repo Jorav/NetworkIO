@@ -24,7 +24,7 @@ namespace NetworkIO
         
         public override void Update(GameTime gameTime) //OBS: assumes background sprites not rotated
         {
-            foreach (WorldEntity e in controllables)
+            foreach (WorldEntity e in Controllables)
             {
                 Vector2 cameraChange = camera.Position - camera.PreviousPosition;
                 Vector2 positionChange = cameraChange* (1 - relativeSpeed) + movement*relativeSpeed;

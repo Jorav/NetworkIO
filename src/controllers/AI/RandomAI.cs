@@ -23,7 +23,7 @@ namespace NetworkIO.src.controllers
         protected void Accelerate()
         {
             double angle = r.NextDouble() * Math.PI * 2;
-            foreach (WorldEntity e in controllables)
+            foreach (WorldEntity e in Controllables)
             {
                     Vector2 accelerationVector = new Vector2((float)Math.Cos(angle), (float) Math.Sin(angle));
                     accelerationVector.Normalize();

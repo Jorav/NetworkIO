@@ -17,15 +17,18 @@ namespace NetworkIO.src.menu.states.menu_states
         public int previousScrollValue;
         public int currentScrollValue;
         private readonly Sprite overlay;
-        public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited) : base(game, graphicsDevice, content, input)
+        public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited, MenuController menuController = null) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
-            this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
+            if (menuController == null)
+                this.menuController = new MenuController(CopyEntitiesFromController(controllerEdited), input);
+            else
+                this.menuController = menuController;
             this.previousState = previousState;
             if(previousState is IPlayable p)
                 p.Player.actionsLocked = true;
-            menuController.Camera.InBuildScreen = true;
-            menuController.Camera.AutoAdjustZoom = true;
+            this.menuController.Camera.InBuildScreen = true;
+            this.menuController.Camera.AutoAdjustZoom = true;
             currentScrollValue = input.ScrollValue;
             overlay = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
             overlay.Scale = overlay.Height / Game1.ScreenHeight;
@@ -35,7 +38,7 @@ namespace NetworkIO.src.menu.states.menu_states
         protected List<IControllable> CopyEntitiesFromController(Controller controller)
         {
             List<IControllable> collidables = new List<IControllable>();
-            foreach (IControllable c in controller.controllables)
+            foreach (IControllable c in controller.Controllables)
                 collidables.Add((IControllable)c.Clone());
             return collidables;
         }
@@ -49,8 +52,8 @@ namespace NetworkIO.src.menu.states.menu_states
                 menuController.Camera.Zoom /= (float)Math.Pow(0.999, (currentScrollValue - previousScrollValue));
                 menuController.Camera.AutoAdjustZoom = false;
             }
-            base.Update(gameTime);
             menuController.Update(gameTime);
+            base.Update(gameTime);
             if(previousState is GameState gameS)
                 gameS.RunGame(gameTime);
             if (input.PauseClicked)

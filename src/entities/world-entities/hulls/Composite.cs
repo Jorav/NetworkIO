@@ -16,9 +16,9 @@ namespace NetworkIO.src.entities.hulls
         {
             this.capacity = capacity;
             if (controller == null)
-                this.EntityController = new EntityController(position, this);
+                this.Manager = new EntityController(position, this);
             else
-                this.EntityController = controller;
+                this.Manager = controller;
             components = new WorldEntity[capacity];
         }
         /**
@@ -29,15 +29,6 @@ namespace NetworkIO.src.entities.hulls
                 components[pos] = e;
             }
         }*/
-
-        public void AddEntity(WorldEntity eToBeAdded, WorldEntity ePosition)
-        {
-            EntityController.AddEntity(eToBeAdded);
-            //if (Links.Count > pos && e.Links.Count > 0)
-                //Links[pos].Connect(e.Links[0].Connect(e));
-            //else
-                //throw new Exception("Cannot connect these links");
-        }
 
         public override void Update(GameTime gameTime)
         {

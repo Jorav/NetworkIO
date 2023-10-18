@@ -47,6 +47,11 @@ namespace NetworkIO.src
              * Rotate, calculate course, check collisions, update course, move, base.update
              */
         }
+        /*
+        public override void AddControllable(IControllable c)
+        {
+            base.AddControllable(c);
+        }*/
 
         protected void Accelerate() //TODO(lowprio): remove vector 2 instanciation from angle calculation (inefficient, high computational req)
         {
@@ -82,7 +87,7 @@ namespace NetworkIO.src
             if (!accelerationVector.Equals(Vector2.Zero))
             {
                 accelerationVector.Normalize();
-                foreach (IControllable c in controllables)
+                foreach (IControllable c in Controllables)
                     c.Accelerate(accelerationVector);
             }
         }
