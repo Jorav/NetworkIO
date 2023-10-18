@@ -274,12 +274,10 @@ namespace NetworkIO.src
             foreach (IControllable c in Controllables)
                 c.Accelerate(directionalVector);
         }
-
-
         public virtual object Clone()
         {
             Controller cNew = (Controller)this.MemberwiseClone();
-            cNew.Controllables = new List<IControllable>();
+            cNew.controllables = new List<IControllable>();
             foreach (IControllable c in Controllables)
                 cNew.AddControllable((IControllable)c.Clone());
             cNew.collisionDetector = new CollidableCircle(Position, radius);

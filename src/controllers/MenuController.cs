@@ -12,19 +12,20 @@ namespace NetworkIO.src.controllers
     public class MenuController : Controller
     {
         public Camera Camera { get; private set; }
-        public List<IControllable> oldControllables;
         Input input;
         public bool clickedOutside;
         private bool previouslyLeftMBDown;
         private bool previouslyRightMBDown;
         public IControllable controllableClicked;
         public bool newClickRequired;
-        public bool addControllable;
+        public bool clickedOnControllable;
         public bool removeEntity;
+        public bool focusOn;
+        public bool maxZoom;
+        private Stack<(IController, List<IControllable>)> previousControllables;
         //public override Vector2 Position { get { return base.Position; } set { base.Position = value; Camera.Position = value; } }
         public MenuController(List<IControllable> collidables, Input input) : base(collidables)
         {
-            oldControllables = Controllables;
             Camera = new Camera(this, true);
             Camera.AutoAdjustZoom = true;
             Camera.Position = Position;
@@ -32,6 +33,7 @@ namespace NetworkIO.src.controllers
             newClickRequired = true;
             previouslyLeftMBDown = input.LeftMBDown;
             previouslyRightMBDown = input.RightMBDown;
+            previousControllables = new Stack<(IController, List<IControllable>)>();
     }
 
         public void AddOpenLinks()
@@ -100,16 +102,15 @@ namespace NetworkIO.src.controllers
         {
             if (input.LeftMBDown)
             {
-                if (controllableClicked == null && input.LeftMBDown && !previouslyLeftMBDown)
+                if (controllableClicked != null && !newClickRequired)
+                {
+                    clickedOnControllable = true;
+                }
+                else if (controllableClicked == null && input.LeftMBDown && !previouslyLeftMBDown && previousControllables.Count != 0)
                 {
                     clickedOutside = true;
                     newClickRequired = true;
-                }
-
-                else if (controllableClicked != null && !newClickRequired)
-                {
-                    addControllable = true;
-                }
+                } 
             }
         }
 
@@ -132,53 +133,95 @@ namespace NetworkIO.src.controllers
         }
 
         public void FocusOn(IControllable c)
-        {/*
-            ClearOpenLinks();
-            if (c is Controller cc)
+        {
+            if (!maxZoom)
             {
-                SetControllables(cc.GetControllables());
-                controllerEdited = cc;
-            }
-            else if (c is EntityController ec)
-            {
-                oldControllables.Push(controllables);
-                //oldControllables.Push(controllables);
-                SetControllables(new List<IControllable>() { ec });
-                //SetControllables((List<IControllable>)(ec.Entities));
-                AddOpenLinks();
-                maxZoom = true;
-            }
+                ClearOpenLinks();
+                if (c is Controller cc)
+                {//YOU HAVE TO ADD THE SPECIFIC CONTROLLER TO PREVIOUSCONTROLLABLES INSTEAD OF THE LIST SO THAT YOU CAN ADD ENTITYCONTROLLER DIRECTLY TO IT
+                    previousControllables.Push((cc,Controllables));
+                    Controllables = cc.Controllables;
+                    //Controllables = new List<IControllable>(cc.Controllables.ToArray());
+                    
+                }
+                else if (c is EntityController ec)
+                {
+                    previousControllables.Push((ec,Controllables));
+                    Controllables = new List<IControllable> { ec };
+                    AddOpenLinks();
+                }
 
-            else if (c is WorldEntity we)
+                else if (c is WorldEntity we)
+                {
+                    //if (we.Manager != null)
+                    //Controllables = new List<IControllable> { we.Manager };
+                    if (we.Manager != null && we.Manager is EntityController e)
+                    {
+                        previousControllables.Push((e,Controllables));
+                        Controllables = new List<IControllable> { e };
+                    }
+
+                    else
+                    {
+                        previousControllables.Push((this,Controllables));
+                        Controllables = new List<IControllable> { we };
+                    }
+                        
+                    
+                    AddOpenLinks();
+                    maxZoom = true;
+                }
+                Camera.InBuildScreen = true;
+                newClickRequired = true;
+            }
+        }
+
+        public void Reset()
+        {
+            while (previousControllables.Count < 0)
+                DeFocus();
+        }
+
+        public void DeFocus()
+        {
+            ClearOpenLinks();
+            maxZoom = false;
+            if (previousControllables.Count != 0)
             {
-                oldControllables.Push(controllables);
-                if (we.EntityController != null)
-                    SetControllables(new List<IControllable> { we.EntityController });
-                else
-                    SetControllables(new List<IControllable> { we });
-                AddOpenLinks();
-                maxZoom = true;
+                (IController, List<IControllable>) oldList = previousControllables.Pop();
+                if (oldList.Item1 is EntityController ec) {
+                    foreach (IControllable c in Controllables)
+                    {
+                        if (!oldList.Item2.Contains(c))
+                            oldList.Item2.Add(c);
+                    }
+                    Controllables = oldList.Item2;
+                }
+                else if (oldList.Item1 is Controller cc)
+                {
+                    /*foreach (IControllable c in Controllables)
+                    {
+                        if (!cc.Controllables.Contains(c))
+                            cc.Controllables.Add(c);
+                    }*/
+                    foreach (IControllable c in Controllables)
+                    {
+                        if (!cc.Controllables.Contains(c))
+                            cc.Controllables.Add(c);
+                    }
+                    Controllables = oldList.Item2;
+                }
+                //if (c is Entity e)
+                //e.Manager.Controllables.Add(e);
+                /*if (c.Manager is Controller && !oldList.Contains(c))
+                    if (oldList.Contains(c.Manager))
+                        c.Manager.Controllables.Add(c);
+                    else
+                        oldList.Add(c);*/
+
             }
             Camera.InBuildScreen = true;
-            newClickRequired = true;*/
-        }
-        public void DeFocus()
-        {/*
-            ClearOpenLinks();
-            if (oldControllables.Count != 0)
-            {
-                List<IControllable> controllables = this.controllables;
-                SetControllables(oldControllables.Pop());
-                if (controllerEdited != null)
-                    controllerEdited.SetControllables(controllables);
-                else
-                    //AddControllable(c);
-                    foreach (IControllable c in controllables)
-                        if (!this.controllables.Contains(c))
-                            AddControllable(c);
-                maxZoom = false;
-            }
-            Camera.InBuildScreen = true;*/
+            newClickRequired = true;
         }
 
         /**
@@ -216,6 +259,7 @@ namespace NetworkIO.src.controllers
                     {
                         ClearOpenLinks();
                         AddOpenLinks();
+                        ec.Manager = this;
                         return replaced;
                     }
                 }

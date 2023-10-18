@@ -148,6 +148,7 @@ namespace NetworkIO.src.controllers
                     }
                     UpdatePosition();
                     UpdateRadius();
+                    we.Manager = null;
                     return true;
                 }
                 else

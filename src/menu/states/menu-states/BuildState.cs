@@ -52,8 +52,8 @@ namespace NetworkIO.src.menu.states.menu_states
                 menuController.Camera.Zoom /= (float)Math.Pow(0.999, (currentScrollValue - previousScrollValue));
                 menuController.Camera.AutoAdjustZoom = false;
             }
-            base.Update(gameTime);
             menuController.Update(gameTime);
+            base.Update(gameTime);
             if(previousState is GameState gameS)
                 gameS.RunGame(gameTime);
             if (input.PauseClicked)

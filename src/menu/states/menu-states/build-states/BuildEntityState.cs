@@ -159,14 +159,14 @@ namespace NetworkIO.src.menu.states.menu_states
                     interactWithMenuController = false;
             if (interactWithMenuController)
             {
-                if (menuController.addControllable)
+                if (menuController.clickedOnControllable)
                 {
                     IControllable clickedC = menuController.controllableClicked;
                     if (clickedC is WorldEntity clickedE && clickedE.IsFiller)
                     {
                         menuController.ReplaceEntity(clickedE, EntityFactory.Create(menuController.Position, idToBeAddded));
                     }
-                    menuController.addControllable = false;
+                    menuController.clickedOnControllable = false;
                 }
                 if (menuController.removeEntity)
                 {
@@ -181,20 +181,9 @@ namespace NetworkIO.src.menu.states.menu_states
                 }
                 if (menuController.clickedOutside)
                 {
-                    menuController.ClearOpenLinks();
-                    buildOverviewState.menuController.Remove(entityEdited);
-                    foreach (IControllable c in menuController.Controllables)
-                    {
-
-                        buildOverviewState.menuController.AddControllable(c);
-
-                    }
-                    buildOverviewState.menuController.Camera.Zoom = menuController.Camera.BuildMenuZoom;
-                    buildOverviewState.menuController.Camera.AutoAdjustZoom = true;
-                    buildOverviewState.menuController.Camera.InBuildScreen = true;
+                    menuController.DeFocus();
                     buildOverviewState.previousScrollValue = previousScrollValue;
                     buildOverviewState.currentScrollValue = currentScrollValue;
-                    buildOverviewState.menuController.newClickRequired = true;
                     game.ChangeState(buildOverviewState);
                     menuController.clickedOutside = false;
                 }
@@ -204,18 +193,19 @@ namespace NetworkIO.src.menu.states.menu_states
                 menuController.newClickRequired = true;
                 menuController.clickedOutside = false;
                 menuController.removeEntity = false;
-                menuController.addControllable = false;
+                menuController.clickedOnControllable = false;
             }
             if (input.BuildClicked)
             {
-                menuController.ClearOpenLinks();
+                /*menuController.ClearOpenLinks();
                 buildOverviewState.menuController.Remove(entityEdited);
                 foreach (IControllable c in menuController.Controllables)
                 {
 
                     buildOverviewState.menuController.AddControllable(c);
 
-                }
+                }*/
+                menuController.DeFocus();
                 buildOverviewState.BuildClicked();
             }
         }
