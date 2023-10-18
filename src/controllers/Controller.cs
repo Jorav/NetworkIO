@@ -73,7 +73,7 @@ namespace NetworkIO.src
                 }
             }
         }
-        public void AddControllable(IControllable c)
+        public virtual void AddControllable(IControllable c)
         {
             if (controllables == null)
             {
