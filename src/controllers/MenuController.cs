@@ -173,6 +173,7 @@ namespace NetworkIO.src.controllers
                 }
                 Camera.InBuildScreen = true;
                 newClickRequired = true;
+                Camera.Update();
             }
         }
 
@@ -222,6 +223,7 @@ namespace NetworkIO.src.controllers
             }
             Camera.InBuildScreen = true;
             newClickRequired = true;
+            Camera.Update();
         }
 
         /**
