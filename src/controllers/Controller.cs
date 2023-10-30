@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.collidables;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
+using NetworkIO.src.entities.hulls;
 using NetworkIO.src.menu;
 using NetworkIO.src.movable;
 using NetworkIO.src.utility;
@@ -104,8 +105,8 @@ namespace NetworkIO.src
 
         public virtual void Update(GameTime gameTime)
         {
-            RemoveEmptyControllers();
             UpdateControllable(gameTime);
+            RemoveEmptyControllers();
             AddSeperatedEntities();
             UpdatePosition();
             UpdateRadius();
@@ -120,7 +121,7 @@ namespace NetworkIO.src
             foreach (IControllable c in Controllables)
                 if (c is WorldEntity we && !we.IsAlive)
                     toBeRemoved.Add(we);
-                else if (c is EntityController ec && ec.Controllables.Count == 0)
+                else if (c is EntityController ec && (ec.Controllables.Count == 0 || !ec.IsAlive))
                     toBeRemoved.Add(ec);
                 else if (c is Controller cc && Controllables.Count == 0)
                     toBeRemoved.Add(cc);
@@ -135,7 +136,10 @@ namespace NetworkIO.src
                 if (c is EntityController ec)
                     foreach (EntityController ecSeperated in ec.SeperatedEntities)
                     {
-                        seperatedEntities.Add(ecSeperated);
+                        if (ecSeperated.Controllables.Count == 1 && !(ecSeperated.Controllables[0] is Composite))
+                            ;//((WorldEntity)(ecSeperated.Controllables[0])).Die();
+                        else
+                            seperatedEntities.Add(ecSeperated);
                     }
             foreach(EntityController ec in seperatedEntities)
             {

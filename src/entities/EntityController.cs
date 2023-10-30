@@ -23,6 +23,7 @@ namespace NetworkIO.src.controllers
         public CollidableCircle collisionDetector;
         private IDs team;
         public override IDs Team { get { return team; } set { team = value; foreach (IControllable c in Controllables) c.Team = value; } }
+        public bool IsAlive { get; set; } = true;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public new float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
@@ -472,6 +473,10 @@ namespace NetworkIO.src.controllers
             {
                 Remove(e);
             }
+            if (Controllables.Count == 1 && !(Controllables[0].GetType().IsSubclassOf(typeof(Composite))))
+                IsAlive = false;
+            else if (Controllables.Count == 0)
+                IsAlive = false;
         }
 
         protected void RemoveEmptyControllers()
