@@ -293,67 +293,83 @@ namespace NetworkIO.src.controllers
         {
             if (controllable is Controller c)
                 foreach (IControllable iC in c.Controllables)
-                        Collide(iC);
-            else if (controllable is EntityController eC)
+                    Collide(iC);
+            else
             {
-                if (CollidesWith(controllable))
+                if (controllable is EntityController eC)
                 {
-                    foreach (WorldEntity e in Controllables)
-                        foreach (WorldEntity eCE in eC.Controllables)
-                            if(!e.IsFiller && !eCE.IsFiller)
-                                Collide(e, eCE);
-                }/*
-                foreach (Queue<Projectile> pList in projectiles)
-                    foreach (Projectile p in pList)
-                        foreach (WorldEntity eE in eC.entities) //OBS need adaption for new structure
-                            Collide(p, eE);*/
-            }
-            else if (controllable is WorldEntity wE)
-            {
+                    if (CollidesWith(controllable))
+                    {
+                        foreach (WorldEntity e in Controllables)
+                            foreach (WorldEntity eCE in eC.Controllables)
+                                if (!e.IsFiller && !eCE.IsFiller)
+                                    Collide(e, eCE);
+                    }
+                }
+                else if (controllable is WorldEntity wE)
+                {
                     foreach (WorldEntity e in Controllables)
                         if (!e.IsFiller && !wE.IsFiller)
                             Collide(e, wE);
-                    /*
-                foreach (Queue<Projectile> pList in projectiles)
-                    foreach (Projectile p in pList)
-                        Collide(p, wE);*/
+                }
             }
-            
-            
         }
-        private void Collide(WorldEntity e, WorldEntity eCE)
+
+        /**
+         * Support method for finding collissions between worldEntities and handling them correctly
+         */
+        private void Collide(WorldEntity eAffected, WorldEntity eOther)
         {
             bool collides = false;
-            if (e.CollidesWith(eCE))
+
+            //collision direct
+            if (eAffected.CollidesWith(eOther))
             {
                 collides = true;
-                TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position-e.Velocity, eCE.Position-eCE.Velocity, e.Velocity*e.Mass, eCE.Velocity*e.Mass);
-                TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position - eCE.Velocity, e.Radius)*(e.Mass+eCE.Mass)/2;
-                TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position - e.Velocity, eCE.Position - eCE.Velocity, e.Radius);
+                HandleCollision(eAffected, eOther, false, false);
             }
             else
             {
-                Vector2 distanceBeforeMoving = e.Position - e.Velocity - (eCE.Position - eCE.Velocity);
-                Vector2 distance = e.Position - eCE.Position;
-                if (Vector2.Dot(eCE.Velocity, distanceBeforeMoving) > Vector2.Dot(e.Velocity, distanceBeforeMoving) + distanceBeforeMoving.Length() && eCE.CollidesWithDuringMove(e))//if they move
+                Vector2 distanceBeforeMoving = eAffected.Position - eAffected.Velocity - (eOther.Position - eOther.Velocity);
+                Vector2 distance = eAffected.Position - eOther.Position;
+
+                //collision "from behind"
+                if (Vector2.Dot(eOther.Velocity, distanceBeforeMoving) > Vector2.Dot(eAffected.Velocity, distanceBeforeMoving) + distanceBeforeMoving.Length() && eOther.CollidesWithDuringMove(eAffected))//if they move
                 {
                     collides = true;
-                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position - e.Velocity, eCE.Position, e.Velocity * e.Mass, eCE.Velocity * e.Mass);
-                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position - e.Velocity, eCE.Position, e.Radius) * (e.Mass + eCE.Mass) / 2;
-                    TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
+                    HandleCollision(eAffected, eOther, true, false);
                 }
-                else if (Vector2.Dot(e.Velocity, -distanceBeforeMoving) > Vector2.Dot(eCE.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && eCE.CollidesWithDuringMove(e))
+
+                //collision "passing through"
+                else if (Vector2.Dot(eAffected.Velocity, -distanceBeforeMoving) > Vector2.Dot(eOther.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && eOther.CollidesWithDuringMove(eAffected))
                 {
                     collides = true;
-                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Velocity * e.Mass, eCE.Velocity * e.Mass);
-                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(e.Position, eCE.Position - eCE.Velocity, e.Radius) * (e.Mass + eCE.Mass) / 2;
-                    TotalExteriorForce += 0.7f * Physics.CalculateOverlapRepulsion(Position, eCE.Position, e.Radius);
+                    HandleCollision(eAffected, eOther, false, true);
                 }
             }
-            if (collides && e is Spike s)
+        }
+
+        public void HandleCollision(WorldEntity eAffected, WorldEntity eOther, bool passesThroughFromBack = false, bool passesThroughFromFront = false)
+        {
+            if (passesThroughFromBack)
             {
-                s.Collide(eCE);
+                TotalExteriorForce += Physics.CalculateCollissionRepulsion(eAffected.Position - eAffected.Velocity, eOther.Position, eAffected.Velocity * eAffected.Mass, eOther.Velocity * eAffected.Mass);
+                TotalExteriorForce += 0.6f * Physics.CalculateOverlapRepulsion(eAffected.Position - eAffected.Velocity, eOther.Position, eAffected.Radius) * (eAffected.Mass + eOther.Mass) / 2;
+                TotalExteriorForce += 0.4f * Physics.CalculateOverlapRepulsion(Position, eOther.Position, eAffected.Radius);
             }
+            else if (passesThroughFromFront)
+            {
+                TotalExteriorForce += Physics.CalculateCollissionRepulsion(eAffected.Position, eOther.Position - eOther.Velocity, eAffected.Velocity * eAffected.Mass, eOther.Velocity * eAffected.Mass);
+                TotalExteriorForce += 0.6f * Physics.CalculateOverlapRepulsion(eAffected.Position, eOther.Position - eOther.Velocity, eAffected.Radius) * (eAffected.Mass + eOther.Mass) / 2;
+                TotalExteriorForce += 0.4f * Physics.CalculateOverlapRepulsion(Position, eOther.Position, eAffected.Radius);
+            }
+            else
+            {
+                TotalExteriorForce += Physics.CalculateCollissionRepulsion(eAffected.Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Velocity * eAffected.Mass, eOther.Velocity * eAffected.Mass);
+                TotalExteriorForce += 0.6f * Physics.CalculateOverlapRepulsion(eAffected.Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Radius) * (eAffected.Mass + eOther.Mass) / 2;
+                TotalExteriorForce += 0.4f * Physics.CalculateOverlapRepulsion(Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Radius);
+            }
+            eAffected.HandleCollision(eOther, passesThroughFromBack, passesThroughFromFront);
         }
 
         public void CollideProjectiles(IControllable collidable)
@@ -432,9 +448,26 @@ namespace NetworkIO.src.controllers
                 e.Velocity += Position - previousPosition;
                 e.Update(gameTime);
             }
-                
+            RemoveDeadControllers();
             foreach (EntityController ec in SeperatedEntities)
                 ec.Update(gameTime);
+        }
+
+        protected void RemoveDeadControllers()
+        {
+            List<IControllable> temp = new List<IControllable>();
+            foreach (WorldEntity e in Controllables)
+            {
+                if (!e.IsAlive)
+                {
+                    temp.Add(e);
+                    e.Die();
+                }
+            }
+            foreach (WorldEntity e in temp)
+            {
+                Remove(e);
+            }
         }
 
         protected void RemoveEmptyControllers()

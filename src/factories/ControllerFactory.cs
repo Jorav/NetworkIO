@@ -16,7 +16,7 @@ namespace NetworkIO.src.factories
             {
                 case IDs.CONTROLLER_DEFAULT: return new Controller(position);
                 case IDs.CHASER_AI: return new ChaserAI(position);
-                case IDs.Player: Controller c = new Controller(position); return c;
+                case IDs.PLAYER: Controller c = new Controller(position); return c;
                 default:
                     throw new NotImplementedException();
             }
@@ -28,7 +28,7 @@ namespace NetworkIO.src.factories
             {
                 case IDs.CONTROLLER_DEFAULT: return Controller.GetName();
                 case IDs.CHASER_AI: return ChaserAI.GetName();
-                case IDs.Player: return Player.GetName();
+                case IDs.PLAYER: return Player.GetName();
                 default:
                     throw new NotImplementedException();
             }

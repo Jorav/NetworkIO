@@ -66,6 +66,14 @@ namespace NetworkIO.src.entities
             base.Draw(sb);
         }
 
+        public override void InteractWith(List<IControllable> controllers)
+        {
+            base.InteractWith(controllers);
+            foreach (Projectile p in Projectiles)
+                foreach (IControllable c in controllers)
+                    p.Collide(c);
+        }
+
         public override object Clone()
         {
             Shooter sNew = (Shooter)base.Clone();

@@ -67,7 +67,7 @@ namespace NetworkIO.src
         public bool IsFiller { get; set; }
         public float Scale { get { return sprite.Scale; } set { sprite.Scale = value; collisionDetector.Scale = value; oldCollisionDetector.Scale = value; foreach (Link l in Links) l.Scale = value;/*add collisionDetector scale in the future*/ } }
         #endregion
-        public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 1000, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
+        public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 10, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;
             collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
@@ -103,8 +103,6 @@ namespace NetworkIO.src
             Velocity = Vector2.Zero;
             IsVisible = false;
             IsCollidable = false;
-            if (Manager != null)
-                Manager.Remove(this);
             foreach(Link l in Links)
             {
                 l.SeverConnection();
@@ -152,6 +150,7 @@ namespace NetworkIO.src
         {
             if (c is WorldEntity e)
             {
+                //collision direct
                 if (CollidesWith(e))
                 {
                     TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position, Velocity * Mass, e.Velocity * e.Mass);
@@ -161,11 +160,15 @@ namespace NetworkIO.src
                 {
                     Vector2 distanceBeforeMoving = Position - Velocity - (e.Position - e.Velocity);
                     Vector2 distance = Position - e.Position;
+
+                    //collision "from behind"
                     if (Vector2.Dot(e.Velocity, distanceBeforeMoving) > Vector2.Dot(Velocity, distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))//if they move
                     {
                         TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position - Velocity, e.Position, Velocity*Mass, e.Velocity*e.Mass);
                         TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position - Velocity, e.Position, Radius) * (e.Mass + Mass) / 2;
                     }
+
+                    //collision "passing through"
                     else if (Vector2.Dot(Velocity, -distanceBeforeMoving) > Vector2.Dot(e.Velocity, -distanceBeforeMoving) + distanceBeforeMoving.Length() && e.CollidesWithDuringMove(this))
                     {
                         TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, e.Position - e.Velocity, Velocity * Mass, e.Velocity * e.Mass);
@@ -179,6 +182,27 @@ namespace NetworkIO.src
             else if (c is EntityController)
                 foreach (IControllable cc in ((EntityController)c).Controllables)
                     Collide(cc);
+        }
+
+        public virtual void HandleCollision(WorldEntity eOther, bool passesThroughFromBack = false, bool passesThroughFromFront = false)
+        {
+            if (!(Manager != null && Manager is EntityController))
+            {
+                if (passesThroughFromBack)
+                {
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position - Velocity, eOther.Position, Radius) * (eOther.Mass + Mass) / 2;
+                }
+                else if (passesThroughFromFront)
+                {
+                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, eOther.Position - eOther.Velocity, Velocity * Mass, eOther.Velocity * eOther.Mass);
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, eOther.Position - eOther.Velocity, Radius) * (eOther.Mass + Mass) / 2;
+                }
+                else
+                {
+                    TotalExteriorForce += Physics.CalculateCollissionRepulsion(Position, eOther.Position, Velocity * Mass, eOther.Velocity * eOther.Mass);
+                    TotalExteriorForce += Physics.CalculateOverlapRepulsion(Position, eOther.Position, Radius) * (eOther.Mass + Mass) / 2;
+                }
+            }
         }
 
         public override object Clone()

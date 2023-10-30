@@ -47,5 +47,11 @@ namespace NetworkIO.src.movable
             }
             return Vector2.Zero;
         }
+
+        public virtual void InteractWith(List<IControllable> controllers)
+        {
+            foreach (IControllable c in controllers)
+                Collide(c);
+        }
     }
 }

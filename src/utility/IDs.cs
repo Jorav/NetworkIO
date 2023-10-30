@@ -18,14 +18,16 @@ namespace NetworkIO.src.utility
         TRIANGULAR_90ANGLE_COMPOSITE,
         EMPTY_LINK,
         ENGINE,
+        #endregion
 
+        #region Utilities
         CLOUD,
         SUN,
         ENTITY_BUTTON,
         #endregion
         
         #region Controllers
-        Player,
+        PLAYER,
         CONTROLLER_DEFAULT,
         CHASER_AI,
         CIRCULAR_AI,
@@ -33,6 +35,12 @@ namespace NetworkIO.src.utility
         RANDOM_AI,
         #endregion
 
+        #region TEAMS
+        TEAM_NEUTRAL_HOSTILE,
+        TEAM_NEUTRAL_FRIENDLY,
+        TEAM_PLAYER,
+        TEAM_AI,
+        #endregion
 
 
     }

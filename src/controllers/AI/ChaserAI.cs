@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -25,8 +26,8 @@ namespace NetworkIO.src.controllers
         }
         protected void Rotate()
         {
-            //RotateTo(enemy.controllables[0].Position);
-            RotateTo(enemy.Position);
+            if(enemy != null)
+                RotateTo(enemy.Position);
         }
         protected void Accelerate()
         {
@@ -48,6 +49,21 @@ namespace NetworkIO.src.controllers
                     c.Accelerate(accelerationVector);
                 }
             }
+        }
+
+        public override void InteractWith(List<IControllable> controllers)
+        {
+            base.InteractWith(controllers);
+            Controller closest = null;
+            foreach (IControllable controllable in controllers)
+                if (controllable is Controller c)
+                    if (c != this && (c.Team == IDs.TEAM_PLAYER || c.Team == IDs.TEAM_NEUTRAL_HOSTILE))
+                        if (closest == null)
+                            closest = c;
+                        else if ((Position - closest.Position).Length()>(Position-c.Position).Length())
+                            closest = c;
+            //TODO: Make sure this chases actual entities
+            enemy = closest;
         }
         public new static String GetName()
         {

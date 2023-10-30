@@ -82,7 +82,7 @@ namespace NetworkIO.src.menu.states
             else if (Player.Input.BuildClicked)
                 if (Player.Controllables != null && Player.Controllables.Count>0)
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, Player));
-            if (Keyboard.GetState().IsKeyDown(Keys.Back) && previousState != null)
+            if (input.EnterClicked && previousState != null)
             {
                 game.ChangeState(previousState);
                 if (previousState is IPlayable p)
@@ -93,12 +93,16 @@ namespace NetworkIO.src.menu.states
 
         public void RunGame(GameTime gameTime)
         {
+
+            //UPDATE
             foreach (IControllable c in controllers)
                 c.Update(gameTime);
-            foreach (IControllable c1 in controllers)
-                foreach (IControllable c2 in controllers)
-                    if (c1 != c2)
-                        c1.Collide(c2);
+
+            //INTERACT
+            foreach (IControllable c in controllers)
+                c.InteractWith(controllers);
+
+            //BACKGROUNDS
             foreach (Background b in backgrounds)
                 b.Update(gameTime);
         }

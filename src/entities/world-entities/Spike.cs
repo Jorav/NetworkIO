@@ -11,11 +11,21 @@ namespace NetworkIO.src.movable.entities
         public Spike(Sprite sprite, Vector2 position) : base(sprite, position)
         {
         }
-
-        public void Collide(WorldEntity e)
+        public override void HandleCollision(WorldEntity eOther, bool passesThroughFromBack = false, bool passesThroughFromFront = false)
         {
-            e.Health -= 10;
-            e.Manager.Collide(this); ;
+            base.HandleCollision(eOther, passesThroughFromBack, passesThroughFromFront);
+            eOther.Health -= 1;
+            Vector2 distance = (eOther.Position - Position);
+            distance.Normalize();
+            if (eOther.Manager != null && eOther.Manager is EntityController ec)
+            {
+                ec.Collide(this);
+                ec.Accelerate(distance * 10);
+            }
+            if (Manager != null)
+            {
+                Manager.Accelerate(-distance * 10);
+            }
         }
     }
 }

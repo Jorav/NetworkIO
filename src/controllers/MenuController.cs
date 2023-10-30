@@ -279,7 +279,7 @@ namespace NetworkIO.src.controllers
                     ec.Remove(clickedE);
             }
             ClearOpenLinks();
-            AddSeperatedEntities();
+            //AddSeperatedEntities();
             RemoveEmptyControllers();
             //AddOpenLinks();
             UpdatePosition();

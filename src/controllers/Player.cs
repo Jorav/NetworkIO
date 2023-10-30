@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using NetworkIO.src.movable;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -16,14 +17,14 @@ namespace NetworkIO.src
         public bool actionsLocked;
         
         
-        public Player(List<IControllable> collidables, Input input) : base(collidables)
+        public Player(List<IControllable> collidables, Input input) : base(collidables, IDs.TEAM_PLAYER)
         {
             this.Input = input;
             Camera = new Camera(this);
             Camera.AutoAdjustZoom = true;
             Input.Camera = Camera;
         }
-        public Player(Input input, [OptionalAttribute]Vector2 position) : base()
+        public Player(Input input, [OptionalAttribute]Vector2 position) : base(position, IDs.TEAM_PLAYER)
         {
             this.Input = input;
             Camera = new Camera(this);

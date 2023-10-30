@@ -48,7 +48,7 @@ namespace NetworkIO.src.menu.states.menu_states
                 {
                     IDs.CONTROLLER_DEFAULT,
                     IDs.CHASER_AI,
-                    IDs.Player
+                    IDs.PLAYER
                 };
             this.IDSelected = ids[0];
             DropDownButton setControllerButton = new DropDownButton(new Sprite(buttonTexture), buttonFont, ids)
@@ -110,7 +110,7 @@ namespace NetworkIO.src.menu.states.menu_states
             if (input.BuildClicked)
                 if (clicked != null && clicked is Controller controller)
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
-                else
+            if(input.EnterClicked)
                     game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
@@ -207,7 +207,7 @@ namespace NetworkIO.src.menu.states.menu_states
             if (add)
             {
                 IControllable c;
-                if (IDSelected == IDs.Player)
+                if (IDSelected == IDs.PLAYER)
                 {
                     c = new EntityController(Camera.Position);
                     Player.AddControllable(c);

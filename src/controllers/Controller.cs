@@ -5,6 +5,7 @@ using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using NetworkIO.src.menu;
 using NetworkIO.src.movable;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -18,6 +19,7 @@ namespace NetworkIO.src
         public List<IControllable> Controllables { get { return controllables; } set { SetControllables(value); } }
         public CollidableCircle collisionDetector;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
+        public IDs Team { get; set; }
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
         public virtual Vector2 Position { get { return position; }
@@ -46,14 +48,16 @@ namespace NetworkIO.src
 
         protected Vector2 position;
 
-        public Controller(List<IControllable> controllables)
+        public Controller(List<IControllable> controllables, IDs team = IDs.TEAM_AI)
         {
+            Team = team;
             this.collisionDetector = new CollidableCircle(Position, Radius);
             SetControllables(controllables);
         }
 
-        public Controller([OptionalAttribute] Vector2 position)
+        public Controller([OptionalAttribute] Vector2 position, IDs team = IDs.TEAM_AI)
         {
+            Team = team;
             this.collisionDetector = new CollidableCircle(Position, Radius);
             if (position == null)
                 position = Vector2.Zero;
@@ -100,6 +104,7 @@ namespace NetworkIO.src
         {
             RemoveEmptyControllers();
             UpdateControllable(gameTime);
+            AddSeperatedEntities();
             UpdatePosition();
             UpdateRadius();
             ApplyInternalGravity();
@@ -312,6 +317,17 @@ namespace NetworkIO.src
         {
             c.Manager = null;
             return Controllables.Remove(c);
+        }
+
+        public virtual void InteractWith(List<IControllable> controllers)
+        {
+            foreach (IControllable c in controllers)
+                if (c != this)
+                {
+                    if(CollidesWith(c))
+                        Collide(c);
+                    CollideProjectiles(c);
+                }
         }
     }
 }

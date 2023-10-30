@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using NetworkIO.src.menu;
+using System.Collections.Generic;
 
 namespace NetworkIO.src
 {
@@ -17,6 +18,7 @@ namespace NetworkIO.src
          * returns the sub-IControllable that contains 'position' in space 'transform', null if none does
          */
         public IControllable ControllableContainingInSpace(Vector2 position, Matrix transform);
+        public void InteractWith(List<IControllable> controllers);
         //public void ApplyInternalRepulsion(IControllable controllable);
     }
 }

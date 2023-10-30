@@ -64,6 +64,7 @@ namespace NetworkIO
                 Right = Keys.D,
                 Pause = Keys.Escape,
                 Build = Keys.B,
+                Enter = Keys.Enter,
             };
 
             currentState = new MainMenu(this, GraphicsDevice, Content, Input);
