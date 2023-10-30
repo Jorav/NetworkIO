@@ -19,7 +19,8 @@ namespace NetworkIO.src
         public List<IControllable> Controllables { get { return controllables; } set { SetControllables(value); } }
         public CollidableCircle collisionDetector;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
-        public IDs Team { get; set; }
+        private IDs team;
+        public IDs Team { get { return team; } set { team = value; foreach (IControllable c in Controllables) c.Team = value; } }
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
         public virtual Vector2 Position { get { return position; }
@@ -50,18 +51,18 @@ namespace NetworkIO.src
 
         public Controller(List<IControllable> controllables, IDs team = IDs.TEAM_AI)
         {
-            Team = team;
             this.collisionDetector = new CollidableCircle(Position, Radius);
             SetControllables(controllables);
+            Team = team;
         }
 
         public Controller([OptionalAttribute] Vector2 position, IDs team = IDs.TEAM_AI)
         {
-            Team = team;
             this.collisionDetector = new CollidableCircle(Position, Radius);
             if (position == null)
                 position = Vector2.Zero;
             SetControllables(new List<IControllable>() { new EntityController(position) });
+            Team = team;
         }
         public virtual void SetControllables(List<IControllable> newControllables)
         {
@@ -91,6 +92,7 @@ namespace NetworkIO.src
                 UpdatePosition();
                 UpdateRadius();
                 c.Manager = this;
+                c.Team = team;
             }
         }
 

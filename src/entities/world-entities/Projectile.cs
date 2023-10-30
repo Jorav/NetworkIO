@@ -19,7 +19,7 @@ namespace NetworkIO.src.entities
         }
         public void Collide(WorldEntity e)
         {
-            if (CollidesWith(e))
+            if (CollidesWith(e) && e.Team != Team)
             {
                 e.Manager.Collide(this);
                 base.Collide(e.Manager);

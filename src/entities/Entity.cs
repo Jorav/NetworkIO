@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.menu;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,7 @@ namespace NetworkIO.src.movable
     {
         public float Elasticity;
         public bool IsCollidable { get; set; }
+        public virtual IDs Team { get; set; }
         public virtual float Radius { get; }
         public IController Manager { get; set; }
 

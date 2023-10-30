@@ -21,6 +21,8 @@ namespace NetworkIO.src.controllers
         public List<IControllable> Controllables { get; set; }
         public List<EntityController> SeperatedEntities { get; set; }
         public CollidableCircle collisionDetector;
+        private IDs team;
+        public override IDs Team { get { return team; } set { team = value; foreach (IControllable c in Controllables) c.Team = value; } }
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?
         public new float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
@@ -108,6 +110,7 @@ namespace NetworkIO.src.controllers
                 UpdateRadius();
                 e.Rotation = Rotation;
                 ConnectToOthers(e);
+                e.Team = team;
                 return true;
             }
             return false;
@@ -369,7 +372,8 @@ namespace NetworkIO.src.controllers
                 TotalExteriorForce += 0.6f * Physics.CalculateOverlapRepulsion(eAffected.Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Radius) * (eAffected.Mass + eOther.Mass) / 2;
                 TotalExteriorForce += 0.4f * Physics.CalculateOverlapRepulsion(Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Radius);
             }
-            eAffected.HandleCollision(eOther, passesThroughFromBack, passesThroughFromFront);
+            if(Team != eOther.Team)
+                eAffected.HandleCollision(eOther, passesThroughFromBack, passesThroughFromFront);
         }
 
         public void CollideProjectiles(IControllable collidable)
