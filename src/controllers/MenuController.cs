@@ -86,7 +86,7 @@ namespace NetworkIO.src.controllers
                     clickedOutside = true;
                     newClickRequired = true;
                 }
-                else
+                else if (maxZoom)
                 {
                     AddOpenLinks();
                 }
