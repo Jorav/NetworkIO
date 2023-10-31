@@ -30,7 +30,7 @@ namespace NetworkIO.src.entities
 
         public override void Update(GameTime gameTime) //OBSOIBSOBSOBSSOBSBOSBOS This needs to happen when dying as well
         {
-            if (IsVisible)
+            if (IsAlive)
             {
                 base.Update(gameTime);
                 timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -44,6 +44,7 @@ namespace NetworkIO.src.entities
         public override void Die()
         {
             timer = 0;
+            health = 0;
             base.Die();
         }
         public override object Clone()

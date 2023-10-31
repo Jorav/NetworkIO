@@ -36,7 +36,7 @@ namespace NetworkIO.src.entities
             {
                 Projectile p;
                 
-                if(!Projectiles.Peek().IsVisible)
+                if(!Projectiles.Peek().IsAlive)
                 {
                     p = Projectiles.Dequeue();
                     
@@ -50,6 +50,7 @@ namespace NetworkIO.src.entities
                 }
                 p.IsVisible = true; //TODO: Change to collisiondamage - advanced momentum+shell system
                 p.IsCollidable = true;
+                p.Health = 1;
                 p.Position = Position;
                 p.Rotation = Rotation;
                 Vector2 directionalVector = new Vector2((float)Math.Cos(p.Rotation), (float)Math.Sin(p.Rotation));
