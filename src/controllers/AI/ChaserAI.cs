@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class ChaserAI : Controller
+    public class ChaserAI : CohesiveController
     {
         private Controller enemy;
         /*public ChaserAI(List<IControllable> collidables, Controller enemy) : base(collidables) //TODO: Change enemy targeting to something smarter
@@ -17,6 +17,7 @@ namespace NetworkIO.src.controllers
         public ChaserAI([OptionalAttribute] Vector2 position, [OptionalAttribute] Controller enemy) : base(position) //TODO: Change enemy targeting to something smarter
         {
             this.enemy = enemy;
+            integrateSeperatedEntities = true;
         }
         public override void Update(GameTime gameTime)
         {

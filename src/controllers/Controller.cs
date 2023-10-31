@@ -5,6 +5,7 @@ using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using NetworkIO.src.entities.hulls;
 using NetworkIO.src.menu;
+using NetworkIO.src.menu.states;
 using NetworkIO.src.movable;
 using NetworkIO.src.utility;
 using System;
@@ -24,6 +25,7 @@ namespace NetworkIO.src
         public IDs Team { get { return team; } set { team = value; foreach (IControllable c in Controllables) c.Team = value; } }
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
+        public List<Controller> SeperatedEntities { get; set; }
         public virtual Vector2 Position { get { return position; }
             set 
             {
@@ -55,6 +57,7 @@ namespace NetworkIO.src
             this.collisionDetector = new CollidableCircle(Position, Radius);
             SetControllables(controllables);
             Team = team;
+            SeperatedEntities = new List<Controller>();
         }
 
         public Controller([OptionalAttribute] Vector2 position, IDs team = IDs.TEAM_AI)
@@ -64,6 +67,7 @@ namespace NetworkIO.src
                 position = Vector2.Zero;
             SetControllables(new List<IControllable>() { new EntityController(position) });
             Team = team;
+            SeperatedEntities = new List<Controller>();
         }
         public virtual void SetControllables(List<IControllable> newControllables)
         {
@@ -110,8 +114,8 @@ namespace NetworkIO.src
             AddSeperatedEntities();
             UpdatePosition();
             UpdateRadius();
-            ApplyInternalGravity();
-            ApplyInternalRepulsion();
+            //ApplyInternalGravity();
+            //ApplyInternalRepulsion();
             InternalCollission();
         }
 
@@ -141,10 +145,14 @@ namespace NetworkIO.src
                         else
                             seperatedEntities.Add(ecSeperated);
                     }
-            foreach(EntityController ec in seperatedEntities)
+            foreach (EntityController ec in seperatedEntities)
             {
-                AddControllable(ec);
+                Controller c = (Controller)Clone();
+                c.Controllables.Clear();
+                c.AddControllable(ec);
+                SeperatedEntities.Add(c);
             }
+
             foreach (IControllable c in Controllables)
                 if (c is EntityController ec)
                     ec.SeperatedEntities.Clear();
@@ -198,7 +206,7 @@ namespace NetworkIO.src
             if(mass != 0)
                 return distance / nr/mass;
             return 1;
-        }
+        }/*
         protected void ApplyInternalGravity()
         {
             Vector2 distanceFromController;
@@ -219,7 +227,7 @@ namespace NetworkIO.src
                         e1.ApplyRepulsion(e2);
                 }
             }
-        }
+        }*/
 
         protected void UpdatePosition() //TODO: only allow IsCollidable to affect this?
         {

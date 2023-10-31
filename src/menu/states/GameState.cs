@@ -19,13 +19,15 @@ namespace NetworkIO.src.menu.states
         protected List<IControllable> controllers;
         protected List<Background> backgrounds;
         protected State previousState;
-        public Player Player { get; set; } 
+        public Player Player { get; set; }
+        public List<IControllable> newEntities;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState, [OptionalAttribute] List<IControllable> controllers) : base(game, graphicsDevice, content, input)
         {
             this.controllers = new List<IControllable>();
             this.backgrounds = new List<Background>();
             this.previousState = previousState;
+            newEntities = new List<IControllable>();
             //this.controllers.Add(Game1.Player);
 
             List<IControllable> temp = new List<IControllable>();
@@ -97,6 +99,18 @@ namespace NetworkIO.src.menu.states
             //UPDATE
             foreach (IControllable c in controllers)
                 c.Update(gameTime);
+
+            //ADD NEW ENTITIES
+            foreach (IControllable c in controllers)
+                if (c is Controller cc)
+                {
+                    foreach (IControllable cSeperated in cc.SeperatedEntities)
+                        newEntities.Add(cSeperated);
+                    cc.SeperatedEntities.Clear();
+                }
+            foreach (IControllable c in newEntities)
+                controllers.Add(c);
+            newEntities.Clear();
 
             //INTERACT
             foreach (IControllable c in controllers)

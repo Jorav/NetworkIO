@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace NetworkIO.src
 {
-    public class Player : Controller
+    public class Player : CohesiveController
     {
         public Input Input { get; set; }
         public Camera Camera { get; private set; }
@@ -23,6 +23,7 @@ namespace NetworkIO.src
             Camera = new Camera(this);
             Camera.AutoAdjustZoom = true;
             Input.Camera = Camera;
+            integrateSeperatedEntities = true;
         }
         public Player(Input input, [OptionalAttribute]Vector2 position) : base(position, IDs.TEAM_PLAYER)
         {
@@ -30,6 +31,7 @@ namespace NetworkIO.src
             Camera = new Camera(this);
             Camera.AutoAdjustZoom = true;
             Input.Camera = Camera;
+            integrateSeperatedEntities = true;
         }
 
         public override void Update(GameTime gameTime)

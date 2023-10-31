@@ -9,7 +9,7 @@ using System.Text;
 
 namespace NetworkIO.src.controllers
 {
-    public class MenuController : Controller
+    public class MenuController : CohesiveController
     {
         public Camera Camera { get; private set; }
         Input input;
@@ -34,7 +34,8 @@ namespace NetworkIO.src.controllers
             previouslyLeftMBDown = input.LeftMBDown;
             previouslyRightMBDown = input.RightMBDown;
             previousControllables = new Stack<(IController, List<IControllable>)>();
-    }
+            integrateSeperatedEntities = true;
+        }
 
         public void AddOpenLinks()
         {
