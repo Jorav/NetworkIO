@@ -22,6 +22,7 @@ namespace NetworkIO.src.controllers
         {
             Rotate();
             Accelerate();
+            Shoot(gameTime);
             base.Update(gameTime);
         }
         protected void Rotate()

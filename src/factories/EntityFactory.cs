@@ -42,7 +42,7 @@ namespace NetworkIO.src.factories
 
 
                 case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE))
-                    { Thrust = 0, FireRatePerSecond = 15f, FiringStrength = 12, Mass = 0.5f };
+                    { Thrust = 0, FireRatePerSecond = 10f, FiringStrength = 14, Mass = 0.5f };
                 case IDs.PROJECTILE: return new Projectile(new Sprite(projectile), position)
                     { Mass = 0.4f, Friction = 0.03f, MaxLifeSpan = 3f, MinLifeSpan = 1f };
                 case IDs.SPIKE: return new Spike(new Sprite(spike), position) { Thrust = 0, Mass = 0.5f };
