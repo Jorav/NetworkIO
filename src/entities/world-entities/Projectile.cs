@@ -44,7 +44,7 @@ namespace NetworkIO.src.entities
         public override void Die()
         {
             timer = 0;
-            health = 0;
+            //health = 0;
             base.Die();
         }
         public override object Clone()

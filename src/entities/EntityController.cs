@@ -373,7 +373,7 @@ namespace NetworkIO.src.controllers
                 TotalExteriorForce += 0.6f * Physics.CalculateOverlapRepulsion(eAffected.Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Radius) * (eAffected.Mass + eOther.Mass) / 2;
                 TotalExteriorForce += 0.4f * Physics.CalculateOverlapRepulsion(Position - eAffected.Velocity, eOther.Position - eOther.Velocity, eAffected.Radius);
             }
-            if(Team != eOther.Team)
+            if(Team != eOther.Team && !(eOther is Projectile))
                 eAffected.HandleCollision(eOther, passesThroughFromBack, passesThroughFromFront);
         }
 
