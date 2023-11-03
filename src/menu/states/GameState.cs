@@ -104,7 +104,7 @@ namespace NetworkIO.src.menu.states
             foreach (IControllable c in controllers)
                 if (c is Controller cc)
                 {
-                    foreach (IControllable cSeperated in cc.SeperatedEntities)
+                    foreach (IControllable cSeperated in cc.ExtractAllSeperatedEntities())
                         newEntities.Add(cSeperated);
                     cc.SeperatedEntities.Clear();
                 }

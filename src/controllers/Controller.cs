@@ -25,7 +25,7 @@ namespace NetworkIO.src
         public IDs Team { get { return team; } set { team = value; foreach (IControllable c in Controllables) c.Team = value; } }
         public float Radius { get { return radius; } protected set { radius = value; collisionDetector.Radius = value; } }
         protected float radius;
-        public List<Controller> SeperatedEntities { get; set; }
+        public List<Controller> SeperatedEntities;
         public virtual Vector2 Position { get { return position; }
             set 
             {
@@ -133,6 +133,18 @@ namespace NetworkIO.src
                 Remove(c);
         }
 
+        public List<Controller> ExtractAllSeperatedEntities()
+        {
+            List<Controller> temp = new List<Controller>(SeperatedEntities);
+            SeperatedEntities.Clear();
+            foreach (IControllable c in Controllables)
+            {
+                if (c is Controller cc)
+                    temp.AddRange(cc.ExtractAllSeperatedEntities());
+            }
+            return temp;
+        }
+
         protected virtual void AddSeperatedEntities()
         {
             List<EntityController> seperatedEntities = new List<EntityController>();
@@ -150,7 +162,7 @@ namespace NetworkIO.src
                 Controller c = (Controller)Clone();
                 c.Controllables.Clear();
                 c.AddControllable(ec);
-                SeperatedEntities.Add(c);
+                this.SeperatedEntities.Add(c);
             }
 
             foreach (IControllable c in Controllables)
