@@ -52,6 +52,7 @@ namespace NetworkIO.src.menu.states
         {
             menuController.SetControllables(CopyEntitiesFromController(controllerEdited));
             menuController.Camera.InBuildScreen = true;
+            this.menuController.Color = Color.White;
         }
 
         public override void Update(GameTime gameTime)

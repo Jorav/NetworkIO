@@ -57,7 +57,7 @@ namespace NetworkIO.src.menu.states.menu_states
             Clicked = Player;
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
-            Warning = new FadingText("Need a Player-controller to start", Camera.Position, buttonFont, 1.5f) { originalColor = Color.Red };
+            Warning = new FadingText("Need a Player-controller to start", new Vector2(Game1.ScreenWidth/2/1.5f, Game1.ScreenHeight/2/1.5f), buttonFont, 1.5f) { originalColor = Color.Red };
             Button addControllerButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(Game1.ScreenWidth - buttonTexture.Width - 100, Game1.ScreenHeight - buttonTexture.Height - 150), //make this vary with Zoom
@@ -147,7 +147,6 @@ namespace NetworkIO.src.menu.states.menu_states
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
             Warning.Update(gameTime);
-            Warning.Position = Camera.Position;
         }
 
         private void HandleScroll()
@@ -273,6 +272,8 @@ namespace NetworkIO.src.menu.states.menu_states
             {
                 c.Draw(spriteBatch);
             }
+            spriteBatch.End();
+            spriteBatch.Begin(transformMatrix: Matrix.CreateScale(1.5f));
             Warning.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime, spriteBatch);
