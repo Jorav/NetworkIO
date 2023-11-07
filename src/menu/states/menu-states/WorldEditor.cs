@@ -6,6 +6,7 @@ using NetworkIO.src.controllers;
 using NetworkIO.src.factories;
 using NetworkIO.src.menu.controls;
 using NetworkIO.src.utility;
+using NetworkIO.src.visual;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -23,6 +24,7 @@ namespace NetworkIO.src.menu.states.menu_states
         bool dragging = true;
         Vector2 draggingRelativePosition;
         private IControllable clicked;
+        private FadingText Warning;
         public IControllable Clicked
         {
             set
@@ -55,6 +57,7 @@ namespace NetworkIO.src.menu.states.menu_states
             Clicked = Player;
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
+            Warning = new FadingText("Need a Player-controller to start", Camera.Position, buttonFont, 1.5f) { originalColor = Color.Red };
             Button addControllerButton = new Button(new Sprite(buttonTexture), buttonFont)
             {
                 Position = new Vector2(Game1.ScreenWidth - buttonTexture.Width - 100, Game1.ScreenHeight - buttonTexture.Height - 150), //make this vary with Zoom
@@ -138,9 +141,13 @@ namespace NetworkIO.src.menu.states.menu_states
                     Clicked = null;
                     game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
                 }
+                else
+                    Warning.Display();
             }
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
+            Warning.Update(gameTime);
+            Warning.Position = Camera.Position;
         }
 
         private void HandleScroll()
@@ -266,7 +273,7 @@ namespace NetworkIO.src.menu.states.menu_states
             {
                 c.Draw(spriteBatch);
             }
-
+            Warning.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime, spriteBatch);
         }
