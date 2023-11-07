@@ -22,6 +22,7 @@ namespace NetworkIO.src.controllers
         public List<EntityController> SeperatedEntities { get; set; }
         public CollidableCircle collisionDetector;
         private IDs team;
+        public override Color Color { set { foreach (IControllable c in Controllables) c.Color = value; } }
         public override IDs Team { get { return team; } set { team = value; foreach (IControllable c in Controllables) c.Team = value; } }
         public bool IsAlive { get; set; } = true;
         protected float collissionOffset = 100; //TODO make this depend on velocity + other things?

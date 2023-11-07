@@ -17,6 +17,7 @@ namespace NetworkIO.src.menu.states.menu_states
         public int previousScrollValue;
         public int currentScrollValue;
         private readonly Sprite overlay;
+        protected Color originalColor;
         public BuildState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, State previousState, Input input, Controller controllerEdited, MenuController menuController = null) : base(game, graphicsDevice, content, input)
         {
             this.controllerEdited = controllerEdited;
@@ -33,6 +34,8 @@ namespace NetworkIO.src.menu.states.menu_states
             overlay = new Sprite(content.Load<Texture2D>("background/backgroundWhite"));
             overlay.Scale = overlay.Height / Game1.ScreenHeight;
             overlay.Position = new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2);
+            originalColor = controllerEdited.Color;
+            this.menuController.Color = Color.White;
         }
 
         protected List<IControllable> CopyEntitiesFromController(Controller controller)

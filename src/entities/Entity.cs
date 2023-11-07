@@ -15,6 +15,7 @@ namespace NetworkIO.src.movable
         public virtual IDs Team { get; set; }
         public virtual float Radius { get; }
         public IController Manager { get; set; }
+        public abstract Color Color { set; }
 
         public static float REPULSIONDISTANCE = 100;
 

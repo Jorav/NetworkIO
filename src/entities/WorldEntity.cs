@@ -17,6 +17,7 @@ namespace NetworkIO.src
         #region Properties
         protected Sprite sprite = null;
         public bool IsVisible { get { return sprite.isVisible; } set { sprite.isVisible = value; } }
+        public override Color Color { set { sprite.Color = value; } }
         public CollidableRectangle collisionDetector;
         public CollidableRectangle oldCollisionDetector;
         public override Vector2 Position { get { return position; } 

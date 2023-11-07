@@ -124,6 +124,7 @@ namespace NetworkIO.src.menu.states
                 editor.Camera.InBuildScreen = false;
             }
             game.ChangeState(previousState);
+            controllerEdited.Color = originalColor;
             //menuController.Camera.AutoAdjustZoom = true;
         }
     }

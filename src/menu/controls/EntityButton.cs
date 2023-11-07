@@ -29,8 +29,10 @@ namespace NetworkIO.src.menu.controls
             base.Draw(spritebatch);
             Color color = Color.White;
             if (isHovering)
-                color = Color.Gray;
-            entitySprite.Draw(spritebatch, color);
+                sprite.Color = Color.Gray;
+            else
+                sprite.Color = Color.White;
+            entitySprite.Draw(spritebatch);
             isHovering = previousIsHovering;
         }
     }

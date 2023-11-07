@@ -76,11 +76,11 @@ namespace NetworkIO.src.menu.controls
 
         public virtual void Draw(SpriteBatch spritebatch)
         {
-            Color color = Color.White;
+            sprite.Color = Color.White;
             if (isHovering)
-                color = Color.Gray;
+                sprite.Color = Color.Gray;
             //spritebatch.Draw(texture, Rectangle, color)
-            sprite.Draw(spritebatch, color);
+            sprite.Draw(spritebatch);
 
             if (!string.IsNullOrEmpty(Text))
             {

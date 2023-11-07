@@ -49,6 +49,8 @@ namespace NetworkIO.src
         }
 
         public IController Manager { get; set; }
+        private Color color;
+        public Color Color { set { foreach (IControllable c in Controllables) c.Color = value; color = value; } get { return color; } }
 
         protected Vector2 position;
 
@@ -58,6 +60,7 @@ namespace NetworkIO.src
             SetControllables(controllables);
             Team = team;
             SeperatedEntities = new List<Controller>();
+            Color = Color.White;
         }
 
         public Controller([OptionalAttribute] Vector2 position, IDs team = IDs.TEAM_AI)
@@ -68,6 +71,7 @@ namespace NetworkIO.src
             SetControllables(new List<IControllable>() { new EntityController(position) });
             Team = team;
             SeperatedEntities = new List<Controller>();
+            Color = Color.White;
         }
         public virtual void SetControllables(List<IControllable> newControllables)
         {

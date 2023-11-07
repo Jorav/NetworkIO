@@ -10,6 +10,7 @@ namespace NetworkIO.src
         public IController Manager {get; set;}
         public IDs Team { get; set; }
         public float Mass { get;}
+        public Color Color { set; }
         public void Collide(IControllable c);
         public void RotateTo(Vector2 position);
         public void Accelerate(Vector2 directionalVector, float thrust);

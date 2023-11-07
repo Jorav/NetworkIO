@@ -22,7 +22,23 @@ namespace NetworkIO.src.menu.states.menu_states
         bool previousRightMBDown;
         bool dragging = true;
         Vector2 draggingRelativePosition;
-        IControllable clicked;
+        private IControllable clicked;
+        public IControllable Clicked
+        {
+            set
+            {
+                IControllable previousClicked = clicked;
+                if (previousClicked != null)
+                    previousClicked.Color = Color.White;
+                if(value != null)
+                    value.Color = Color.Turquoise;
+                clicked = value;
+            }
+            get
+            {
+                return clicked;
+            }
+        }
         int currentScrollValue;
         int previousScrollValue;
         public Player Player { get; set; }
@@ -110,8 +126,11 @@ namespace NetworkIO.src.menu.states.menu_states
             if (input.BuildClicked)
                 if (clicked != null && clicked is Controller controller)
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
-            if(input.EnterClicked)
-                    game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
+            if (input.EnterClicked)
+            {
+                Clicked = null;
+                game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
+            }
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
         }
@@ -181,7 +200,7 @@ namespace NetworkIO.src.menu.states.menu_states
                     IControllable clicked = c.ControllableContainingInSpace(mousePosition, Camera.Transform);
                     if (clicked != null)
                     {
-                        this.clicked = c;
+                        Clicked = c;
                         dragging = true;
                         draggingRelativePosition = c.Position - input.MousePositionGameCoords;
                         deselect = false;
@@ -190,10 +209,10 @@ namespace NetworkIO.src.menu.states.menu_states
                 if(deselect)
                 {
                     dragging = false;
-                    this.clicked = null;
+                    Clicked = null;
                 }
                 if (!dragging)
-                    this.clicked = null;
+                    Clicked = null;
             }
         }
 
@@ -218,7 +237,7 @@ namespace NetworkIO.src.menu.states.menu_states
                     controllers.Add(c);
                 }
                     
-                this.clicked = c;
+                Clicked = c;
             }
                 
         }
