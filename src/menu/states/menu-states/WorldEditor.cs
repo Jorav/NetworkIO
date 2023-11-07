@@ -25,6 +25,8 @@ namespace NetworkIO.src.menu.states.menu_states
         Vector2 draggingRelativePosition;
         private IControllable clicked;
         private FadingText Warning;
+        private float zoom;
+        protected float Zoom { get { return zoom; } set { zoom = value; Camera.Zoom = value; } }
         public IControllable Clicked
         {
             set
@@ -41,18 +43,18 @@ namespace NetworkIO.src.menu.states.menu_states
                 return clicked;
             }
         }
-        int currentScrollValue;
-        int previousScrollValue;
         public Player Player { get; set; }
         IDs IDSelected;
 
         public WorldEditor(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute] GameState gameState) : base(game, graphicsDevice, content, input)
         {
+            Player = new Player(input);
             Camera = new Camera();
+            zoom = Camera.Zoom;
             input.Camera = Camera;
+            this.input = input;
             backgrounds = new List<Background>();
             controllers = new List<IControllable>();
-            Player = new Player(input);
             controllers.Add(Player);
             Clicked = Player;
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
@@ -115,11 +117,12 @@ namespace NetworkIO.src.menu.states.menu_states
             Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
             HandleLeftClick(mousePosition);
             HandleRightClick(mousePosition);
-            
+
 
             //drag controller
             if (clicked != null && dragging && input.LeftMBDown)
                 clicked.Position = input.MousePositionGameCoords + draggingRelativePosition;
+            //clicked.Position = input.MousePositionGameCoords + draggingRelativePosition;
             //disable drag if clicked outside
             if (!input.LeftMBDown && previousLeftMBDown)
                 dragging = false;
@@ -147,15 +150,15 @@ namespace NetworkIO.src.menu.states.menu_states
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
             Warning.Update(gameTime);
+            Zoom = zoom;
         }
 
         private void HandleScroll()
         {
-            previousScrollValue = currentScrollValue;
-            currentScrollValue = input.ScrollValue;
-            if (previousScrollValue - currentScrollValue != 0)
+            int currentScrollValue = input.ScrollValue;
+            if (input.PreviousScrollValue - currentScrollValue != 0)
             {
-                Camera.Zoom /= (float)Math.Pow(0.999, (currentScrollValue - previousScrollValue));
+                Zoom /= (float)Math.Pow(0.999, (currentScrollValue - input.PreviousScrollValue));
             }
         }
 
@@ -219,7 +222,8 @@ namespace NetworkIO.src.menu.states.menu_states
                     {
                         Clicked = c;
                         dragging = true;
-                        draggingRelativePosition = c.Position - input.MousePositionGameCoords;
+                        //draggingRelativePosition = c.Position - input.MousePositionGameCoords;
+                        draggingRelativePosition = (c.Position- input.MousePositionGameCoords);
                         deselect = false;
                     }
                 }

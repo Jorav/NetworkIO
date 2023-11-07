@@ -16,7 +16,7 @@ namespace NetworkIO.src
         public Keys Pause { get; set; }
         public Keys Build { get; set; }
         public Keys Enter { get; set; }
-        public Vector2 MousePositionGameCoords { get { return (Mouse.GetState().Position.ToVector2() / Camera.Zoom - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2) / Camera.Zoom + Camera.Position); } }
+        public Vector2 MousePositionGameCoords { get { return (Mouse.GetState().Position.ToVector2() - new Vector2(Game1.ScreenWidth / 2, Game1.ScreenHeight / 2) )/Camera.Zoom + Camera.Position; } }
         private bool pauseDown;
         public bool PauseClicked //OBS, new state of button needs to change each update
         {
@@ -91,12 +91,15 @@ namespace NetworkIO.src
                 return Mouse.GetState().RightButton == ButtonState.Pressed;
             }
         }
-
+        public int PreviousScrollValue { get; set; }
+        private int scrollValue;
         public int ScrollValue
         {
             get
             {
-                return Mouse.GetState().ScrollWheelValue;
+                PreviousScrollValue = scrollValue;
+                scrollValue = Mouse.GetState().ScrollWheelValue;
+                return scrollValue;
             }
         }
     }
