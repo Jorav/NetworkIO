@@ -52,6 +52,7 @@ namespace NetworkIO.src.menu.states.menu_states
             controllers = new List<IControllable>();
             Player = new Player(input);
             controllers.Add(Player);
+            Clicked = Player;
             Texture2D buttonTexture = content.Load<Texture2D>("controls/Button");
             SpriteFont buttonFont = content.Load<SpriteFont>("fonts/Font");
             Button addControllerButton = new Button(new Sprite(buttonTexture), buttonFont)
@@ -128,8 +129,15 @@ namespace NetworkIO.src.menu.states.menu_states
                     game.ChangeState(new BuildOverviewState(game, graphicsDevice, content, this, input, controller));
             if (input.EnterClicked)
             {
-                Clicked = null;
-                game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
+                //bool playerExists = false;
+                //foreach (IControllable c in controllers)
+                //    if (c is Player)
+                //       playerExists = true;
+                if(Player.Controllables.Count != 0)
+                {
+                    Clicked = null;
+                    game.ChangeState(new GameState(game, graphicsDevice, content, input, this, controllers));
+                }
             }
             if (input.PauseClicked)
                 game.ChangeState(new PauseState(game, graphicsDevice, content, this, input));
@@ -182,7 +190,10 @@ namespace NetworkIO.src.menu.states.menu_states
                     IControllable clicked = c.ControllableContainingInSpace(mousePosition, Camera.Transform);
                     if (clicked != null)
                     {
-                        temp.Add(c);
+                        if (c is Player)
+                            Player.Remove(clicked.Manager);
+                        else
+                            temp.Add(c);
                     }
                 }
                 foreach (IControllable c in temp)
