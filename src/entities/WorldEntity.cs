@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NetworkIO.src.collidables;
+using NetworkIO.src.collission_detectors;
 using NetworkIO.src.controllers;
 using NetworkIO.src.entities;
 using NetworkIO.src.factories;
@@ -18,8 +19,8 @@ namespace NetworkIO.src
         protected Sprite sprite = null;
         public bool IsVisible { get { return sprite.isVisible; } set { sprite.isVisible = value; } }
         public override Color Color { set { sprite.Color = value; } }
-        public CollidableRectangle collisionDetector;
-        public CollidableRectangle oldCollisionDetector;
+        public CollisionDetector collisionDetector;
+        public CollisionDetector oldCollisionDetector;
         public override Vector2 Position { get { return position; } 
             set
             { 
@@ -43,8 +44,8 @@ namespace NetworkIO.src
             { 
                 origin = value; 
                 sprite.Origin = value;
-                oldCollisionDetector.Origin = collisionDetector.Origin;
-                collisionDetector.Origin = value; 
+                //oldCollisionDetector.Origin = collisionDetector.Origin;
+                //collisionDetector.Origin = value; 
             } 
         }
         protected Vector2 origin;
@@ -71,8 +72,7 @@ namespace NetworkIO.src
         public WorldEntity(Sprite sprite, Vector2 position, EntityController entityController = null, float rotation = 0, float mass = 1, float thrust = 1, float friction = 0.1f, float health = 10, bool isVisible = true, bool isCollidable = true,  float elasticity = 1) : base(position, rotation, mass, thrust, friction)
         {
             this.sprite = sprite;
-            collisionDetector = (CollidableRectangle) CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
-            oldCollisionDetector = (CollidableRectangle)CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
+            CreateCollisionDetectors(sprite, position, rotation);
             Position = position;
             Elasticity = elasticity;
             Health = health;
@@ -86,6 +86,12 @@ namespace NetworkIO.src
             else
                 this.Manager = entityController;
         }
+
+        protected virtual void CreateCollisionDetectors(Sprite sprite, Vector2 position, float rotation)
+        {
+            collisionDetector = CollidableFactory.CreateRectangular(position, rotation, sprite.Width, sprite.Height);
+            oldCollisionDetector = CollidableFactory.CreateRectangular(position, rotation, sprite.Width, sprite.Height);
+        }
         #region Methods
         protected virtual void AddLinks()
         {
@@ -93,7 +99,6 @@ namespace NetworkIO.src
                 Links.Clear();
             Links.Add(new Link(new Vector2(-Width/2, 0), this));
         }
-
         public override void Draw(SpriteBatch sb)
         {
             sprite.Draw(sb);
@@ -141,8 +146,8 @@ namespace NetworkIO.src
         public bool CollidesWithDuringMove(WorldEntity e)
         {
             bool collides = false;
-            collisionDetector.StretchToRectangle(oldCollisionDetector);
-            collides = collisionDetector.StretchCollidesWithRectangle(e.collisionDetector) && IsCollidable && e.IsCollidable;
+            collisionDetector.StretchTo(oldCollisionDetector);
+            collides = collisionDetector.CollidesWithStretch(e.collisionDetector) && IsCollidable && e.IsCollidable;
             collisionDetector.StopStretch();
             return collides;
         }

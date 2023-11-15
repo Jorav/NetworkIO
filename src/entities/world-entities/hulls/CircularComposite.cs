@@ -12,6 +12,13 @@ namespace NetworkIO.src.movable.entities.hull
         {
             //(CollidableCircle)CollidableFactory.CreateCollissionDetector(position, rotation, sprite.Width, sprite.Height);
         }
+
+        /*protected override void CreateCollisionDetectors(Sprite sprite, Vector2 position, float rotation)
+        {
+            collisionDetector = CollidableFactory.CreateCircular(position, Math.Min(sprite.Width, sprite.Height));
+            oldCollisionDetector = CollidableFactory.CreateCircular(position, Math.Min(sprite.Width, sprite.Height));
+        }*/
+
         protected override void AddLinks()
         {
             if (Links.Count > 0)

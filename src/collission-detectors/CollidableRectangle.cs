@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using NetworkIO.src.collission_detectors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 namespace NetworkIO.src.collidables
 {
     //OBS: Old heritage, god knows how this works
-    public class CollidableRectangle : IIntersectable
+    public class CollidableRectangle : CollisionDetector
     {
         private Vector2 UL { get; set; }
         private Vector2 DL { get; set; }
@@ -90,7 +91,6 @@ namespace NetworkIO.src.collidables
             Width = width;
             Height = height;
             origin = new Vector2(Width / 2, Height / 2);
-            
             Rotation = rotation;
 
         }
@@ -103,7 +103,7 @@ namespace NetworkIO.src.collidables
             throw new NotImplementedException();
         }
 
-        private bool CollidesWithCircle(CollidableCircle cc) //NOT TESTED
+        public bool CollidesWithCircle(CollidableCircle cc) //NOT TESTED
         {
             Vector2 unrotatedCircle = new Vector2(
                 (float)(Math.Cos(rotation) * (cc.Position.X - Position.X) - Math.Sin(rotation) * (cc.Position.Y - Position.Y) + Position.X),
@@ -178,11 +178,11 @@ namespace NetworkIO.src.collidables
             }*/
             return collides;
         }
-        public bool StretchCollidesWithRectangle(CollidableRectangle r)
+        public bool CollidesWithStretch(CollisionDetector cd)
         {
-            if (stretchedRectangle != null)
+            if (cd != null && stretchedRectangle!=null)
             {
-                return stretchedRectangle.CollidesWithRectangle(r);
+                return stretchedRectangle.CollidesWith(cd);
             }
             return false;
         }
@@ -195,7 +195,11 @@ namespace NetworkIO.src.collidables
             axes[3] = new Vector2(r.UL.X - r.UR.X, r.UL.Y - r.UR.Y);
             return axes;
         }
-
+        public void StretchTo(CollisionDetector cd)
+        {
+            if (cd is CollidableRectangle cr)
+                StretchToRectangle(cr);
+        }
         public void StretchToRectangle(CollidableRectangle r)
         {
             if (Position != r.Position)
@@ -231,7 +235,7 @@ namespace NetworkIO.src.collidables
 
         public bool CollidesAlongLine(IIntersectable i, Vector2 line)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public void Collide(IIntersectable c) //TEMPORARY, THESE SHOULD NOT COLLIDE DIRECTLY (or be part of ICollide interface)

@@ -10,7 +10,7 @@ using System;
 
 namespace NetworkIO.src.factories
 {
-    public class EntityFactory
+    public static class EntityFactory
     {
         public static Texture2D rectangularHull;
         public static Texture2D circularHull;
@@ -39,7 +39,6 @@ namespace NetworkIO.src.factories
                 case IDs.LINK_COMPOSITE: return new LinkComposite(new Sprite(linkHull), position) { Mass = 1f, Thrust = 0.5f };
                 case IDs.TRIANGULAR_EQUAL_COMPOSITE: return new TriangularEqualLeggedComposite(new Sprite(triangularEqualLeggedHull), position) { Mass = 2 };
                 case IDs.TRIANGULAR_90ANGLE_COMPOSITE: return new Triangular90AngleComposite(new Sprite(triangular90AngleHull), position) { Mass = 2 };
-
 
                 case IDs.SHOOTER: return new Shooter(new Sprite(gun), position, (Projectile)Create(position, IDs.PROJECTILE))
                     { Thrust = 0, FireRatePerSecond = 10f, FiringStrength = 14, Mass = 0.5f };

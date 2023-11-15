@@ -1,17 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
+using NetworkIO.src.collission_detectors;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace NetworkIO.src.collidables
 {
-    public class CollidableCircle : IIntersectable
+    public class CollidableCircle : CollisionDetector
     {
         public Vector2 Position {  get; set; }
         private float radius;
         public float Radius { get { return radius * scale; } set { radius = value / scale; } }
         private float scale;
         public float Scale { get { return scale; } set { scale = value; } }
+        public float Rotation { get; set; }
+        private CollidableRectangle stretchedRectangle;
 
         public CollidableCircle(Vector2 position, float radius)
         {
@@ -67,7 +70,7 @@ namespace NetworkIO.src.collidables
         }
 
         //TODO: dubbelkolla att detta stämmer
-        private bool CollidesWithCircle(CollidableCircle c)
+        public bool CollidesWithCircle(CollidableCircle c)
         {
             return Math.Sqrt(Math.Pow((double)(Position.X) - (double)(c.Position.X), 2) + Math.Pow((double)(Position.Y) - (double)(c.Position.Y), 2)) <= (Radius + c.Radius);
         }
@@ -75,6 +78,48 @@ namespace NetworkIO.src.collidables
         public void Collide(IIntersectable c) //TEMPORARY, THESE SHOULD NOT COLLIDE DIRECTLY (or be part of ICollide interface)
         {
             throw new NotImplementedException();
+        }
+        public bool CollidesWithStretch(CollisionDetector cd)
+        {
+            if (cd != null)
+            {
+                return stretchedRectangle.CollidesWith(cd);
+            }
+            return false;
+        }
+        public void StretchTo(CollisionDetector cd)
+        {
+            if(cd is CollidableCircle c)
+            {
+                Vector2 change = c.Position - Position;
+                Vector2 perpendicular = new Vector2(change.Y, -change.X);
+                perpendicular.Normalize();
+                float angle = (float)(Math.Atan(change.Y/change.X));
+                Vector2 UL = Position + perpendicular*Radius;
+                Vector2 DL = Position - perpendicular*Radius;
+                Vector2 UR = c.Position + perpendicular*c.Radius;
+                Vector2 DR = c.Position - perpendicular*c.Radius;
+                stretchedRectangle = new CollidableRectangle(UR, DL, DR, UR);
+            }
+        }
+
+        public void StopStretch()
+        {
+            stretchedRectangle = null;
+        }
+
+        public bool Contains(Vector2 position)
+        {
+            return (position - Position).Length() <= Radius;
+        }
+
+        public bool ContainsInSpace(Vector2 positionInM, Matrix m)
+        {
+            Vector3 s,t;
+            Quaternion q;
+            m.Decompose(out s, out q, out t);
+            float scale = (float)(Math.Sqrt(Math.Pow(s.X, 2) + Math.Pow(s.Y, 2)));
+            return (Vector2.Transform(Position, m) - positionInM).Length() > Radius / scale;
         }
     }
 }

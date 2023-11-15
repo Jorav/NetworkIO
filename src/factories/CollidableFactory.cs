@@ -1,19 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
 using NetworkIO.src.collidables;
+using NetworkIO.src.collission_detectors;
+using NetworkIO.src.utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace NetworkIO.src.factories
 {
-    static class CollidableFactory
+    public static class CollidableFactory
     {
-        public static IIntersectable CreateCollissionDetector(Vector2 position, float rotation, int width, int height, bool isCircle = false)
+        public static CollisionDetector CreateRectangular(Vector2 position, float rotation, int width, int height)
         {
-            if (isCircle)
-                return new CollidableCircle(position, rotation);
-            else
-                return new CollidableRectangle(position, rotation, width, height);
+                //return new CollidableCircle(position, rotation);
+            return new CollidableRectangle(position, rotation, width, height);
+        }
+        public static CollisionDetector CreateCircular(Vector2 position, float radius)
+        {
+            return new CollidableCircle(position, radius);
         }
     }
 }
