@@ -96,7 +96,7 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.SUN),
                     },
-                    0.3f, Player.Camera)
+                    0.3f, Camera)
             };
             backgrounds.Add(new WrappingBackground(
                     new List<IControllable>()
@@ -112,7 +112,7 @@ namespace NetworkIO.src.menu.states.game_states
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD),
                         EntityFactory.Create(new Vector2((float)(r.NextDouble()-0.5)*Game1.ScreenWidth, (float)(r.NextDouble()-0.5)*Game1.ScreenHeight), IDs.CLOUD)
-                    }, 0.6f, Player.Camera, new Vector2(0.1f,0.1f))
+                    }, 0.6f, Camera, new Vector2(0.1f,0.1f))
             );
         }
     }

@@ -20,7 +20,7 @@ namespace NetworkIO.src.menu.states
         protected List<Background> backgrounds;
         protected State previousState;
         public Player Player { get; set; }
-        private Camera camera;
+        public Camera Camera { get; set; }
         public List<IControllable> newEntities;
 
         public GameState(Game1 game, GraphicsDevice graphicsDevice, ContentManager content, Input input, [OptionalAttribute]State previousState, [OptionalAttribute] List<IControllable> controllers) : base(game, graphicsDevice, content, input)
@@ -48,13 +48,13 @@ namespace NetworkIO.src.menu.states
                 Player = new Player(input);
                 this.controllers.Add(Player);
             }
-            camera = new Camera(Player, false);
-            input.Camera = camera;
+            Camera = new Camera(Player, false);
+            input.Camera = Camera;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(transformMatrix: camera.Transform);
+            spriteBatch.Begin(transformMatrix: Camera.Transform);
             game.GraphicsDevice.Clear(Color.DarkGray);
             //Vector2 CameraPosition = p.Position - new Vector2(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.5f, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.5f);
             // Matrix m = Matrix.CreateTranslation(new Vector3(-CameraPosition, 0));
@@ -89,10 +89,9 @@ namespace NetworkIO.src.menu.states
             {
                 game.ChangeState(previousState);
                 if (previousState is IPlayable p)
-                    input.Camera = p.Player.Camera;
+                    input.Camera = p.Camera;
             }
             RunGame(gameTime);
-            camera.Update();
         }
 
         public void RunGame(GameTime gameTime)
@@ -121,6 +120,8 @@ namespace NetworkIO.src.menu.states
             //BACKGROUNDS
             foreach (Background b in backgrounds)
                 b.Update(gameTime);
+
+            Camera.Update();
         }
     }
 }

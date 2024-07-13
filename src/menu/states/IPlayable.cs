@@ -7,5 +7,6 @@ namespace NetworkIO.src.menu.states
     public interface IPlayable
     {
         public Player Player { get; set; }
+        public Camera Camera { get; }
     }
 }

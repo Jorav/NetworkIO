@@ -118,7 +118,7 @@ namespace NetworkIO.src.menu.states
             if (previousState is IPlayable p)
             {
                 p.Player.actionsLocked = false;
-                p.Player.Camera.InBuildScreen = false;
+                p.Camera.InBuildScreen = false;
             }
             if (previousState is WorldEditor editor)
             {

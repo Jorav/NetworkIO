@@ -13,24 +13,17 @@ namespace NetworkIO.src
     public class Player : CohesiveController
     {
         public Input Input { get; set; }
-        public Camera Camera { get; private set; }
         public bool actionsLocked;
         
         
         public Player(List<IControllable> collidables, Input input) : base(collidables, IDs.TEAM_PLAYER)
         {
             this.Input = input;
-            Camera = new Camera(this);
-            Camera.AutoAdjustZoom = true;
-            Input.Camera = Camera;
             integrateSeperatedEntities = true;
         }
         public Player(Input input, [OptionalAttribute]Vector2 position) : base(position, IDs.TEAM_PLAYER)
         {
             this.Input = input;
-            Camera = new Camera(this);
-            Camera.AutoAdjustZoom = true;
-            Input.Camera = Camera;
             integrateSeperatedEntities = true;
         }
 
@@ -43,8 +36,6 @@ namespace NetworkIO.src
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     Shoot(gameTime);
             }
-            
-            Camera.Update();
             base.Update(gameTime);
             /*
              * Rotate, calculate course, check collisions, update course, move, base.update
@@ -93,15 +84,6 @@ namespace NetworkIO.src
                 foreach (IControllable c in Controllables)
                     c.Accelerate(accelerationVector);
             }
-        }
-
-        //***NOT GUARANTEED TO WORK***
-        public override object Clone()
-        {
-            Player pNew = (Player)base.Clone();
-            pNew.Camera = new Camera(pNew);
-            Input.Camera = pNew.Camera;
-            return pNew;
         }
         public new static String GetName()
         {
