@@ -44,8 +44,9 @@ namespace NetworkIO.src.movable
                 Vector2 vectorToE = entityAffecting.Position - entityAffected.Position;
                 float distance = vectorToE.Length();
                 float res = 0;
-                if (distance != 0)
-                    res = -Physics.CalculateGravityRepulsion(entityAffected.Radius, entityAffecting.Radius, distance);
+                if (distance < 10)
+                    distance = 10;
+                res = 0.1f / (float)Math.Pow(distance / (2 * Math.Max(entityAffected.Radius, entityAffecting.Radius)), 2);
                 return Vector2.Normalize(vectorToE)* res;
             }
             return Vector2.Zero;
