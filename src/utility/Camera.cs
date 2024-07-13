@@ -30,7 +30,6 @@ namespace NetworkIO.src
         public bool AutoAdjustZoom { get; set; }
         public float BuildMenuZoom { get { if (Controller != null) return (Game1.ScreenHeight) / (2 * Controller.Radius + Game1.ScreenHeight / 8); else return 1; } }
         public float GameZoom { get { if (Controller != null) return Game1.ScreenHeight / (Game1.ScreenHeight + 1 * Controller.Radius); else return 1; } }
-        private CollidableRectangle frame;
         public IControllable Controller { get; set; }
         private float zoomSpeed;
 
@@ -102,11 +101,6 @@ namespace NetworkIO.src
                 0);
             Matrix zoom = Matrix.CreateScale(Zoom, Zoom, 0);
             Transform = position * rotation * zoom * origin;
-        }
-
-        public bool InFrame(Vector2 position)
-        {
-            return frame.Contains(position);
         }
     }
 }

@@ -118,8 +118,6 @@ namespace NetworkIO.src
             AddSeperatedEntities();
             UpdatePosition();
             UpdateRadius();
-            //ApplyInternalGravity();
-            //ApplyInternalRepulsion();
             InternalCollission();
         }
 
@@ -222,28 +220,7 @@ namespace NetworkIO.src
             if(mass != 0)
                 return distance / nr/mass;
             return 1;
-        }/*
-        protected void ApplyInternalGravity()
-        {
-            Vector2 distanceFromController;
-            foreach (IControllable c1 in Controllables)
-            {
-                distanceFromController = Position - c1.Position;
-                if (distanceFromController.Length() > c1.Radius)
-                    c1.Accelerate(Vector2.Normalize(Position - c1.Position), (float)Math.Pow(((distanceFromController.Length()-c1.Radius)/AverageDistance()) / 2*c1.Mass,2));
-            }
         }
-        public void ApplyInternalRepulsion()
-        {
-            foreach (IControllable c1 in Controllables)
-            {
-                foreach (IControllable c2 in Controllables)//TODO: only allow IsCollidable to affect this?
-                {
-                    if (c1 != c2 && c1 is Entity e1 && c2 is Entity e2)
-                        e1.ApplyRepulsion(e2);
-                }
-            }
-        }*/
 
         protected void UpdatePosition() //TODO: only allow IsCollidable to affect this?
         {
@@ -259,8 +236,6 @@ namespace NetworkIO.src
                 position = sum / (weight);
                 collisionDetector.Position = position;
             }
-                
-                
         }
 
         public void Draw(SpriteBatch sb)
